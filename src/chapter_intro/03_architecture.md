@@ -10,14 +10,29 @@
 
 假设当前为第 $t$ 个时间步，整个闭环的数学与逻辑表达如下：
 
-1. **感知 (Perceive - $O_t$):** $$O_t = \text{Observe}(E_t, A_{t-1})$$
+1. **感知 (Perceive - $O_t$):**
+
+   $$O_t = \text{Observe}(E_t, A_{t-1})$$
+
    Agent 观察当前高维环境 $E_t$，并获取上一步动作 $A_{t-1}$ 的确切反馈（如 API 状态码、数据库返回的 Schema、或者模型预估的点击率分布），生成当前的观察特征向量或文本表达 $O_t$。
-2. **思考 (Think - $T_t, P_t$):** $$T_t, P_t = \text{LLM\_Policy}(O_t \mid S_{t-1})$$
+
+2. **思考 (Think - $T_t, P_t$):**
+
+   $$T_t, P_t = \text{LLM\_Policy}(O_t \mid S_{t-1})$$
+
    核心大模型（大脑）结合最新的观察结果 $O_t$ 与历史记忆上下文 $S_{t-1}$，进行自回归解码。生成内部逻辑推理拓扑 $T_t$（Thought，即隐变量寻优过程）和下一步的局部最优行动计划 $P_t$。
-3. **行动 (Act - $A_t$):** $$A_t = \text{Execute}(P_t)$$
+
+3. **行动 (Act - $A_t$):**
+
+   $$A_t = \text{Execute}(P_t)$$
+
    工具执行引擎（Tool Executor）解析行动计划，对外部系统（如调整推荐排序权重、发起 SQL 查询）施加确切动作 $A_t$。环境因 $A_t$ 发生状态转移。
-4. **状态与记忆更新 (State Update):** $$S_t = \text{Memory\_Update}(S_{t-1}, O_t, T_t, A_t)$$
-   将本轮的“所见、所想、所做”进行序列化或摘要压缩，追加到全局状态空间 $S_t$ 中，作为下一轮解码的先验 Prompt。
+
+4. **状态与记忆更新 (State Update):**
+
+   $$S_t = \text{Memory\_Update}(S_{t-1}, O_t, T_t, A_t)$$
+
+   将本轮的   将本轮的“所见、所想、所做”进行序列化或摘要压缩，追加到全局状态空间 $S_t$ 中，作为下一轮解码的先验 Prompt。
 
 ![Agent感知-思考-行动循环](../svg/chapter_intro_03_loop.svg)
 
