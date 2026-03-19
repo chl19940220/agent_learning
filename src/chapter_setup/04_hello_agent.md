@@ -411,19 +411,7 @@ Agent：计算结果是 18,945。
 
 这个简单的 Agent 展示了 **ReAct 模式**的完整实现：
 
-```
-用户输入
-   ↓
-LLM 推理 → 决定是否需要工具
-   ├── 不需要工具 → 直接回答（finish_reason = "stop"）
-   └── 需要工具  → 返回工具调用请求（finish_reason = "tool_calls"）
-                        ↓
-                   执行工具（本地 Python 函数）
-                        ↓
-                   将结果反馈给 LLM
-                        ↓
-                   LLM 继续推理（回到顶部）
-```
+![ReAct 模式核心循环](../svg/chapter_setup_04_react_loop.svg)
 
 这个循环会一直持续，直到 LLM 认为可以给出最终答案。
 

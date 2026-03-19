@@ -1,0 +1,557 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>3.2 上下文窗口管理与注意力预算 - 从零开始学 Agent</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- mdbook-katex 插件已处理数学公式渲染，无需额外注入 -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">从零开始学 Agent</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="上下文窗口管理与注意力预算"><a class="header" href="#上下文窗口管理与注意力预算">上下文窗口管理与注意力预算</a></h1>
+<blockquote>
+<p>📖 <em>"上下文窗口就像一张办公桌——桌面大小固定，你能同时摊开的文件数量有限。关键不是桌子有多大，而是你选择摊开哪些文件。"</em></p>
+</blockquote>
+<h2 id="理解上下文窗口"><a class="header" href="#理解上下文窗口">理解上下文窗口</a></h2>
+<h3 id="什么是上下文窗口"><a class="header" href="#什么是上下文窗口">什么是上下文窗口？</a></h3>
+<p>上下文窗口（Context Window）是 LLM 在一次推理中能够"看到"的<strong>最大信息量</strong>，以 token 数量衡量。不同模型的窗口大小差异显著：</p>
+<div class="table-wrapper"><table><thead><tr><th>模型</th><th>上下文窗口</th><th>约等于</th><th>典型场景</th></tr></thead><tbody>
+<tr><td>GPT-3.5</td><td>16K tokens</td><td>~12,000 汉字</td><td>简单对话</td></tr>
+<tr><td>GPT-4o</td><td>128K tokens</td><td>~96,000 汉字</td><td>复杂 Agent 任务</td></tr>
+<tr><td>Claude 3.5 Sonnet</td><td>200K tokens</td><td>~150,000 汉字</td><td>长文档分析</td></tr>
+<tr><td>Gemini 1.5 Pro</td><td>1M tokens</td><td>~750,000 汉字</td><td>超长上下文</td></tr>
+</tbody></table>
+</div>
+<pre><code class="language-python"># 上下文窗口的基本约束
+def check_context_budget(
+    system_prompt_tokens: int,
+    conversation_tokens: int,
+    tool_result_tokens: int,
+    retrieved_docs_tokens: int,
+    max_output_tokens: int,
+    model_context_window: int = 128000,
+) -&gt; dict:
+    """
+    检查上下文预算
+    注意：输出 tokens 也要占用上下文窗口！
+    """
+    total_input = (
+        system_prompt_tokens 
+        + conversation_tokens 
+        + tool_result_tokens 
+        + retrieved_docs_tokens
+    )
+    
+    available_for_output = model_context_window - total_input
+    
+    return {
+        "total_input_tokens": total_input,
+        "available_for_output": available_for_output,
+        "is_within_budget": available_for_output &gt;= max_output_tokens,
+        "utilization": total_input / model_context_window * 100,
+    }
+
+# 典型 Agent 场景
+budget = check_context_budget(
+    system_prompt_tokens=800,
+    conversation_tokens=15000,   # 15 轮对话
+    tool_result_tokens=20000,    # 多次工具调用结果
+    retrieved_docs_tokens=5000,  # RAG 检索结果
+    max_output_tokens=4096,
+    model_context_window=128000,
+)
+print(f"输入占用: {budget['total_input_tokens']} tokens")
+print(f"利用率: {budget['utilization']:.1f}%")
+print(f"剩余输出空间: {budget['available_for_output']} tokens")
+</code></pre>
+<h2 id="上下文腐蚀context-corruption"><a class="header" href="#上下文腐蚀context-corruption">上下文腐蚀（Context Corruption）</a></h2>
+<h3 id="什么是上下文腐蚀"><a class="header" href="#什么是上下文腐蚀">什么是上下文腐蚀？</a></h3>
+<p><strong>上下文腐蚀</strong>是指随着 Agent 执行任务的推进，上下文中逐渐积累了大量低质量、冗余或过时的信息，导致 LLM 的推理质量持续下降的现象 [1]。</p>
+<p>这就像一间不断堆积杂物的房间——最终你在里面什么都找不到了。</p>
+<pre><code class="language-python"># 上下文腐蚀的典型场景
+
+def demonstrate_context_corruption():
+    """演示上下文腐蚀是如何发生的"""
+    
+    context_tokens = 0
+    useful_ratio = 1.0  # 有用信息占比
+    
+    # 模拟 Agent 执行 30 轮交互
+    for turn in range(1, 31):
+        # 每轮新增内容
+        new_user_msg = 100       # 用户消息
+        new_thought = 200        # Agent 思考过程
+        new_tool_call = 50       # 工具调用请求
+        new_tool_result = 500    # 工具返回结果（往往很冗长）
+        new_assistant_msg = 300  # Agent 回复
+        
+        turn_tokens = (new_user_msg + new_thought + 
+                       new_tool_call + new_tool_result + 
+                       new_assistant_msg)
+        context_tokens += turn_tokens
+        
+        # 随着轮次增加，早期信息的相关性递减
+        useful_ratio *= 0.95  # 每轮有效信息比例下降 5%
+        
+        if turn % 10 == 0:
+            print(f"第 {turn} 轮:")
+            print(f"  上下文大小: {context_tokens:,} tokens")
+            print(f"  有效信息占比: {useful_ratio:.1%}")
+            print(f"  噪音信息: {context_tokens * (1 - useful_ratio):,.0f} tokens")
+    
+    # 第10轮: ~11,500 tokens, 有效 60%
+    # 第20轮: ~23,000 tokens, 有效 36%
+    # 第30轮: ~34,500 tokens, 有效 21% ← 大量噪音！
+
+demonstrate_context_corruption()
+</code></pre>
+<h3 id="上下文腐蚀的三种表现"><a class="header" href="#上下文腐蚀的三种表现">上下文腐蚀的三种表现</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>症状</th><th>表现</th><th>原因</th></tr></thead><tbody>
+<tr><td><strong>遗忘</strong></td><td>Agent 忘记了之前讨论过的关键信息</td><td>重要信息被大量新信息"冲刷"到注意力盲区</td></tr>
+<tr><td><strong>重复</strong></td><td>Agent 重复执行已经完成的步骤</td><td>任务状态在上下文中不够突出</td></tr>
+<tr><td><strong>偏题</strong></td><td>Agent 的行为偏离了原始目标</td><td>早期的任务目标被后续信息淹没</td></tr>
+</tbody></table>
+</div>
+<h2 id="注意力预算"><a class="header" href="#注意力预算">注意力预算</a></h2>
+<h3 id="什么是注意力预算"><a class="header" href="#什么是注意力预算">什么是注意力预算？</a></h3>
+<p>虽然现代 LLM 的上下文窗口越来越大（128K、200K 甚至 1M tokens），但研究表明，<strong>LLM 对上下文中不同位置信息的注意力并不均匀</strong> [2]。</p>
+<p>这就是所谓的 <strong>Lost in the Middle</strong> 效应：LLM 更关注上下文的<strong>开头</strong>和<strong>结尾</strong>，中间部分的信息容易被忽略。</p>
+<pre><code class="language-python"># 注意力分布示意（简化）
+
+def attention_distribution(context_length: int) -&gt; list[float]:
+    """
+    模拟 LLM 对不同位置的注意力分布
+    U 形曲线：开头和结尾注意力高，中间低
+    """
+    import math
+    
+    attentions = []
+    for i in range(context_length):
+        # 归一化位置 [0, 1]
+        pos = i / context_length
+        
+        # U 形注意力曲线
+        # 开头区域（前 10%）：高注意力
+        # 中间区域（10%-90%）：低注意力
+        # 结尾区域（后 10%）：最高注意力
+        if pos &lt; 0.1:
+            attention = 0.8 + 0.2 * (1 - pos / 0.1)
+        elif pos &gt; 0.9:
+            attention = 0.8 + 0.2 * ((pos - 0.9) / 0.1)
+        else:
+            attention = 0.3 + 0.2 * math.sin(math.pi * pos)
+        
+        attentions.append(attention)
+    
+    return attentions
+
+# 实际启示：
+# ① System Prompt 放在最前面 → 注意力最稳定
+# ② 最新的用户消息和工具结果放在最后 → 注意力最强
+# ③ 中间的历史对话 → 最容易被忽略 → 需要精心管理
+</code></pre>
+<h3 id="注意力预算分配策略"><a class="header" href="#注意力预算分配策略">注意力预算分配策略</a></h3>
+<p>基于 "Lost in the Middle" 效应，我们可以制定以下注意力预算分配策略：</p>
+<pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass
+class AttentionBudget:
+    """注意力预算分配"""
+    
+    total_tokens: int = 128000
+    
+    # 预算分配（根据注意力优先级）
+    system_prompt_budget: float = 0.01     # 1% → 系统指令（开头，高注意力）
+    task_context_budget: float = 0.05      # 5% → 当前任务上下文（开头区域）
+    output_reserve: float = 0.05           # 5% → 预留给输出
+    recent_context_budget: float = 0.20    # 20% → 最近几轮对话（结尾，高注意力）
+    tool_results_budget: float = 0.30      # 30% → 工具调用结果
+    history_budget: float = 0.25           # 25% → 历史对话（中间，低注意力 → 需压缩）
+    knowledge_budget: float = 0.14         # 14% → 检索知识
+    
+    def get_token_allocation(self) -&gt; dict:
+        """计算各部分的 token 配额"""
+        return {
+            "system_prompt": int(self.total_tokens * self.system_prompt_budget),
+            "task_context": int(self.total_tokens * self.task_context_budget),
+            "output_reserve": int(self.total_tokens * self.output_reserve),
+            "recent_context": int(self.total_tokens * self.recent_context_budget),
+            "tool_results": int(self.total_tokens * self.tool_results_budget),
+            "history": int(self.total_tokens * self.history_budget),
+            "knowledge": int(self.total_tokens * self.knowledge_budget),
+        }
+
+budget = AttentionBudget()
+allocation = budget.get_token_allocation()
+for name, tokens in allocation.items():
+    print(f"  {name}: {tokens:,} tokens")
+</code></pre>
+<h2 id="上下文管理的核心技术"><a class="header" href="#上下文管理的核心技术">上下文管理的核心技术</a></h2>
+<h3 id="技术1滑动窗口sliding-window"><a class="header" href="#技术1滑动窗口sliding-window">技术1：滑动窗口（Sliding Window）</a></h3>
+<p>最简单的策略——只保留最近 N 轮对话：</p>
+<pre><code class="language-python">def sliding_window(messages: list[dict], max_turns: int = 10) -&gt; list[dict]:
+    """
+    滑动窗口：只保留最近 N 轮对话
+    
+    优点：简单高效
+    缺点：丢失早期重要信息
+    """
+    # 始终保留 system message
+    system_msgs = [m for m in messages if m["role"] == "system"]
+    other_msgs = [m for m in messages if m["role"] != "system"]
+    
+    # 只保留最近 N 轮（每轮 = user + assistant）
+    recent_msgs = other_msgs[-(max_turns * 2):]
+    
+    return system_msgs + recent_msgs
+</code></pre>
+<h3 id="技术2摘要压缩summary-compression"><a class="header" href="#技术2摘要压缩summary-compression">技术2：摘要压缩（Summary Compression）</a></h3>
+<p>定期将历史对话压缩为摘要：</p>
+<pre><code class="language-python">from openai import OpenAI
+
+client = OpenAI()
+
+def compress_history(
+    messages: list[dict], 
+    keep_recent: int = 5
+) -&gt; list[dict]:
+    """
+    对话历史压缩：将老的对话总结为摘要
+    
+    优点：保留关键信息，大幅减少 token
+    缺点：会丢失细节
+    """
+    if len(messages) &lt;= keep_recent * 2:
+        return messages  # 不需要压缩
+    
+    # 分离出需要压缩的老消息和需要保留的新消息
+    old_messages = messages[:-(keep_recent * 2)]
+    recent_messages = messages[-(keep_recent * 2):]
+    
+    # 用 LLM 生成摘要
+    summary_prompt = f"""请将以下对话历史压缩为一段简洁的摘要，保留：
+1. 用户的核心需求和目标
+2. 已经完成的关键步骤
+3. 重要的中间结果和数据
+4. 尚未解决的问题
+
+对话历史：
+{format_messages(old_messages)}
+"""
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # 用小模型做摘要
+        messages=[{"role": "user", "content": summary_prompt}],
+        max_tokens=500,
+    )
+    
+    summary = response.choices[0].message.content
+    
+    # 将摘要作为系统消息插入
+    summary_message = {
+        "role": "system",
+        "content": f"[对话历史摘要] {summary}"
+    }
+    
+    return [summary_message] + recent_messages
+</code></pre>
+<h3 id="技术3语义过滤semantic-filtering"><a class="header" href="#技术3语义过滤semantic-filtering">技术3：语义过滤（Semantic Filtering）</a></h3>
+<p>根据与当前任务的语义相关性来筛选上下文内容：</p>
+<pre><code class="language-python">import numpy as np
+
+def semantic_filter(
+    messages: list[dict],
+    current_query: str,
+    embedding_model,
+    top_k: int = 10,
+    always_keep_last: int = 3,
+) -&gt; list[dict]:
+    """
+    语义过滤：根据相关性选择保留的历史消息
+    
+    优点：保留最相关的信息
+    缺点：需要额外的 embedding 计算
+    """
+    # 对当前查询进行 embedding
+    query_embedding = embedding_model.encode(current_query)
+    
+    # 计算每条历史消息与当前查询的相似度
+    scored_messages = []
+    for i, msg in enumerate(messages):
+        msg_embedding = embedding_model.encode(msg["content"])
+        similarity = np.dot(query_embedding, msg_embedding)
+        scored_messages.append((i, similarity, msg))
+    
+    # 按相似度排序，选择 top_k
+    scored_messages.sort(key=lambda x: x[1], reverse=True)
+    selected_indices = set()
+    
+    # 始终保留最后几条消息
+    for i in range(max(0, len(messages) - always_keep_last), len(messages)):
+        selected_indices.add(i)
+    
+    # 添加语义最相关的消息
+    for idx, score, msg in scored_messages[:top_k]:
+        selected_indices.add(idx)
+    
+    # 按原始顺序返回
+    result = [messages[i] for i in sorted(selected_indices)]
+    return result
+</code></pre>
+<h2 id="本节小结"><a class="header" href="#本节小结">本节小结</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>概念</th><th>说明</th></tr></thead><tbody>
+<tr><td><strong>上下文窗口</strong></td><td>LLM 单次推理能看到的最大信息量</td></tr>
+<tr><td><strong>上下文腐蚀</strong></td><td>低质量信息积累导致推理质量下降</td></tr>
+<tr><td><strong>Lost in the Middle</strong></td><td>LLM 对中间位置信息的注意力较弱</td></tr>
+<tr><td><strong>注意力预算</strong></td><td>按信息优先级分配上下文空间</td></tr>
+<tr><td><strong>管理技术</strong></td><td>滑动窗口、摘要压缩、语义过滤</td></tr>
+</tbody></table>
+</div>
+<h2 id="-思考练习"><a class="header" href="#-思考练习">🤔 思考练习</a></h2>
+<ol>
+<li>如果你的 Agent 需要处理一个跨越 100 轮对话的任务，你会如何管理上下文？</li>
+<li>"Lost in the Middle" 效应对你设计 Agent 的 prompt 结构有什么启示？</li>
+<li>摘要压缩和语义过滤各适合什么场景？能否结合使用？</li>
+</ol>
+<hr />
+<h2 id="参考文献"><a class="header" href="#参考文献">参考文献</a></h2>
+<p>[1] ANTHROPIC. Building effective agents[EB/OL]. 2024. https://www.anthropic.com/engineering/building-effective-agents.</p>
+<p>[2] LIU N F, LIN K, HEWITT J, et al. Lost in the middle: How language models use long contexts[J]. Transactions of the ACL, 2024, 12: 157-173.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chapter_context_engineering/01_context_vs_prompt.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../chapter_context_engineering/03_long_horizon.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chapter_context_engineering/01_context_vs_prompt.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../chapter_context_engineering/03_long_horizon.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

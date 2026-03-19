@@ -2,6 +2,8 @@
 
 掌握了基础的 Prompt Engineering 之后，我们来学习几种经过研究验证的提示策略。这些策略在面对复杂任务时，能显著提升 LLM 的表现。
 
+> 📄 **学术背景**：Few-shot 学习由 Brown 等人在 GPT-3 论文中系统化研究 [1]，证明了大模型仅通过几个示例就能适应新任务。Chain-of-Thought（思维链）由 Wei 等人提出 [2]，通过在 prompt 中加入"让我们一步步思考"就能大幅提升 LLM 的推理能力——在 GSM8K 数学推理基准上，CoT 将 PaLM 540B 的准确率从 17.9% 提升到 58.1%。
+
 ## Zero-shot：直接提问
 
 **Zero-shot（零样本）** 是最简单的策略：直接告诉模型任务是什么，不提供任何示例。
@@ -422,6 +424,20 @@ for strategy, data in results.items():
 > 💡 **前沿进展**：2024-2025 年以来，推理模型成为 LLM 发展的核心方向。OpenAI 的 o1/o3/o4-mini 系列模型、Anthropic 的 Claude 4 Extended Thinking、DeepSeek-R2 等模型将 CoT 推理"内化"到了模型本身（而非依赖提示词），在数学、编程竞赛和科学推理中展现了惊人的能力。Google 的 Gemini 2.5 Pro 也引入了"Thinking Mode"。这表明 CoT 已从一种"提示技巧"演变为模型训练的核心范式——未来的 LLM 将越来越"会想"。对于 Agent 开发者而言，推理模型让 Agent 在复杂多步任务中的规划能力大幅提升。
 
 > 📖 **更多论文解读**：ReAct 的深度解读请见 [6.6 论文解读：规划与推理前沿研究](../chapter_planning/06_paper_readings.md)，Self-Consistency 在幻觉缓解中的应用请见 [14.6 论文解读：安全与可靠性前沿研究](../chapter_security/06_paper_readings.md)。
+
+---
+
+## 参考文献
+
+[1] BROWN T B, MANN B, RYDER N, et al. Language models are few-shot learners[C]//NeurIPS. 2020.
+
+[2] WEI J, WANG X, SCHUURMANS D, et al. Chain-of-thought prompting elicits reasoning in large language models[C]//NeurIPS. 2022.
+
+[3] KOJIMA T, GU S, REID M, et al. Large language models are zero-shot reasoners[C]//NeurIPS. 2022.
+
+[4] WANG X, WEI J, SCHUURMANS D, et al. Self-consistency improves chain of thought reasoning in language models[C]//ICLR. 2023.
+
+[5] YAO S, YU D, ZHAO J, et al. Tree of thoughts: Deliberate problem solving with large language models[C]//NeurIPS. 2023.
 
 ---
 

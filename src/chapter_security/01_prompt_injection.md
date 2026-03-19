@@ -2,6 +2,8 @@
 
 > **本节目标**：理解 Prompt 注入的原理和常见手法，掌握有效的防御策略。
 
+> 📄 **安全框架**：OWASP（开放 Web 应用安全项目）在 2025 年更新了 **LLM Top 10** 安全风险清单 [1]，其中 **Prompt Injection（提示注入）位列第一**，被评为 LLM 应用面临的最严重安全威胁。此外，IEEE S&P 2025 上发表的 **SecAlign** [2] 提出了一种通过对齐训练来增强模型抗注入能力的方法，在不显著降低正常任务性能的前提下将注入成功率降低了 70% 以上。
+
 ---
 
 ## 什么是 Prompt 注入？
@@ -239,4 +241,14 @@ Prompt 注入的特征包括：
 
 ---
 
-[下一节：14.2 幻觉问题与事实性保障 →](./02_hallucination.md)
+[下一节：16.2 幻觉问题与事实性保障 →](./02_hallucination.md)
+
+---
+
+## 参考文献
+
+[1] OWASP. OWASP Top 10 for LLM Applications 2025[EB/OL]. 2025. https://owasp.org/www-project-top-10-for-large-language-model-applications/.
+
+[2] WU Y, DUAN J, HE Z, et al. SecAlign: Defending against prompt injection with preference optimization[C]//IEEE S&P. 2025.
+
+[3] GRESHAKE K, ABDELNABI S, MISHRA S, et al. Not what you've signed up for: Compromising real-world LLM-integrated applications with indirect prompt injection[C]//AISec. 2023.

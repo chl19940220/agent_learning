@@ -253,21 +253,7 @@ print(result)
 
 A2A 定义了清晰的任务状态流转：
 
-```
-A2A 任务状态流转：
-
-  submitted → working → completed
-                ↓          ↑
-          input-required ──┘  （需要用户补充信息时）
-                ↓
-             failed
-             canceled
-
-关键设计：
-- "input-required"：Agent 可以主动向调用方请求更多信息
-- "working"：支持长时间运行的任务，通过流式更新进度
-- 每个状态转换都有时间戳和元数据
-```
+![A2A 任务状态机](../svg/chapter_protocol_02_a2a_state_machine.svg)
 
 ## 流式模式：`/tasks/sendSubscribe`
 
@@ -452,4 +438,4 @@ A2A 协议的价值：
 
 ---
 
-*下一节：[12.3 Agent 间的消息传递与状态共享](./03_message_passing.md)*
+*下一节：[14.3 ANP（Agent Network Protocol）协议](./03_anp_protocol.md)*

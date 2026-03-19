@@ -293,7 +293,7 @@ evaluator.add_rule(
 
 ### 方法 2：LLM-as-Judge（用 LLM 评估 LLM）
 
-用一个强大的 LLM 来评判另一个 LLM 的输出——这是目前最流行的方法：
+用一个强大的 LLM 来评判另一个 LLM 的输出——这是目前最流行的方法 [1]。Zheng 等人在 2023 年的研究表明，GPT-4 作为 Judge 的评判结果与人类专家的一致率超过 80%，远高于其他自动评估方法。但需注意 LLM Judge 存在位置偏差、冗长偏差等已知问题 [1]：
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -423,4 +423,10 @@ def create_eval_batch(
 
 ---
 
-[下一节：13.2 基准测试与评估指标 →](./02_benchmarks.md)
+## 参考文献
+
+[1] ZHENG L, CHIANG W L, SHENG Y, et al. Judging LLM-as-a-judge with MT-bench and chatbot arena[C]//NeurIPS. 2023.
+
+---
+
+[下一节：基准测试与评估指标 →](./02_benchmarks.md)

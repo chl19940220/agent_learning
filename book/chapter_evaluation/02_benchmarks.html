@@ -3,29 +3,31 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>14.2 基准测试与评估指标 - 从零开始学 Agent 开发 —— 基于 Python 的实战指南</title>
+        <title>15.2 基准测试与评估指标 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
+        <!-- mdbook-katex 插件已处理数学公式渲染，无需额外注入 -->
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
-        <link rel="stylesheet" href="../css/variables-8adf115d.css">
-        <link rel="stylesheet" href="../css/general-2459343d.css">
-        <link rel="stylesheet" href="../css/chrome-ae938929.css">
-        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
@@ -38,7 +40,7 @@
             window.path_to_searchindex_js = "../searchindex-90186aa4.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-935f2e24.js"></script>
+        <script src="../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -52,7 +54,7 @@
             </div>
         </div>
     </div>
-    <div id="mdbook-body-container">
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
@@ -81,12 +83,12 @@
             html.classList.add("js");
         </script>
 
-        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             let sidebar = null;
-            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
@@ -101,131 +103,677 @@
             }
         </script>
 
-        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
                 <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
-            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
             </div>
         </nav>
 
-        <div id="mdbook-page-wrapper" class="page-wrapper">
+        <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="mdbook-menu-bar-hover-placeholder"></div>
-                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
-                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
                         </label>
-                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
-                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
                         </button>
-                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
-                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
                         </button>
                     </div>
 
-                    <h1 class="menu-title">从零开始学 Agent 开发 —— 基于 Python 的实战指南</h1>
+                    <h1 class="menu-title">从零开始学 Agent</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
-                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                            <i id="print-button" class="fa fa-print"></i>
                         </a>
 
                     </div>
                 </div>
 
-                <div id="mdbook-search-wrapper" class="hidden">
-                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
                         <div class="search-wrapper">
-                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                             <div class="spinner-wrapper">
-                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                                <i class="fa fa-spinner fa-spin"></i>
                             </div>
                         </div>
                     </form>
-                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
-                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
-                        <ul id="mdbook-searchresults">
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
                         </ul>
                     </div>
                 </div>
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script>
-                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
                         link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
                     });
                 </script>
 
-                <div id="mdbook-content" class="content">
+                <div id="content" class="content">
                     <main>
-                        <h1 id="基准测试与评估指标"><a class="header" href="#基准测试与评估指标">基准测试与评估指标</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="基准测试与评估指标"><a class="header" href="#基准测试与评估指标">基准测试与评估指标</a></h1>
 <blockquote>
-<p><strong>本节目标</strong>：了解业界常用的 Agent 基准测试，掌握定量评估指标的设计与使用。</p>
+<p><strong>本节目标</strong>：深入理解业界主流的 Agent 基准测试及其评估原理，掌握 BFCL、GAIA、AgentBench、WebArena、SWE-bench 等基准的底层算法，并学会设计自己的评估体系。</p>
 </blockquote>
-<hr>
+<hr />
 <h2 id="为什么需要基准测试"><a class="header" href="#为什么需要基准测试">为什么需要基准测试？</a></h2>
-<p>想象你在面试两个候选人，如果不给同样的题目，怎么比较谁更优秀？基准测试就是给 Agent 出的“标准考题“——用统一的任务、数据和评分标准来衡量不同 Agent 的表现。</p>
-<hr>
-<h2 id="常见的-agent-基准测试"><a class="header" href="#常见的-agent-基准测试">常见的 Agent 基准测试</a></h2>
-<h3 id="1-humaneval--代码生成能力"><a class="header" href="#1-humaneval--代码生成能力">1. HumanEval —— 代码生成能力</a></h3>
-<p>由 OpenAI 发布，包含 164 道 Python 编程题，每道题都有单元测试来验证正确性。</p>
-<pre><code class="language-python"># HumanEval 评估示例
-def evaluate_humaneval(agent_func, problems: list[dict]) -&gt; dict:
-    """在 HumanEval 数据集上评估 Agent"""
-    
-    results = {"pass": 0, "fail": 0, "error": 0}
-    
-    for problem in problems:
-        prompt = problem["prompt"]
-        test_cases = problem["test"]
-        
-        try:
-            # Agent 生成代码
-            generated_code = agent_func(prompt)
-            
-            # 运行测试用例
-            exec_globals = {}
-            exec(generated_code + "\n" + test_cases, exec_globals)
-            results["pass"] += 1
-        except AssertionError:
-            results["fail"] += 1
-        except Exception:
-            results["error"] += 1
-    
-    total = len(problems)
-    results["pass@1"] = results["pass"] / total
-    return results
+<p>想象你在面试两个候选人，如果不给同样的题目，怎么比较谁更优秀？基准测试就是给 Agent 出的"标准考题"——用统一的任务、数据和评分标准来衡量不同 Agent 的表现。</p>
+<p>但不同的基准测试评估的能力维度截然不同。下面这张"评估全景图"帮你快速定位：</p>
+<p><img src="../svg/chapter_evaluation_02_benchmarks_map.svg" alt="Agent 评估基准全景图" /></p>
+<hr />
+<h2 id="agent-评估基准分类"><a class="header" href="#agent-评估基准分类">Agent 评估基准分类</a></h2>
+<p>Agent 评估基准可按能力维度分为以下几类 [1]：</p>
+<div class="table-wrapper"><table><thead><tr><th>类别</th><th>代表基准</th><th>评估能力</th></tr></thead><tbody>
+<tr><td><strong>工具调用</strong></td><td>BFCL, ToolBench, API-Bank</td><td>正确调用 API、处理参数、组合工具</td></tr>
+<tr><td><strong>通用推理</strong></td><td>GAIA, MMLU, GSM8K</td><td>多步推理、知识广度、数学能力</td></tr>
+<tr><td><strong>综合 Agent</strong></td><td>AgentBench</td><td>8 个领域的端到端任务完成</td></tr>
+<tr><td><strong>Web 操作</strong></td><td>WebArena, Mind2Web</td><td>在真实网站上完成指定任务</td></tr>
+<tr><td><strong>软件工程</strong></td><td>SWE-bench, HumanEval</td><td>代码生成、Bug 修复、项目级改动</td></tr>
+<tr><td><strong>多模态</strong></td><td>VisualWebArena, OSWorld</td><td>视觉理解 + 操作执行</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="1-bfcl--工具调用评估基准"><a class="header" href="#1-bfcl--工具调用评估基准">1. BFCL —— 工具调用评估基准</a></h2>
+<h3 id="概述"><a class="header" href="#概述">概述</a></h3>
+<p><strong>BFCL（Berkeley Function Calling Leaderboard）</strong>[2] 是由 UC Berkeley 发布的工具调用评估基准，它系统地评估 LLM 调用函数/API 的能力。这是目前最权威的工具调用基准测试之一。</p>
+<h3 id="四类测试场景"><a class="header" href="#四类测试场景">四类测试场景</a></h3>
+<p>BFCL 将工具调用分为四种递进的难度级别：</p>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>说明</th><th>示例</th></tr></thead><tbody>
+<tr><td><strong>Simple</strong></td><td>单函数、参数完整</td><td><code>get_weather(city="北京")</code></td></tr>
+<tr><td><strong>Multiple</strong></td><td>从多个候选函数中选择正确的</td><td>给定 10 个函数，选择并正确调用其中 1 个</td></tr>
+<tr><td><strong>Parallel</strong></td><td>一次调用多个函数</td><td>同时查天气和订机票</td></tr>
+<tr><td><strong>Irrelevance</strong></td><td>识别无关请求，拒绝调用</td><td>用户问"你好"时不应调用任何工具</td></tr>
+</tbody></table>
+</div>
+<h3 id="ast-匹配算法为什么字符串匹配不够"><a class="header" href="#ast-匹配算法为什么字符串匹配不够">AST 匹配算法：为什么字符串匹配不够？</a></h3>
+<p>BFCL 的核心创新在于使用 <strong>AST（Abstract Syntax Tree）匹配</strong> 而非简单的字符串匹配来评估工具调用的正确性。</p>
+<p><strong>字符串匹配的问题</strong>：</p>
+<pre><code class="language-python"># 这两个调用语义完全相同，但字符串匹配会判定为"不相等"
+ground_truth = 'get_weather(city="Beijing", unit="celsius")'
+prediction   = 'get_weather(unit="celsius", city="Beijing")'
+# 字符串匹配: "Beijing", unit="celsius"' ≠ 'unit="celsius", city="Beijing"'
+# 结果: ❌ 误判为错误！
 </code></pre>
+<p><strong>AST 匹配的原理</strong>：</p>
+<pre><code class="language-python">import ast
+from typing import Any
+
+def ast_match(prediction: str, ground_truth: str) -&gt; bool:
+    """
+    BFCL 的 AST 匹配算法（简化版）
+    
+    核心思想：将函数调用解析为 AST 节点，
+    比较函数名和参数集合（忽略参数顺序）
+    """
+    try:
+        # 解析为 AST
+        pred_ast = ast.parse(prediction, mode='eval').body
+        true_ast = ast.parse(ground_truth, mode='eval').body
+        
+        # 检查是否都是函数调用
+        if not (isinstance(pred_ast, ast.Call) and isinstance(true_ast, ast.Call)):
+            return False
+        
+        # 比较函数名
+        pred_func = ast.dump(pred_ast.func)
+        true_func = ast.dump(true_ast.func)
+        if pred_func != true_func:
+            return False
+        
+        # 比较关键字参数（忽略顺序）
+        pred_kwargs = {
+            kw.arg: ast.literal_eval(kw.value)
+            for kw in pred_ast.keywords
+        }
+        true_kwargs = {
+            kw.arg: ast.literal_eval(kw.value) 
+            for kw in true_ast.keywords
+        }
+        
+        if pred_kwargs != true_kwargs:
+            return False
+        
+        # 比较位置参数
+        pred_args = [ast.literal_eval(a) for a in pred_ast.args]
+        true_args = [ast.literal_eval(a) for a in true_ast.args]
+        
+        return pred_args == true_args
+        
+    except (SyntaxError, ValueError):
+        return False
+
+
+# 测试
+print(ast_match(
+    'get_weather(city="Beijing", unit="celsius")',
+    'get_weather(unit="celsius", city="Beijing")'
+))
+# ✅ True —— AST 匹配正确识别了参数顺序无关性
+
+print(ast_match(
+    'get_weather(city="Beijing")',
+    'get_weather(city="Shanghai")'
+))
+# ❌ False —— 参数值不同
+</code></pre>
+<h3 id="类型感知匹配"><a class="header" href="#类型感知匹配">类型感知匹配</a></h3>
+<p>BFCL 还处理了<strong>类型等价</strong>的问题：</p>
+<pre><code class="language-python">def type_aware_match(pred_value: Any, true_value: Any) -&gt; bool:
+    """
+    类型感知的参数值匹配
+    
+    处理常见的类型等价场景：
+    - 整数 1 和浮点数 1.0
+    - 字符串 "true" 和布尔值 True
+    - 单元素列表 ["a"] 和字符串 "a"
+    """
+    # 直接相等
+    if pred_value == true_value:
+        return True
+    
+    # 数值类型等价：1 == 1.0
+    if isinstance(pred_value, (int, float)) and isinstance(true_value, (int, float)):
+        return abs(float(pred_value) - float(true_value)) &lt; 1e-6
+    
+    # 字符串 vs 布尔值："true" == True
+    if isinstance(pred_value, str) and isinstance(true_value, bool):
+        return pred_value.lower() == str(true_value).lower()
+    
+    # 列表 vs 集合：忽略顺序
+    if isinstance(pred_value, list) and isinstance(true_value, list):
+        return sorted(str(x) for x in pred_value) == sorted(str(x) for x in true_value)
+    
+    return False
+</code></pre>
+<hr />
+<h2 id="2-gaia--通用-ai-助手评估"><a class="header" href="#2-gaia--通用-ai-助手评估">2. GAIA —— 通用 AI 助手评估</a></h2>
+<h3 id="概述-1"><a class="header" href="#概述-1">概述</a></h3>
+<p><strong>GAIA（General AI Assistant Benchmark）</strong>[3] 由 Meta 发布，旨在评估 AI 助手处理现实世界任务的能力。它的独特之处在于：</p>
+<ul>
+<li><strong>对人类简单，对 AI 困难</strong>：题目设计为人类可以轻松解答（通过搜索和推理），但 AI 需要组合多种能力才能完成</li>
+<li><strong>答案简短明确</strong>：每个问题都有一个简短的标准答案（通常是一个词或一个数字），避免了开放式评估的主观性</li>
+<li><strong>三级难度体系</strong>：从简单到复杂，全面评估不同能力层次</li>
+</ul>
+<h3 id="三级难度"><a class="header" href="#三级难度">三级难度</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>级别</th><th>所需能力</th><th>示例</th></tr></thead><tbody>
+<tr><td><strong>Level 1</strong></td><td>1-2 个步骤，基础推理</td><td>"法国的首都是什么？"</td></tr>
+<tr><td><strong>Level 2</strong></td><td>3-5 个步骤，需要工具</td><td>"2024 年诺贝尔物理学奖得主的出生城市人口是多少？"</td></tr>
+<tr><td><strong>Level 3</strong></td><td>5+ 个步骤，多工具+推理</td><td>"找到某个 PDF 中第 3 页表格第 2 行数据，计算其与 CPI 的比率"</td></tr>
+</tbody></table>
+</div>
+<h3 id="准精确匹配算法quasi-exact-match"><a class="header" href="#准精确匹配算法quasi-exact-match">准精确匹配算法（Quasi-Exact Match）</a></h3>
+<p>GAIA 的评估采用<strong>准精确匹配</strong>算法——比严格的字符串匹配更宽松，但保持客观性：</p>
+<pre><code class="language-python">import re
+import unicodedata
+
+def quasi_exact_match(prediction: str, ground_truth: str) -&gt; bool:
+    """
+    GAIA 的准精确匹配算法
+    
+    核心思想：对预测值和标准答案进行归一化处理后精确比较，
+    容忍大小写、标点、空白等无意义差异
+    """
+    
+    def normalize(text: str) -&gt; str:
+        """归一化处理"""
+        # 转小写
+        text = text.lower().strip()
+        
+        # Unicode 归一化（处理全角/半角、重音符号等）
+        text = unicodedata.normalize("NFKD", text)
+        
+        # 去除标点符号（但保留小数点和负号）
+        text = re.sub(r'[^\w\s\.\-]', '', text)
+        
+        # 合并多余空白
+        text = re.sub(r'\s+', ' ', text)
+        
+        # 去除冠词（英文）
+        text = re.sub(r'\b(a|an|the)\b', '', text)
+        text = re.sub(r'\s+', ' ', text).strip()
+        
+        return text
+    
+    def normalize_number(text: str) -&gt; str | None:
+        """尝试将文本解析为标准数值格式"""
+        try:
+            # 移除千位分隔符
+            cleaned = text.replace(",", "").replace(" ", "")
+            num = float(cleaned)
+            # 如果是整数，返回整数格式
+            if num == int(num):
+                return str(int(num))
+            return f"{num:.6f}".rstrip('0').rstrip('.')
+        except ValueError:
+            return None
+    
+    # 标准化比较
+    norm_pred = normalize(prediction)
+    norm_truth = normalize(ground_truth)
+    
+    if norm_pred == norm_truth:
+        return True
+    
+    # 数值比较
+    num_pred = normalize_number(prediction)
+    num_truth = normalize_number(ground_truth)
+    
+    if num_pred is not None and num_truth is not None:
+        return num_pred == num_truth
+    
+    # 包含关系（答案可能在更长的回复中）
+    if norm_truth in norm_pred:
+        # 确保是完整匹配，不是子串
+        pattern = r'\b' + re.escape(norm_truth) + r'\b'
+        if re.search(pattern, norm_pred):
+            return True
+    
+    return False
+
+
+# 测试
+print(quasi_exact_match("Paris", "paris"))       # True: 大小写
+print(quasi_exact_match("42,000", "42000"))       # True: 千位分隔符
+print(quasi_exact_match("The answer is Paris.", "Paris"))  # True: 包含
+print(quasi_exact_match("3.14", "3.14000"))       # True: 小数精度
+print(quasi_exact_match("Beijing", "Shanghai"))    # False: 不同答案
+</code></pre>
+<h3 id="gaia-的多模态数据处理"><a class="header" href="#gaia-的多模态数据处理">GAIA 的多模态数据处理</a></h3>
+<p>GAIA 的一个独特挑战是<strong>任务可能包含附件</strong>——PDF 文件、Excel 表格、图片等。Agent 需要：</p>
+<ol>
+<li>识别附件类型</li>
+<li>用合适的工具读取内容</li>
+<li>从内容中提取关键信息</li>
+<li>结合信息完成推理</li>
+</ol>
+<hr />
+<h2 id="3-agentbench--综合-agent-评估"><a class="header" href="#3-agentbench--综合-agent-评估">3. AgentBench —— 综合 Agent 评估</a></h2>
+<h3 id="概述-2"><a class="header" href="#概述-2">概述</a></h3>
+<p><strong>AgentBench</strong> [4] 是清华大学发布的综合性 Agent 基准测试，涵盖 <strong>8 个不同领域</strong>的任务，全面评估 Agent 在多种环境中的表现：</p>
+<div class="table-wrapper"><table><thead><tr><th>领域</th><th>任务类型</th><th>评估重点</th></tr></thead><tbody>
+<tr><td><strong>OS</strong></td><td>操作系统命令执行</td><td>文件操作、进程管理</td></tr>
+<tr><td><strong>DB</strong></td><td>数据库查询</td><td>SQL 生成、数据分析</td></tr>
+<tr><td><strong>KG</strong></td><td>知识图谱推理</td><td>图遍历、关系推理</td></tr>
+<tr><td><strong>DCG</strong></td><td>数字卡牌游戏</td><td>策略决策、状态追踪</td></tr>
+<tr><td><strong>LTP</strong></td><td>横向思维谜题</td><td>创造性推理</td></tr>
+<tr><td><strong>HouseHold</strong></td><td>家庭环境操作</td><td>空间推理、物体交互</td></tr>
+<tr><td><strong>WebShop</strong></td><td>在线购物</td><td>搜索、筛选、决策</td></tr>
+<tr><td><strong>WebBrowse</strong></td><td>网页浏览</td><td>信息提取、导航</td></tr>
+</tbody></table>
+</div>
+<h3 id="agentbench-的评估框架"><a class="header" href="#agentbench-的评估框架">AgentBench 的评估框架</a></h3>
+<pre><code class="language-python">class AgentBenchEvaluator:
+    """
+    AgentBench 的评估架构（概念性实现）
+    
+    核心特点：
+    1. 每个领域有独立的环境和评估器
+    2. Agent 通过统一的文本接口与环境交互
+    3. 评估指标是任务完成率（Success Rate）
+    """
+    
+    def __init__(self, agent):
+        self.agent = agent
+        self.environments = {
+            "os": OSEnvironment(),
+            "db": DatabaseEnvironment(),
+            "web_shop": WebShopEnvironment(),
+            # ... 其他环境
+        }
+    
+    def evaluate_task(self, env_name: str, task: dict) -&gt; dict:
+        """
+        评估单个任务
+        
+        流程：
+        1. 初始化环境并给出任务描述
+        2. Agent 与环境交互（最多 N 步）
+        3. 检查最终状态是否满足成功条件
+        """
+        env = self.environments[env_name]
+        observation = env.reset(task)
+        
+        for step in range(task.get("max_steps", 20)):
+            # Agent 根据观察生成动作
+            action = self.agent.act(observation)
+            
+            # 环境执行动作
+            observation, reward, done, info = env.step(action)
+            
+            if done:
+                break
+        
+        return {
+            "success": info.get("success", False),
+            "steps": step + 1,
+            "reward": reward,
+        }
+    
+    def evaluate_all(self, benchmark_data: dict) -&gt; dict:
+        """评估所有领域"""
+        results = {}
+        for env_name, tasks in benchmark_data.items():
+            env_results = [
+                self.evaluate_task(env_name, task) 
+                for task in tasks
+            ]
+            results[env_name] = {
+                "success_rate": sum(r["success"] for r in env_results) / len(env_results),
+                "avg_steps": sum(r["steps"] for r in env_results) / len(env_results),
+            }
+        return results
+</code></pre>
+<h3 id="各领域顶尖模型表现截至-2025"><a class="header" href="#各领域顶尖模型表现截至-2025">各领域顶尖模型表现（截至 2025）</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>环境</th><th>GPT-4o</th><th>Claude-3.5</th><th>开源 SOTA</th></tr></thead><tbody>
+<tr><td>OS</td><td>~45%</td><td>~42%</td><td>~30% (CodeLlama)</td></tr>
+<tr><td>DB</td><td>~52%</td><td>~48%</td><td>~35%</td></tr>
+<tr><td>WebShop</td><td>~60%</td><td>~55%</td><td>~40%</td></tr>
+<tr><td><strong>综合</strong></td><td><strong>~42%</strong></td><td><strong>~38%</strong></td><td><strong>~28%</strong></td></tr>
+</tbody></table>
+</div>
 <blockquote>
-<p>⚠️ <strong>注意</strong>：上面的 <code>exec()</code> 仅用于演示评估逻辑。在生产环境中，务必在沙箱环境中执行不受信任的代码。</p>
+<p><strong>关键洞察</strong>：即使是最强的闭源模型，在 AgentBench 上的综合表现也仅约 40%。这说明当前 LLM 的 Agent 能力仍有巨大的提升空间。</p>
 </blockquote>
-<h3 id="2-mmlu--知识广度"><a class="header" href="#2-mmlu--知识广度">2. MMLU —— 知识广度</a></h3>
-<p>Massive Multitask Language Understanding，涵盖 57 个学科、14000+ 道选择题，测试模型的知识广度。</p>
-<h3 id="3-gsm8k--数学推理"><a class="header" href="#3-gsm8k--数学推理">3. GSM8K —— 数学推理</a></h3>
-<p>Grade School Math 8K，包含 8500 道小学数学题，测试模型的逐步推理能力。</p>
-<h3 id="4-webarena--web-操作能力"><a class="header" href="#4-webarena--web-操作能力">4. WebArena —— Web 操作能力</a></h3>
-<p>在真实网站环境中评估 Agent 完成任务的能力，如“在电商网站上找到最便宜的蓝色T恤并加入购物车“。</p>
-<h3 id="5-swe-bench--软件工程"><a class="header" href="#5-swe-bench--软件工程">5. SWE-bench —— 软件工程</a></h3>
-<p>评估 Agent 解决真实 GitHub Issue 的能力，需要理解代码库、定位 Bug 并提交修复。</p>
-<hr>
-<h2 id="设计自己的评估指标"><a class="header" href="#设计自己的评估指标">设计自己的评估指标</a></h2>
-<p>在实际项目中，通用基准测试往往不够用，你需要设计针对自己 Agent 的评估指标：</p>
+<hr />
+<h2 id="4-webarena--web-操作评估"><a class="header" href="#4-webarena--web-操作评估">4. WebArena —— Web 操作评估</a></h2>
+<h3 id="概述-3"><a class="header" href="#概述-3">概述</a></h3>
+<p><strong>WebArena</strong> [5] 是 CMU 发布的 Web Agent 评估基准，在<strong>真实的 Web 应用环境</strong>中测试 Agent 完成任务的能力。它部署了 4 个完整的 Web 应用：</p>
+<ul>
+<li><strong>Reddit</strong>（论坛）</li>
+<li><strong>GitLab</strong>（代码托管）</li>
+<li><strong>Shopping</strong>（电商网站）</li>
+<li><strong>CMS</strong>（内容管理系统）</li>
+</ul>
+<h3 id="任务示例"><a class="header" href="#任务示例">任务示例</a></h3>
+<pre><code>任务: "在 GitLab 上创建一个名为 'ml-pipeline' 的新仓库，
+      添加 .gitignore 文件选择 Python 模板，
+      然后创建一个名为 'setup-ci' 的 Issue。"
+
+评估标准:
+1. 仓库 'ml-pipeline' 是否存在 ✅/❌
+2. .gitignore 是否包含 Python 模板内容 ✅/❌
+3. Issue 'setup-ci' 是否已创建 ✅/❌
+
+最终得分: 满足所有条件才算成功
+</code></pre>
+<h3 id="评估方法"><a class="header" href="#评估方法">评估方法</a></h3>
+<p>WebArena 使用<strong>基于状态的评估</strong>——检查操作完成后 Web 应用的状态是否符合预期：</p>
+<pre><code class="language-python">class WebArenaEvaluator:
+    """WebArena 评估逻辑（概念性实现）"""
+    
+    def evaluate(self, task: dict, final_state: dict) -&gt; bool:
+        """
+        检查 Web 应用的最终状态是否满足任务要求
+        
+        评估类型：
+        1. URL 匹配：最终页面是否正确
+        2. 元素存在性：页面是否包含特定元素
+        3. 数据库状态：后端数据是否正确
+        """
+        
+        for condition in task["success_conditions"]:
+            if condition["type"] == "url_match":
+                if not self._check_url(final_state["url"], condition["pattern"]):
+                    return False
+                    
+            elif condition["type"] == "element_exists":
+                if not self._find_element(
+                    final_state["page_html"], 
+                    condition["selector"]
+                ):
+                    return False
+                    
+            elif condition["type"] == "db_check":
+                if not self._query_db(
+                    condition["query"], 
+                    condition["expected"]
+                ):
+                    return False
+        
+        return True  # 所有条件满足
+</code></pre>
+<hr />
+<h2 id="5-swe-bench--软件工程评估"><a class="header" href="#5-swe-bench--软件工程评估">5. SWE-bench —— 软件工程评估</a></h2>
+<h3 id="概述-4"><a class="header" href="#概述-4">概述</a></h3>
+<p><strong>SWE-bench</strong> [6] 是由 Princeton 发布的软件工程评估基准，测试 Agent 解决<strong>真实 GitHub Issue</strong> 的能力。每个测试用例都来自真实的开源项目（如 Django、Flask、scikit-learn），包含一个 Issue 描述和对应的测试用例。</p>
+<h3 id="任务流程"><a class="header" href="#任务流程">任务流程</a></h3>
+<pre><code>1. 接收 Issue 描述:
+   "Django QuerySet.union() 在使用 values() 时返回重复结果"
+
+2. 理解代码库:
+   分析 Django 的 QuerySet 实现（数千个文件）
+
+3. 定位问题:
+   找到 django/db/models/sql/query.py 中的 union 逻辑
+
+4. 生成修复:
+   生成 git patch 文件
+
+5. 验证:
+   运行项目的单元测试，检查是否通过
+</code></pre>
+<h3 id="swe-bench-的变体"><a class="header" href="#swe-bench-的变体">SWE-bench 的变体</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>变体</th><th>测试量</th><th>说明</th></tr></thead><tbody>
+<tr><td><strong>SWE-bench Full</strong></td><td>2294 个 Issue</td><td>完整集合</td></tr>
+<tr><td><strong>SWE-bench Lite</strong></td><td>300 个 Issue</td><td>精选子集，更可重复</td></tr>
+<tr><td><strong>SWE-bench Verified</strong></td><td>500 个 Issue</td><td>人工验证过的高质量子集</td></tr>
+</tbody></table>
+</div>
+<h3 id="评估指标"><a class="header" href="#评估指标">评估指标</a></h3>
+<p>SWE-bench 的核心指标是 <strong>Resolved Rate（解决率）</strong>：</p>
+<pre><code class="language-python">def swe_bench_evaluate(
+    patch: str,          # Agent 生成的 git patch
+    test_suite: str,     # 原始测试用例
+    repo_path: str,      # 代码仓库路径
+) -&gt; dict:
+    """
+    SWE-bench 评估流程（简化版）
+    
+    1. 应用 Agent 生成的 patch
+    2. 运行项目的测试套件
+    3. 检查之前失败的测试是否通过
+    """
+    import subprocess
+    
+    # 应用 patch
+    apply_result = subprocess.run(
+        ["git", "apply", "--check", "-"],
+        input=patch.encode(),
+        cwd=repo_path,
+        capture_output=True,
+    )
+    
+    if apply_result.returncode != 0:
+        return {"resolved": False, "reason": "Patch 无法应用"}
+    
+    # 实际应用 patch
+    subprocess.run(
+        ["git", "apply", "-"],
+        input=patch.encode(),
+        cwd=repo_path,
+    )
+    
+    # 运行测试
+    test_result = subprocess.run(
+        ["python", "-m", "pytest", test_suite, "-x"],
+        cwd=repo_path,
+        capture_output=True,
+        timeout=300,  # 5 分钟超时
+    )
+    
+    return {
+        "resolved": test_result.returncode == 0,
+        "test_output": test_result.stdout.decode(),
+    }
+</code></pre>
+<h3 id="当前-sota截至-2025"><a class="header" href="#当前-sota截至-2025">当前 SOTA（截至 2025）</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Agent</th><th>SWE-bench Verified</th><th>方法</th></tr></thead><tbody>
+<tr><td><strong>DeepSWE</strong></td><td>59.0%</td><td>GRPO 强化学习训练</td></tr>
+<tr><td><strong>Amazon Q Developer</strong></td><td>55.2%</td><td>闭源商业产品</td></tr>
+<tr><td><strong>Claude-3.5 Sonnet</strong></td><td>~49%</td><td>直接推理</td></tr>
+<tr><td><strong>SWE-Agent</strong></td><td>~33%</td><td>开源框架</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="6-llm-as-judge-评估方法"><a class="header" href="#6-llm-as-judge-评估方法">6. LLM-as-Judge 评估方法</a></h2>
+<p>对于没有标准答案的开放式任务，<strong>LLM-as-Judge</strong> [7] 是最常用的评估方法——用一个强大的 LLM 来评判另一个 LLM 的输出。</p>
+<h3 id="三种评判模式"><a class="header" href="#三种评判模式">三种评判模式</a></h3>
+<pre><code class="language-python">class LLMJudge:
+    """LLM-as-Judge 评估器"""
+    
+    def __init__(self, judge_model: str = "gpt-4o"):
+        from langchain_openai import ChatOpenAI
+        self.judge = ChatOpenAI(model=judge_model, temperature=0)
+    
+    def pointwise_scoring(
+        self, 
+        question: str, 
+        answer: str, 
+        rubric: str,
+    ) -&gt; dict:
+        """
+        模式1：逐条打分（Pointwise）
+        评估单个回答的绝对质量
+        """
+        prompt = f"""请根据以下评分标准评估回答质量。
+
+问题: {question}
+回答: {answer}
+
+评分标准:
+{rubric}
+
+请以 1-10 分评分，并说明理由。
+输出 JSON: {{"score": &lt;分数&gt;, "reasoning": "&lt;理由&gt;"}}"""
+        
+        response = self.judge.invoke(prompt)
+        return json.loads(response.content)
+    
+    def pairwise_comparison(
+        self,
+        question: str,
+        answer_a: str,
+        answer_b: str,
+    ) -&gt; dict:
+        """
+        模式2：两两比较（Pairwise）
+        判断两个回答哪个更好
+        
+        用于计算 Win Rate 和 ELO 评分
+        """
+        prompt = f"""请比较以下两个回答，判断哪个更好。
+
+问题: {question}
+
+回答 A:
+{answer_a}
+
+回答 B:
+{answer_b}
+
+请选择: A更好 / B更好 / 相当
+并说明理由。
+输出 JSON: {{"winner": "A"/"B"/"tie", "reasoning": "&lt;理由&gt;"}}"""
+        
+        response = self.judge.invoke(prompt)
+        return json.loads(response.content)
+    
+    def reference_based(
+        self,
+        question: str,
+        answer: str,
+        reference: str,
+    ) -&gt; dict:
+        """
+        模式3：参考答案对比（Reference-based）
+        与标准答案比较
+        """
+        prompt = f"""请评估回答与参考答案的一致性。
+
+问题: {question}
+参考答案: {reference}
+待评估回答: {answer}
+
+评分标准:
+- 1.0: 与参考答案完全一致
+- 0.8: 基本一致，有细微差异
+- 0.5: 部分正确
+- 0.2: 大部分错误
+- 0.0: 完全错误
+
+输出 JSON: {{"score": &lt;分数&gt;, "reasoning": "&lt;理由&gt;"}}"""
+        
+        response = self.judge.invoke(prompt)
+        return json.loads(response.content)
+</code></pre>
+<h3 id="win-rate-计算"><a class="header" href="#win-rate-计算">Win Rate 计算</a></h3>
+<pre><code class="language-python">def compute_win_rate(
+    judge: LLMJudge,
+    questions: list[str],
+    answers_a: list[str],  # Agent A 的回答
+    answers_b: list[str],  # Agent B 的回答
+) -&gt; dict:
+    """计算两个 Agent 的 Win Rate"""
+    wins_a, wins_b, ties = 0, 0, 0
+    
+    for q, a, b in zip(questions, answers_a, answers_b):
+        # 正向评估
+        result1 = judge.pairwise_comparison(q, a, b)
+        # 反向评估（交换位置，消除位置偏差）
+        result2 = judge.pairwise_comparison(q, b, a)
+        
+        # 综合两次评估
+        if result1["winner"] == "A" and result2["winner"] == "B":
+            wins_a += 1  # 两次都认为 A 好
+        elif result1["winner"] == "B" and result2["winner"] == "A":
+            wins_b += 1  # 两次都认为 B 好
+        else:
+            ties += 1    # 结果不一致，算平局
+    
+    total = len(questions)
+    return {
+        "agent_a_win_rate": wins_a / total,
+        "agent_b_win_rate": wins_b / total,
+        "tie_rate": ties / total,
+    }
+</code></pre>
+<h3 id="llm-as-judge-的已知偏差-7"><a class="header" href="#llm-as-judge-的已知偏差-7">LLM-as-Judge 的已知偏差 [7]</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>偏差类型</th><th>描述</th><th>缓解方法</th></tr></thead><tbody>
+<tr><td><strong>位置偏差</strong></td><td>倾向于选择第一个（或最后一个）回答</td><td>交换位置做两次评估</td></tr>
+<tr><td><strong>冗长偏差</strong></td><td>倾向于选择更长的回答</td><td>在评分标准中明确"简洁不扣分"</td></tr>
+<tr><td><strong>自我偏好</strong></td><td>倾向于选择自己生成的回答</td><td>使用不同模型做 Judge</td></tr>
+<tr><td><strong>格式偏差</strong></td><td>倾向于选择格式更美观的回答</td><td>统一格式后再评估</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="设计自己的评估体系"><a class="header" href="#设计自己的评估体系">设计自己的评估体系</a></h2>
+<h3 id="完整的评估框架"><a class="header" href="#完整的评估框架">完整的评估框架</a></h3>
 <pre><code class="language-python">import json
 import time
 from dataclasses import dataclass, field
@@ -255,8 +803,8 @@ class AgentMetrics:
     pii_leak_rate: float = 0.0          # 隐私泄露率
 
 
-class AgentBenchmark:
-    """Agent 基准测试框架"""
+class AgentBenchmarkRunner:
+    """Agent 基准测试运行器"""
     
     def __init__(self, agent_func, test_cases: list[dict]):
         self.agent_func = agent_func
@@ -288,7 +836,6 @@ class AgentBenchmark:
                 step_counts.append(result.get("steps", 0))
                 token_counts.append(result.get("tokens", 0))
                 
-                # 检查正确性
                 if self._check_answer(
                     result.get("answer", ""),
                     case["expected"]
@@ -309,7 +856,6 @@ class AgentBenchmark:
         
         total = len(self.test_cases)
         
-        # 计算指标
         metrics.accuracy = correct / total if total else 0
         metrics.success_rate = successes / total if total else 0
         metrics.error_rate = errors / total if total else 0
@@ -329,40 +875,33 @@ class AgentBenchmark:
     def _check_answer(self, actual: str, expected) -&gt; bool:
         """检查回答是否正确（支持多种匹配方式）"""
         if isinstance(expected, str):
-            # 精确匹配（忽略大小写和首尾空白）
             return actual.strip().lower() == expected.strip().lower()
         elif isinstance(expected, list):
-            # 包含任一关键词即可
             return any(kw.lower() in actual.lower() for kw in expected)
         elif callable(expected):
-            # 自定义检查函数
             return expected(actual)
         return False
-    
-    def report(self, metrics: AgentMetrics) -&gt; str:
-        """生成评估报告"""
-        return f"""
-╔══════════════════════════════════════╗
-║        Agent 评估报告                ║
-╠══════════════════════════════════════╣
-║ 📊 质量指标                          ║
-║   准确率:     {metrics.accuracy:.1%}              ║
-║   成功率:     {metrics.success_rate:.1%}              ║
-║   错误率:     {metrics.error_rate:.1%}              ║
-╠══════════════════════════════════════╣
-║ ⚡ 效率指标                          ║
-║   平均延迟:   {metrics.avg_latency:.2f}s             ║
-║   平均步骤:   {metrics.avg_steps:.1f}               ║
-║   平均Token:  {metrics.avg_tokens:.0f}              ║
-╠══════════════════════════════════════╣
-║ 🔒 可靠性                            ║
-║   超时率:     {metrics.timeout_rate:.1%}              ║
-╚══════════════════════════════════════╝
-"""
 </code></pre>
-<hr>
-<h2 id="回归测试确保改进不会引入新问题"><a class="header" href="#回归测试确保改进不会引入新问题">回归测试：确保改进不会引入新问题</a></h2>
-<p>每次修改 Agent 后，都要跑一遍基准测试，确保没有退步：</p>
+<h3 id="推荐的评估组合策略"><a class="header" href="#推荐的评估组合策略">推荐的评估组合策略</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Agent 类型</th><th>推荐基准</th><th>自定义评估重点</th></tr></thead><tbody>
+<tr><td><strong>通用助手</strong></td><td>GAIA + MMLU</td><td>知识准确率 + 多步推理</td></tr>
+<tr><td><strong>代码 Agent</strong></td><td>SWE-bench + HumanEval</td><td>测试通过率 + 代码质量</td></tr>
+<tr><td><strong>工具调用 Agent</strong></td><td>BFCL + ToolBench</td><td>AST 匹配准确率 + 参数正确性</td></tr>
+<tr><td><strong>Web Agent</strong></td><td>WebArena</td><td>任务完成率 + 操作效率</td></tr>
+<tr><td><strong>客服 Agent</strong></td><td>自定义</td><td>LLM-as-Judge + 人工抽检</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p><strong>🏭 生产实践</strong></p>
+<ul>
+<li><strong>建立自己的评估集</strong>：通用基准测试只能反映模型的通用能力，生产中需要构建针对自己业务场景的测试集（通常 100-500 条）</li>
+<li><strong>三层评估体系</strong>：自动规则（快速）→ LLM Judge（批量）→ 人工抽检（精确），三层递进</li>
+<li><strong>评估频率</strong>：每次模型升级或 prompt 修改后都要跑完整评估，CI/CD 中集成自动评估</li>
+<li><strong>Watch Metrics</strong>：线上重点监控 P95 延迟、工具调用成功率、用户评分分布这三个指标</li>
+</ul>
+</blockquote>
+<hr />
+<h2 id="回归测试确保改进不引入新问题"><a class="header" href="#回归测试确保改进不引入新问题">回归测试：确保改进不引入新问题</a></h2>
 <pre><code class="language-python">class RegressionTracker:
     """回归测试追踪器"""
     
@@ -416,7 +955,6 @@ class AgentBenchmark:
                 f"{previous['success_rate']:.1%} → {current.success_rate:.1%}"
             )
         
-        # 延迟增加超过 50% 也要警告
         if (current.avg_latency &gt; previous["avg_latency"] * 1.5 
             and previous["avg_latency"] &gt; 0):
             warnings.append(
@@ -426,38 +964,41 @@ class AgentBenchmark:
         
         return warnings
 </code></pre>
-<hr>
+<hr />
 <h2 id="小结"><a class="header" href="#小结">小结</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>概念</th><th>说明</th></tr>
-</thead>
-<tbody>
-<tr><td>基准测试</td><td>用统一标准比较不同 Agent 的表现</td></tr>
-<tr><td>HumanEval</td><td>测试代码生成能力（pass@k 指标）</td></tr>
-<tr><td>MMLU</td><td>测试知识广度（57 个学科）</td></tr>
-<tr><td>自定义指标</td><td>针对业务场景设计的评估体系</td></tr>
-<tr><td>回归测试</td><td>确保每次改进不引入新问题</td></tr>
-</tbody>
-</table>
+<div class="table-wrapper"><table><thead><tr><th>基准测试</th><th>核心能力</th><th>评估方法</th><th>当前 SOTA</th></tr></thead><tbody>
+<tr><td><strong>BFCL</strong></td><td>工具调用</td><td>AST 匹配算法</td><td>GPT-4o ~90%</td></tr>
+<tr><td><strong>GAIA</strong></td><td>通用推理</td><td>准精确匹配</td><td>GPT-4o ~75% (L1)</td></tr>
+<tr><td><strong>AgentBench</strong></td><td>综合 Agent</td><td>任务成功率</td><td>GPT-4o ~42%</td></tr>
+<tr><td><strong>WebArena</strong></td><td>Web 操作</td><td>状态检查</td><td>GPT-4o ~35%</td></tr>
+<tr><td><strong>SWE-bench</strong></td><td>软件工程</td><td>测试通过率</td><td>DeepSWE 59%</td></tr>
+</tbody></table>
 </div>
 <blockquote>
 <p><strong>下一节预告</strong>：掌握了评估方法后，我们来学习如何通过 Prompt 调优来提升 Agent 的表现。</p>
 </blockquote>
-<hr>
-<p><a href="./03_prompt_tuning.html">下一节：13.3 Prompt 调优策略 →</a></p>
+<hr />
+<h2 id="参考文献"><a class="header" href="#参考文献">参考文献</a></h2>
+<p>[1] LIU X, YU H, ZHANG H, et al. AgentBench: Evaluating LLMs as agents[C]//ICLR. 2024.</p>
+<p>[2] YAN F, MIAO H, ZHONG C, et al. Berkeley function calling leaderboard[EB/OL]. 2024. https://gorilla.cs.berkeley.edu/leaderboard.html.</p>
+<p>[3] MIALON G, FOURRIER C, SWIFT C, et al. GAIA: A benchmark for general AI assistants[C]//ICLR. 2024.</p>
+<p>[4] LIU X, YU H, ZHANG H, et al. AgentBench: Evaluating LLMs as agents[C]//ICLR. 2024.</p>
+<p>[5] ZHOU S, XU F F, ZHU H, et al. WebArena: A realistic web environment for building autonomous agents[C]//ICLR. 2024.</p>
+<p>[6] JIMENEZ C E, YANG J, WETTIG A, et al. SWE-bench: Can language models resolve real-world GitHub issues?[C]//ICLR. 2024.</p>
+<p>[7] ZHENG L, CHIANG W L, SHENG Y, et al. Judging LLM-as-a-judge with MT-bench and chatbot arena[C]//NeurIPS. 2023.</p>
+<hr />
+<p><a href="./03_prompt_tuning.html">下一节：Prompt 调优策略 →</a></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                             <a rel="prev" href="../chapter_evaluation/01_evaluation_methods.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                                <i class="fa fa-angle-left"></i>
                             </a>
 
                             <a rel="next prefetch" href="../chapter_evaluation/03_prompt_tuning.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                                <i class="fa fa-angle-right"></i>
                             </a>
 
                         <div style="clear: both"></div>
@@ -467,21 +1008,32 @@ class AgentBenchmark:
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                     <a rel="prev" href="../chapter_evaluation/01_evaluation_methods.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                        <i class="fa fa-angle-left"></i>
                     </a>
 
                     <a rel="next prefetch" href="../chapter_evaluation/03_prompt_tuning.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                        <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
         </div>
 
-        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
-        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
-        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
-        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
-        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 
@@ -490,13 +1042,13 @@ class AgentBenchmark:
         </script>
 
 
-        <script src="../elasticlunr-ef4e11c1.min.js"></script>
-        <script src="../mark-09e88c2c.min.js"></script>
-        <script src="../searcher-c2a407aa.js"></script>
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
 
-        <script src="../clipboard-1626706a.min.js"></script>
-        <script src="../highlight-abc7f01d.js"></script>
-        <script src="../book-a0b12cfe.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
 

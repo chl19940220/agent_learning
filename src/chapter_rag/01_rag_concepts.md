@@ -196,8 +196,20 @@ RAG 不是万能的，在实际应用中你可能会遇到以下挑战：
 
 理解这些局限有助于你在实际项目中合理评估 RAG 的适用范围，并选择正确的优化方向。
 
-> 📖 **想深入了解 RAG 的学术前沿？** 请阅读 [7.6 论文解读：RAG 前沿进展](./06_paper_readings.md)，涵盖 RAG 原始论文、Self-RAG、CRAG、GraphRAG、Modular RAG 等核心论文的深度解读，以及从 Naive RAG 到 Agentic RAG 的完整演进脉络。
+> 📖 **想深入了解 RAG 的学术前沿？** 请阅读 [9.6 论文解读：RAG 前沿进展](./06_paper_readings.md)，涵盖 RAG 原始论文、Self-RAG、CRAG、GraphRAG、Modular RAG 等核心论文的深度解读，以及从 Naive RAG 到 Agentic RAG 的完整演进脉络。
+>
+> 💡 **前沿趋势：Agentic RAG**：2025 年以来，RAG 正在从静态的"检索-生成"管道演进为动态的 **Agentic RAG** 范式 [2]——Agent 不仅检索文档，还能判断何时需要检索、检索什么、对结果不满意时自动重写查询或换一个数据源。这本质上是将 RAG 从一个"流水线"升级为一个"会思考的检索 Agent"。
 
 ---
 
-*下一节：[7.2 文档加载与文本分割](./02_document_loading.md)*
+## 参考文献
+
+[1] LEWIS P, PEREZ E, PIKTUS A, et al. Retrieval-augmented generation for knowledge-intensive NLP tasks[C]//NeurIPS. 2020.
+
+[2] ASAI A, WU Z, WANG Y, et al. Self-RAG: Learning to retrieve, generate, and critique through self-reflection[C]//ICLR. 2024.
+
+[3] GUAN X, LIU Y, LIN H, et al. CRAG — Comprehensive RAG benchmark[R]. arXiv preprint arXiv:2406.04744, 2024.
+
+---
+
+*下一节：[9.2 文档加载与文本分割](./02_document_loading.md)*
