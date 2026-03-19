@@ -2,6 +2,8 @@
 
 长期记忆让 Agent 能够"记住"跨越多次会话的信息——你今天告诉它你是 Python 开发者、偏好简洁风格，下周再来对话时它依然记得。
 
+> 📄 **学术前沿**：记忆系统的一个经典研究是 Stanford 的 Generative Agents [1]——25 个 AI Agent 在虚拟小镇中生活，它们通过"记忆流"（Memory Stream）记录所有经历，并通过**时近性（Recency）、重要性（Importance）、相关性（Relevance）** 三个维度的加权来检索记忆。特别值得注意的是其记忆衰减机制：越久远的记忆检索权重越低（指数衰减），但如果某段记忆被频繁回忆则权重会提升。这种设计与认知科学中的记忆巩固理论高度一致。
+
 短期记忆（对话历史）在会话结束后就消失了。而长期记忆需要**持久化存储**——信息必须写入某种数据库，下次启动时能够检索回来。但传统数据库的精确查询（SQL `WHERE` 子句）并不适合自然语言场景。用户可能问"我之前提到过什么编程语言？"，你不可能预先知道该搜"Python"还是"Java"还是"Rust"。
 
 这就是**向量数据库**发挥作用的地方。它的核心思想是：将文本转化为数学向量（一组浮点数），然后通过计算向量之间的距离来衡量语义相似度。"Python 是编程语言"和"编程用的 Python"虽然文字不同，但它们的向量非常接近。这让我们能够用自然语言作为查询条件，按语义相关性检索信息。
@@ -362,4 +364,12 @@ def test_memory_system():
 
 ---
 
-*下一节：[5.4 工作记忆：Scratchpad 模式](./04_working_memory.md)*
+*下一节：[7.4 工作记忆：Scratchpad 模式](./04_working_memory.md)*
+
+---
+
+## 参考文献
+
+[1] PARK J S, O'BRIEN J C, CAI C J, et al. Generative agents: Interactive simulacra of human behavior[C]//UIST. 2023.
+
+[2] JOHNSON J, DOUZE M, JÉGOU H. Billion-scale similarity search with GPUs[J]. IEEE Transactions on Big Data, 2021, 7(3): 535-547.

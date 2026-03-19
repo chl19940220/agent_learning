@@ -230,4 +230,14 @@ print(json.dumps(task_tree, ensure_ascii=False, indent=2))
 
 ---
 
-*下一节：[6.4 反思与自我纠错机制](./04_reflection.md)*
+## 参考文献
+
+[1] WANG L, XU W, LAN Y, et al. Plan-and-solve prompting: Improving zero-shot chain-of-thought reasoning by large language models[C]//ACL. 2023.
+
+[2] YAO S, YU D, ZHAO J, et al. Tree of thoughts: Deliberate problem solving with large language models[C]//NeurIPS. 2023.
+
+[3] SHEN Y, SONG K, TAN X, et al. HuggingGPT: Solving AI tasks with ChatGPT and its friends in Hugging Face[C]//NeurIPS. 2023.
+
+---
+
+*下一节：[8.4 反思与自我纠错机制](./04_reflection.md)*

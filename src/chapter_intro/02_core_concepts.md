@@ -8,6 +8,8 @@
 
 > **Agent 是一个能够自主感知环境、进行推理决策，并采取行动以实现特定目标的系统。**
 
+这个定义与经典 AI 教科书的表述高度一致。Russell 和 Norvig 在《人工智能：现代方法》中将 Agent 定义为"通过传感器感知环境，并通过执行器对环境施加影响的任何事物"[1]。而在 LLM 时代，Agent 的"传感器"变成了自然语言输入和工具返回值，"执行器"变成了工具调用和文本生成。
+
 让我们拆解这个定义中的每个关键词：
 
 ![Agent定义的四个关键要素](../svg/chapter_intro_02_agent_definition.svg)
@@ -72,7 +74,7 @@ class AgentPerception:
 
 ### 特征3：推理能力（Reasoning）
 
-Agent 能够基于当前信息进行**分析、判断和规划**：
+Agent 能够基于当前信息进行**分析、判断和规划**。这与认知科学中卡尼曼提出的"双系统理论"[2]有着有趣的对应：LLM 的直接生成类似于快速直觉的"系统 1"，而 Agent 的多步推理（如 ReAct [3] 中的 Thought-Action-Observation 循环）则类似于深思熟虑的"系统 2"。
 
 ```python
 # Agent 的推理过程（以 ReAct 模式为例）
@@ -193,6 +195,17 @@ def agent_with_learning(task: str):
 
 ![AI Agent核心组成要素](../svg/chapter_intro_02_agent_components.svg)
 
+> **💡 Russell & Norvig 的经典智能体分类**
+>
+> 在经典 AI 理论中，Agent 可按复杂度分为五类 [1]：
+> - **简单反射型**（Simple Reflex）：基于当前感知直接行动（类似规则机器人）
+> - **基于模型的反射型**（Model-based Reflex）：维护内部世界模型
+> - **基于目标型**（Goal-based）：有明确目标，规划行动路径
+> - **基于效用型**（Utility-based）：有效用函数，选择最优行动
+> - **学习型**（Learning）：能从经验中学习改进
+>
+> 当代 LLM 驱动的 Agent 通常融合了后三种类型的特征：它有目标（用户任务）、有效用判断（LLM 的推理能力）、还能通过反思进行学习。Anthropic 在其 *Building Effective Agents* 指南中也强调，最成功的 Agent 实现往往不依赖复杂框架，而是通过简单的 prompt chaining + 工具调用来组合 LLM 的能力 [4]。
+
 让我们用代码来表达这个结构：
 
 ```python
@@ -263,3 +276,15 @@ my_agent = AgentComponent(
 ---
 
 *理解了 Agent 的核心概念后，让我们在下一节深入探索它的内部架构——"感知-思考-行动"循环。*
+
+---
+
+## 参考文献
+
+[1] RUSSELL S, NORVIG P. Artificial Intelligence: A Modern Approach[M]. 4th ed. London: Pearson, 2020.
+
+[2] KAHNEMAN D. Thinking, Fast and Slow[M]. New York: Farrar, Straus and Giroux, 2011.
+
+[3] YAO S, ZHAO J, YU D, et al. ReAct: Synergizing reasoning and acting in language models[C]//ICLR. 2023.
+
+[4] ANTHROPIC. Building effective agents[EB/OL]. 2024. https://www.anthropic.com/engineering/building-effective-agents.

@@ -261,4 +261,14 @@ ReAct 框架的三大要素：
 
 ---
 
-*下一节：[6.3 任务分解：将复杂问题拆解为子任务](./03_task_decomposition.md)*
+## 参考文献
+
+[1] YAO S, ZHAO J, YU D, et al. ReAct: Synergizing reasoning and acting in language models[C]//ICLR. 2023.
+
+[2] WEI J, WANG X, SCHUURMANS D, et al. Chain-of-thought prompting elicits reasoning in large language models[C]//NeurIPS. 2022.
+
+[3] SHINN N, CASSANO F, GOPINATH A, et al. Reflexion: Language agents with verbal reinforcement learning[C]//NeurIPS. 2023.
+
+---
+
+*下一节：[8.3 任务分解：将复杂问题拆解为子任务](./03_task_decomposition.md)*

@@ -19,11 +19,13 @@
 
 | 特色 | 说明 |
 |------|------|
-| 📖 **由浅入深** | 从"什么是 Agent"讲起，逐步深入到多 Agent 系统和生产部署 |
+| 📖 **由浅入深** | 从"什么是 Agent"讲起，逐步深入到多 Agent 系统、强化学习训练和生产部署 |
 | 🐍 **Python 实战** | 每章都有可运行的 Python 代码示例，边学边练 |
 | 🎨 **图文并茂** | 大量架构图、流程图、时序图，帮助直观理解概念 |
 | 🔨 **项目驱动** | 3 个完整的综合项目，从需求到部署全流程实战 |
-| 🌐 **紧跟前沿** | 覆盖 LangChain、LangGraph、MCP 协议等最新技术 |
+| 🌐 **紧跟前沿** | 覆盖 LangChain、LangGraph、MCP/A2A/ANP 协议、上下文工程、Agentic-RL 等最新技术 |
+| 📚 **学术追溯** | 每章配有权威论文引用和参考文献，从符号主义到 LLM 驱动的完整学术谱系 |
+| 📊 **评估体系** | 深度拆解 BFCL、GAIA、AgentBench、SWE-bench 等主流基准测试 |
 
 ## 如何使用这本书？
 
@@ -44,7 +46,7 @@
 - **编程语言**：Python 3.11+
 - **核心框架**：LangChain, LangGraph, OpenAI Agents SDK
 - **LLM 服务**：OpenAI API（GPT-4o/GPT-5）, Anthropic（Claude 4）, 开源模型（Llama 4, Qwen 3）
-- **Agent 协议**：MCP（Model Context Protocol）, A2A（Agent-to-Agent）
+- **Agent 协议**：MCP（Model Context Protocol）, A2A（Agent-to-Agent）, ANP（Agent Network Protocol）
 - **向量数据库**：ChromaDB, FAISS
 - **Web 框架**：FastAPI
 - **其他工具**：Docker, Pydantic, asyncio, uv

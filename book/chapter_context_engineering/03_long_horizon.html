@@ -1,0 +1,613 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>3.3 长时程任务的上下文策略 - 从零开始学 Agent</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- mdbook-katex 插件已处理数学公式渲染，无需额外注入 -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">从零开始学 Agent</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="长时程任务的上下文策略"><a class="header" href="#长时程任务的上下文策略">长时程任务的上下文策略</a></h1>
+<blockquote>
+<p>📖 <em>"短对话靠 prompt 技巧，长任务靠上下文策略——当 Agent 需要工作几小时甚至几天时，上下文管理就是生死线。"</em></p>
+</blockquote>
+<h2 id="什么是长时程任务"><a class="header" href="#什么是长时程任务">什么是长时程任务？</a></h2>
+<p>长时程任务（Long-horizon Tasks）是指需要 Agent 执行<strong>数十到数百轮交互</strong>才能完成的复杂任务。例如：</p>
+<ul>
+<li>编写一个完整的软件项目（可能需要 100+ 轮工具调用）</li>
+<li>进行深度研究并撰写报告（需要搜索、阅读、分析、写作多个阶段）</li>
+<li>执行多步骤数据分析流水线</li>
+</ul>
+<p>这类任务面临的核心挑战是：<strong>上下文在任务执行过程中持续膨胀，但上下文窗口是固定的</strong>。</p>
+<pre><code class="language-python"># 长时程任务的上下文膨胀示例
+
+def simulate_long_task():
+    """模拟一个需要 50 轮交互的编程任务"""
+    context_size = 1000  # 初始上下文（system prompt + 任务描述）
+    
+    for step in range(50):
+        # 每轮交互新增的 tokens
+        context_size += 100   # Agent 的思考过程
+        context_size += 50    # 工具调用请求
+        context_size += 800   # 工具返回结果（如文件内容、搜索结果）
+        context_size += 200   # Agent 的回复
+        
+        if context_size &gt; 128000:
+            print(f"⚠️ 第 {step} 轮就超出了 128K 窗口！")
+            break
+    else:
+        print(f"最终上下文大小: {context_size:,} tokens")
+
+simulate_long_task()
+# 输出: ⚠️ 第 110 轮... 但实际上更早就会因为注意力稀释而出问题
+</code></pre>
+<h2 id="三大应对策略"><a class="header" href="#三大应对策略">三大应对策略</a></h2>
+<h3 id="策略一压缩整合compaction"><a class="header" href="#策略一压缩整合compaction">策略一：压缩整合（Compaction）</a></h3>
+<p>核心思想：<strong>定期将冗长的上下文压缩为精炼的摘要</strong>，释放空间给新信息。</p>
+<pre><code class="language-python">from openai import OpenAI
+from dataclasses import dataclass, field
+
+client = OpenAI()
+
+@dataclass
+class CompactionStrategy:
+    """压缩整合策略"""
+    
+    messages: list[dict] = field(default_factory=list)
+    compaction_threshold: int = 50000  # 超过 50K tokens 触发压缩
+    keep_recent_turns: int = 5         # 保留最近 5 轮不压缩
+    summaries: list[str] = field(default_factory=list)
+    
+    def add_turn(self, user_msg: str, assistant_msg: str, 
+                 tool_results: list[str] = None):
+        """添加一轮对话"""
+        self.messages.append({"role": "user", "content": user_msg})
+        if tool_results:
+            for result in tool_results:
+                self.messages.append({"role": "tool", "content": result})
+        self.messages.append({"role": "assistant", "content": assistant_msg})
+        
+        # 检查是否需要压缩
+        if self._estimate_tokens() &gt; self.compaction_threshold:
+            self._compact()
+    
+    def _compact(self):
+        """执行压缩"""
+        # 分离出需要压缩的旧消息
+        keep_count = self.keep_recent_turns * 3  # user + tool + assistant
+        old_messages = self.messages[:-keep_count]
+        recent_messages = self.messages[-keep_count:]
+        
+        # 生成摘要
+        summary = self._generate_summary(old_messages)
+        self.summaries.append(summary)
+        
+        # 用摘要替换旧消息
+        self.messages = recent_messages
+        print(f"📦 压缩完成: {len(old_messages)} 条消息 → 1 条摘要")
+    
+    def _generate_summary(self, messages: list[dict]) -&gt; str:
+        """用 LLM 生成摘要"""
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{
+                "role": "user",
+                "content": f"""请将以下 Agent 交互历史压缩为结构化摘要：
+
+{self._format_messages(messages)}
+
+摘要要求：
+1. 列出所有已完成的步骤和结果
+2. 记录关键的中间数据和发现
+3. 标注任何未解决的问题
+4. 保留用户的原始需求
+格式：使用 Markdown 列表"""
+            }],
+            max_tokens=800,
+        )
+        return response.choices[0].message.content
+    
+    def build_context(self) -&gt; list[dict]:
+        """构建最终的上下文"""
+        context = []
+        
+        # 添加历史摘要
+        if self.summaries:
+            context.append({
+                "role": "system",
+                "content": "## 任务执行摘要\n\n" + "\n\n---\n\n".join(self.summaries)
+            })
+        
+        # 添加最近的完整对话
+        context.extend(self.messages)
+        
+        return context
+    
+    def _estimate_tokens(self) -&gt; int:
+        total = sum(len(m["content"]) // 4 for m in self.messages)
+        return total
+    
+    def _format_messages(self, messages: list[dict]) -&gt; str:
+        return "\n".join(f"[{m['role']}]: {m['content'][:200]}" for m in messages)
+</code></pre>
+<h3 id="策略二结构化笔记structured-notes"><a class="header" href="#策略二结构化笔记structured-notes">策略二：结构化笔记（Structured Notes）</a></h3>
+<p>核心思想：<strong>Agent 在执行过程中主动维护一份结构化的"笔记"</strong>，记录关键信息和任务状态，而不是依赖完整的对话历史。</p>
+<p>这个思路来源于 Anthropic 的 Claude Agent 设计——Agent 使用专门的 "NoteTool" 来记录和更新关键信息 [1]。</p>
+<pre><code class="language-python">from dataclasses import dataclass, field
+from datetime import datetime
+
+@dataclass
+class AgentNotepad:
+    """
+    Agent 的结构化笔记本
+    灵感来源：Anthropic Building Effective Agents 中的 NoteTool 概念
+    """
+    
+    # 任务目标（不变）
+    objective: str = ""
+    
+    # 执行计划（可更新）
+    plan: list[str] = field(default_factory=list)
+    current_step: int = 0
+    
+    # 关键发现（持续追加）
+    findings: list[dict] = field(default_factory=list)
+    
+    # 待解决问题
+    open_questions: list[str] = field(default_factory=list)
+    
+    # 重要数据点
+    data_points: dict = field(default_factory=dict)
+    
+    def update_plan(self, new_plan: list[str]):
+        """更新执行计划"""
+        self.plan = new_plan
+    
+    def advance_step(self):
+        """推进到下一步"""
+        self.current_step += 1
+    
+    def add_finding(self, finding: str, source: str = ""):
+        """记录一个发现"""
+        self.findings.append({
+            "content": finding,
+            "source": source,
+            "time": datetime.now().isoformat(),
+        })
+    
+    def add_data_point(self, key: str, value):
+        """记录一个重要数据"""
+        self.data_points[key] = value
+    
+    def to_context_string(self) -&gt; str:
+        """将笔记序列化为上下文字符串"""
+        lines = [
+            f"## 任务目标\n{self.objective}",
+            f"\n## 执行计划（当前: 步骤 {self.current_step + 1}/{len(self.plan)}）",
+        ]
+        
+        for i, step in enumerate(self.plan):
+            status = "✅" if i &lt; self.current_step else ("🔄" if i == self.current_step else "⬜")
+            lines.append(f"  {status} {i+1}. {step}")
+        
+        if self.findings:
+            lines.append("\n## 关键发现")
+            for f in self.findings[-5:]:  # 只显示最近 5 条
+                lines.append(f"  - {f['content']}")
+        
+        if self.data_points:
+            lines.append("\n## 重要数据")
+            for k, v in self.data_points.items():
+                lines.append(f"  - {k}: {v}")
+        
+        if self.open_questions:
+            lines.append("\n## 待解决问题")
+            for q in self.open_questions:
+                lines.append(f"  - ❓ {q}")
+        
+        return "\n".join(lines)
+
+
+# 使用示例
+notepad = AgentNotepad(
+    objective="分析 2025 年 Q1 用户留存率下降原因并提出改进方案",
+    plan=[
+        "查询 Q1 各月用户留存数据",
+        "对比 Q4 vs Q1 的留存率变化",
+        "分析不同用户群体的留存差异",
+        "识别导致下降的关键因素",
+        "提出改进方案并预估效果",
+    ]
+)
+
+# Agent 执行过程中更新笔记
+notepad.advance_step()
+notepad.add_data_point("Q1 平均 7日留存", "38%")
+notepad.add_data_point("Q4 平均 7日留存", "45%")
+notepad.add_finding("新用户 7 日留存下降最显著（-12%）", source="SQL 查询")
+notepad.advance_step()
+
+print(notepad.to_context_string())
+</code></pre>
+<h3 id="策略三子代理架构sub-agent-architecture"><a class="header" href="#策略三子代理架构sub-agent-architecture">策略三：子代理架构（Sub-agent Architecture）</a></h3>
+<p>核心思想：<strong>将复杂的长任务分解给多个子 Agent 执行，每个子 Agent 有自己独立的上下文窗口</strong>。主 Agent 只需要管理任务进度和子 Agent 的结果摘要。</p>
+<pre><code class="language-python">from dataclasses import dataclass
+from typing import Callable
+
+@dataclass
+class SubAgentResult:
+    """子 Agent 的执行结果"""
+    agent_name: str
+    task: str
+    result_summary: str  # 只传摘要，不传完整上下文
+    success: bool
+    key_data: dict
+
+class OrchestratorAgent:
+    """
+    编排者 Agent：将长任务分解给子 Agent
+    
+    关键优势：
+    1. 每个子 Agent 都有独立的、干净的上下文
+    2. 主 Agent 只需管理摘要级别的信息
+    3. 天然支持并行执行
+    """
+    
+    def __init__(self, model: str = "gpt-4o"):
+        self.model = model
+        self.sub_agents: dict[str, Callable] = {}
+        self.results: list[SubAgentResult] = []
+    
+    def register_sub_agent(self, name: str, handler: Callable):
+        """注册子 Agent"""
+        self.sub_agents[name] = handler
+    
+    def execute_plan(self, task: str, plan: list[dict]):
+        """按计划调度子 Agent 执行"""
+        for step in plan:
+            agent_name = step["agent"]
+            sub_task = step["task"]
+            
+            print(f"📋 分配任务给 [{agent_name}]: {sub_task}")
+            
+            # 子 Agent 在独立的上下文中执行
+            # 只传入必要的信息，不传整个对话历史
+            result = self.sub_agents[agent_name](
+                task=sub_task,
+                context={
+                    "overall_objective": task,
+                    "previous_results": [
+                        r.result_summary for r in self.results
+                    ],
+                }
+            )
+            
+            self.results.append(result)
+            print(f"✅ [{agent_name}] 完成: {result.result_summary[:100]}...")
+    
+    def get_final_context(self) -&gt; str:
+        """获取所有子 Agent 结果的摘要（用于最终总结）"""
+        summaries = []
+        for r in self.results:
+            summaries.append(
+                f"### {r.agent_name}: {r.task}\n"
+                f"结果: {r.result_summary}\n"
+                f"数据: {r.key_data}"
+            )
+        return "\n\n".join(summaries)
+
+
+# 使用示例
+orchestrator = OrchestratorAgent()
+
+# 一个复杂的研究任务被分解为多个独立子任务
+plan = [
+    {"agent": "researcher", "task": "搜索2025年Agent领域的最新论文"},
+    {"agent": "analyzer", "task": "分析搜索结果中的关键趋势"},
+    {"agent": "writer", "task": "根据分析结果撰写研究报告"},
+    {"agent": "reviewer", "task": "审核报告的准确性和完整性"},
+]
+</code></pre>
+<h2 id="三大策略对比"><a class="header" href="#三大策略对比">三大策略对比</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>维度</th><th>压缩整合</th><th>结构化笔记</th><th>子代理架构</th></tr></thead><tbody>
+<tr><td><strong>适用场景</strong></td><td>中等长度任务（20-50 轮）</td><td>持续执行的任务</td><td>可分解的复杂任务</td></tr>
+<tr><td><strong>实现复杂度</strong></td><td>低</td><td>中</td><td>高</td></tr>
+<tr><td><strong>信息保留</strong></td><td>摘要级别</td><td>结构化关键信息</td><td>每个子任务完整</td></tr>
+<tr><td><strong>额外开销</strong></td><td>摘要 LLM 调用</td><td>笔记维护</td><td>多 Agent 管理</td></tr>
+<tr><td><strong>最大优势</strong></td><td>简单直接</td><td>信息精确可控</td><td>天然隔离，可并行</td></tr>
+<tr><td><strong>典型代表</strong></td><td>ChatGPT 对话压缩</td><td>Claude Agent 的内部笔记</td><td>Devin 的多模块架构</td></tr>
+</tbody></table>
+</div>
+<h2 id="实践建议组合使用"><a class="header" href="#实践建议组合使用">实践建议：组合使用</a></h2>
+<p>在实际项目中，这三种策略往往需要<strong>组合使用</strong>：</p>
+<pre><code class="language-python">class ProductionContextManager:
+    """生产级上下文管理器：组合三种策略"""
+    
+    def __init__(self):
+        self.notepad = AgentNotepad()          # 策略2：结构化笔记
+        self.compactor = CompactionStrategy()   # 策略1：压缩整合
+        self.sub_results: list[str] = []        # 策略3：子 Agent 结果
+    
+    def build_context(self, system_prompt: str, current_query: str) -&gt; list[dict]:
+        """构建最终上下文"""
+        messages = []
+        
+        # 1. System Prompt（始终在最前面）
+        messages.append({"role": "system", "content": system_prompt})
+        
+        # 2. 结构化笔记（紧跟 system prompt，高注意力区域）
+        messages.append({
+            "role": "system",
+            "content": self.notepad.to_context_string()
+        })
+        
+        # 3. 子 Agent 结果摘要
+        if self.sub_results:
+            messages.append({
+                "role": "system",
+                "content": "## 子任务结果\n" + "\n".join(self.sub_results)
+            })
+        
+        # 4. 压缩后的对话历史
+        messages.extend(self.compactor.build_context())
+        
+        # 5. 当前用户查询（在最后，最高注意力区域）
+        messages.append({"role": "user", "content": current_query})
+        
+        return messages
+</code></pre>
+<h2 id="本节小结"><a class="header" href="#本节小结">本节小结</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>策略</th><th>核心思想</th><th>最适合</th></tr></thead><tbody>
+<tr><td><strong>压缩整合</strong></td><td>定期摘要，释放空间</td><td>持续对话场景</td></tr>
+<tr><td><strong>结构化笔记</strong></td><td>主动记录，精确控制</td><td>多步骤分析任务</td></tr>
+<tr><td><strong>子代理架构</strong></td><td>分而治之，独立上下文</td><td>可并行的复杂任务</td></tr>
+</tbody></table>
+</div>
+<h2 id="-思考练习"><a class="header" href="#-思考练习">🤔 思考练习</a></h2>
+<ol>
+<li>如果你要构建一个能执行"深度研究"的 Agent（需要搜索 50+ 网页并撰写报告），你会如何组合这三种策略？</li>
+<li>压缩整合在什么情况下可能造成关键信息丢失？如何缓解？</li>
+<li>子代理架构中，主 Agent 和子 Agent 之间应该传递多少信息？传多了和传少了分别有什么问题？</li>
+</ol>
+<hr />
+<h2 id="参考文献"><a class="header" href="#参考文献">参考文献</a></h2>
+<p>[1] ANTHROPIC. Building effective agents[EB/OL]. 2024. https://www.anthropic.com/engineering/building-effective-agents.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chapter_context_engineering/02_context_window.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../chapter_context_engineering/04_practice_context_builder.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chapter_context_engineering/02_context_window.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../chapter_context_engineering/04_practice_context_builder.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
