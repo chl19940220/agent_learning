@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="agent-行为的可控性与对齐"><a class="header" href="#agent-行为的可控性与对齐">Agent 行为的可控性与对齐</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="agent-行为的可控性与对齐"><a class="header" href="#agent-行为的可控性与对齐">Agent 行为的可控性与对齐</a></h1>
 <blockquote>
 <p><strong>本节目标</strong>：理解 Agent 对齐的重要性，学会设计行为边界和兜底机制。</p>
 </blockquote>
@@ -457,22 +458,6 @@ class ProgressiveAutonomy:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

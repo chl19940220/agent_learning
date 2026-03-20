@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="autogpt-与-babyagi-的启示"><a class="header" href="#autogpt-与-babyagi-的启示">AutoGPT 与 BabyAGI 的启示</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="autogpt-与-babyagi-的启示"><a class="header" href="#autogpt-与-babyagi-的启示">AutoGPT 与 BabyAGI 的启示</a></h1>
 <p>AutoGPT（2023年3月）和 BabyAGI（2023年4月）是最早引起广泛关注的自主 Agent 项目。虽然它们在生产环境中的实用性有限，但其设计理念对整个 Agent 领域产生了深远影响。</p>
 <h2 id="autogpt自主执行任务的先驱"><a class="header" href="#autogpt自主执行任务的先驱">AutoGPT：自主执行任务的先驱</a></h2>
 <p>AutoGPT 的核心理念是：给定一个目标，Agent 自主规划并执行所有步骤。</p>
@@ -445,22 +446,6 @@ agent.run("列举 Python 装饰器的3种常见应用场景", max_tasks=5)
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

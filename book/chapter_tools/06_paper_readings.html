@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="46-论文解读工具学习前沿进展"><a class="header" href="#46-论文解读工具学习前沿进展">4.6 论文解读：工具学习前沿进展</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="46-论文解读工具学习前沿进展"><a class="header" href="#46-论文解读工具学习前沿进展">4.6 论文解读：工具学习前沿进展</a></h1>
 <blockquote>
 <p>📖 <em>"The best way to predict the future is to invent it."</em><br />
 <em>"让 LLM 使用工具"是 Agent 研究中最活跃的方向之一。本节深入解读三篇奠基性论文。</em></p>
@@ -421,22 +422,6 @@ MCP + RAG-MCP (工业标准化 + 动态工具发现)
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

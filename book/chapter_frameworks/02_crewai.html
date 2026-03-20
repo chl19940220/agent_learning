@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="crewai角色扮演型多-agent-框架"><a class="header" href="#crewai角色扮演型多-agent-框架">CrewAI：角色扮演型多 Agent 框架</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="crewai角色扮演型多-agent-框架"><a class="header" href="#crewai角色扮演型多-agent-框架">CrewAI：角色扮演型多 Agent 框架</a></h1>
 <p>CrewAI 是一个专为多 Agent 协作设计的框架，通过"角色扮演"让不同的 Agent 扮演不同的专业角色，共同完成复杂任务。自 2024 年推出以来，CrewAI 已发展为最受欢迎的多 Agent 框架之一，并在 2025 年引入了 <strong>Flows</strong> 等重要新特性。</p>
 <h2 id="crewai-核心概念"><a class="header" href="#crewai-核心概念">CrewAI 核心概念</a></h2>
 <p>CrewAI 围绕三个核心抽象构建：<strong>Agent</strong>（角色）、<strong>Task</strong>（任务）和 <strong>Crew</strong>（团队）。每个 Agent 都有明确的角色定位和目标，通过自然语言描述来定义其行为模式：</p>
@@ -468,22 +469,6 @@ LangGraph 特点：
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

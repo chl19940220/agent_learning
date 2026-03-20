@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="66-论文解读规划与推理前沿研究"><a class="header" href="#66-论文解读规划与推理前沿研究">6.6 论文解读：规划与推理前沿研究</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="66-论文解读规划与推理前沿研究"><a class="header" href="#66-论文解读规划与推理前沿研究">6.6 论文解读：规划与推理前沿研究</a></h1>
 <blockquote>
 <p>📖 <em>"Agent 的推理能力决定了它的上限，而规划能力决定了它能处理的任务复杂度。"</em><br />
 <em>本节深入解读规划与推理领域的核心论文。</em></p>
@@ -482,22 +483,6 @@ DeepSeek-R1（RL + 蒸馏）：
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

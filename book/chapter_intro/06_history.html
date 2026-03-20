@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="智能体发展史从符号主义到大模型驱动"><a class="header" href="#智能体发展史从符号主义到大模型驱动">智能体发展史：从符号主义到大模型驱动</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="智能体发展史从符号主义到大模型驱动"><a class="header" href="#智能体发展史从符号主义到大模型驱动">智能体发展史：从符号主义到大模型驱动</a></h1>
 <blockquote>
 <p>📖 <em>"不了解历史，就无法真正理解当下。Agent 的每一次跃迁，都站在前人的肩膀之上。"</em></p>
 </blockquote>
@@ -505,22 +506,6 @@ class RLAgentLoop:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

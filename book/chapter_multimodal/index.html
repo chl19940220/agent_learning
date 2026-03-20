@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="第18章-项目实战多模态-agent"><a class="header" href="#第18章-项目实战多模态-agent">第18章 项目实战：多模态 Agent</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="第18章-项目实战多模态-agent"><a class="header" href="#第18章-项目实战多模态-agent">第18章 项目实战：多模态 Agent</a></h1>
 <blockquote>
 <p>🎨 <em>"真实世界的信息不只有文字——图片、语音、视频都是 Agent 需要理解的语言。"</em></p>
 </blockquote>
@@ -249,22 +250,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

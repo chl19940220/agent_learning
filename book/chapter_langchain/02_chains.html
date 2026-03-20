@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="chain构建处理管道"><a class="header" href="#chain构建处理管道">Chain：构建处理管道</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="chain构建处理管道"><a class="header" href="#chain构建处理管道">Chain：构建处理管道</a></h1>
 <p>Chain（链）是 LangChain 的核心概念——将多个处理步骤串联成可复用的流水线。你可以把 Chain 想象成一条装配线：原材料（用户输入）从一端进入，经过多个加工站（提示模板、LLM、解析器等），最终从另一端输出成品（结构化结果）。</p>
 <p>在 LangChain 中，Chain 使用 <strong>LCEL（LangChain Expression Language）</strong> 语法来构建。LCEL 的核心符号是 <code>|</code>（管道符），它的工作方式类似于 Unix 命令行中的管道——前一个组件的输出会自动成为下一个组件的输入。</p>
 <p>本节将通过四种常见的 Chain 模式，带你掌握 LCEL 的核心用法。</p>
@@ -414,22 +415,6 @@ asyncio.run(stream_response("什么是量子纠缠？"))
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

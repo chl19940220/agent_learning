@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="第14章-安全与可靠性"><a class="header" href="#第14章-安全与可靠性">第14章 安全与可靠性</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="第14章-安全与可靠性"><a class="header" href="#第14章-安全与可靠性">第14章 安全与可靠性</a></h1>
 <blockquote>
 <p>Agent 拥有了工具和自主性，安全问题就变得尤为重要。这一章是从"能用"到"敢用"的关键。</p>
 </blockquote>
@@ -248,22 +249,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="langchain-架构全景"><a class="header" href="#langchain-架构全景">LangChain 架构全景</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="langchain-架构全景"><a class="header" href="#langchain-架构全景">LangChain 架构全景</a></h1>
 <p>LangChain 是一个模块化的 LLM 应用开发框架，核心设计思想是<strong>通过标准化接口组合各类组件</strong>，让开发者专注于业务逻辑。</p>
 <h2 id="核心组件体系"><a class="header" href="#核心组件体系">核心组件体系</a></h2>
 <p><img src="../svg/chapter_langchain_01_langchain_components.svg" alt="LangChain核心组件体系" /></p>
@@ -355,22 +356,6 @@ print(langchain.__version__)  # 应为 0.3.x
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

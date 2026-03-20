@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="条件路由与循环控制"><a class="header" href="#条件路由与循环控制">条件路由与循环控制</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="条件路由与循环控制"><a class="header" href="#条件路由与循环控制">条件路由与循环控制</a></h1>
 <p>LangGraph 的强大之处在于灵活的条件路由和循环控制——这让它能够表达比简单的"调用工具"更复杂的工作流。</p>
 <p>在上一节中，我们用 <code>tools_condition</code> 这个内置的条件函数来判断"是否需要工具"。但现实中的 Agent 往往需要更复杂的决策逻辑：根据代码审查的结果决定是通过还是打回修改、根据用户的意图路由到不同的处理流程、根据质量评分决定是否需要迭代优化……</p>
 <p>这些都可以用<strong>条件路由</strong>来实现——你定义一个条件函数，它检查当前状态，返回一个字符串来标识应该走哪条路。然后用 <code>add_conditional_edges</code> 将这些字符串映射到不同的目标节点。</p>
@@ -365,22 +366,6 @@ print(f"迭代次数：{result['iteration']}")</p>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

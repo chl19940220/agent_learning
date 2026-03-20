@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="从提示工程到上下文工程"><a class="header" href="#从提示工程到上下文工程">从提示工程到上下文工程</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="从提示工程到上下文工程"><a class="header" href="#从提示工程到上下文工程">从提示工程到上下文工程</a></h1>
 <blockquote>
 <p>📖 <em>"Prompt Engineering 是对 LLM 说什么，Context Engineering 是让 LLM 看到什么。"</em></p>
 </blockquote>
@@ -441,22 +442,6 @@ structured_context = """
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

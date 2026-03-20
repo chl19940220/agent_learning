@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="实战多-agent-软件开发团队"><a class="header" href="#实战多-agent-软件开发团队">实战：多 Agent 软件开发团队</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="实战多-agent-软件开发团队"><a class="header" href="#实战多-agent-软件开发团队">实战：多 Agent 软件开发团队</a></h1>
 <p>综合本章所有知识，构建一个完整的多 Agent 软件开发系统，模拟真实的开发团队协作。</p>
 <h2 id="系统设计"><a class="header" href="#系统设计">系统设计</a></h2>
 <p>这个项目模拟了一个完整的软件开发团队，包含 6 个角色：产品经理、架构师、开发工程师、测试工程师、DevOps 工程师和文档工程师。每个角色由一个独立的 Agent 节点承担，它们通过<strong>共享状态</strong>（<code>DevState</code>）传递工作成果。</p>
@@ -468,22 +469,6 @@ if __name__ == "__main__":
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

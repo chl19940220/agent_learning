@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="技能的定义与封装"><a class="header" href="#技能的定义与封装">技能的定义与封装</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="技能的定义与封装"><a class="header" href="#技能的定义与封装">技能的定义与封装</a></h1>
 <p>上一节我们了解了技能的概念。本节深入探讨三种主流的技能封装方式，从最简单到最复杂，每种方式都有其适用场景。</p>
 <h2 id="方式一prompt-based-skill提示型技能"><a class="header" href="#方式一prompt-based-skill提示型技能">方式一：Prompt-based Skill（提示型技能）</a></h2>
 <p>这是最简单也是最流行的技能封装方式——<strong>用结构化的 Prompt 将领域知识和行为指南注入 Agent</strong>。</p>
@@ -669,22 +670,6 @@ class HybridDataAnalystSkill:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="基准测试与评估指标"><a class="header" href="#基准测试与评估指标">基准测试与评估指标</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="基准测试与评估指标"><a class="header" href="#基准测试与评估指标">基准测试与评估指标</a></h1>
 <blockquote>
 <p><strong>本节目标</strong>：深入理解业界主流的 Agent 基准测试及其评估原理，掌握 BFCL、GAIA、AgentBench、WebArena、SWE-bench 等基准的底层算法，并学会设计自己的评估体系。</p>
 </blockquote>
@@ -1026,22 +1027,6 @@ class AgentBenchmarkRunner:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

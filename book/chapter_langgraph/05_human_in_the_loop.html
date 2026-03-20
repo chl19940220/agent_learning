@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="human-in-the-loop人机协作"><a class="header" href="#human-in-the-loop人机协作">Human-in-the-Loop：人机协作</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="human-in-the-loop人机协作"><a class="header" href="#human-in-the-loop人机协作">Human-in-the-Loop：人机协作</a></h1>
 <p>在生产环境中，让 Agent 完全自主运行是有风险的——删除文件、发送邮件、执行支付等操作一旦出错就无法撤回。<strong>Human-in-the-Loop（人机协作）</strong> 机制允许在 Agent 执行危险操作前暂停，等待人类确认后再继续。</p>
 <p>LangGraph 通过 <strong>Checkpointer</strong>（检查点）机制实现这一能力。Checkpointer 会在图执行的每一步保存状态快照，使得图可以在任意节点暂停并恢复。</p>
 <h2 id="使用-checkpointer-实现暂停恢复"><a class="header" href="#使用-checkpointer-实现暂停恢复">使用 Checkpointer 实现暂停恢复</a></h2>
@@ -383,22 +384,6 @@ print(f"\n最终结果：{result}")
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

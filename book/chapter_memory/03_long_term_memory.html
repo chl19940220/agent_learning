@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="长期记忆向量数据库与检索"><a class="header" href="#长期记忆向量数据库与检索">长期记忆：向量数据库与检索</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="长期记忆向量数据库与检索"><a class="header" href="#长期记忆向量数据库与检索">长期记忆：向量数据库与检索</a></h1>
 <p>长期记忆让 Agent 能够"记住"跨越多次会话的信息——你今天告诉它你是 Python 开发者、偏好简洁风格，下周再来对话时它依然记得。</p>
 <blockquote>
 <p>📄 <strong>学术前沿</strong>：记忆系统的一个经典研究是 Stanford 的 Generative Agents [1]——25 个 AI Agent 在虚拟小镇中生活，它们通过"记忆流"（Memory Stream）记录所有经历，并通过<strong>时近性（Recency）、重要性（Importance）、相关性（Relevance）</strong> 三个维度的加权来检索记忆。特别值得注意的是其记忆衰减机制：越久远的记忆检索权重越低（指数衰减），但如果某段记忆被频繁回忆则权重会提升。这种设计与认知科学中的记忆巩固理论高度一致。</p>
@@ -571,22 +572,6 @@ def test_memory_system():
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="使用-langchain-构建-agent"><a class="header" href="#使用-langchain-构建-agent">使用 LangChain 构建 Agent</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="使用-langchain-构建-agent"><a class="header" href="#使用-langchain-构建-agent">使用 LangChain 构建 Agent</a></h1>
 <p>前面几章我们都是"手工"构建 Agent——自己写工具 Schema、自己管理消息循环、自己处理工具调用。这虽然有助于理解底层原理，但在实际项目中太繁琐了。LangChain 提供了标准化的工具接口和 AgentExecutor，大大简化了 Agent 开发。</p>
 <p>LangChain 做的事情，本质上是把我们之前手写的那些"样板代码"封装成了可复用的组件：</p>
 <ul>
@@ -428,22 +429,6 @@ agent_executor = AgentExecutor(
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

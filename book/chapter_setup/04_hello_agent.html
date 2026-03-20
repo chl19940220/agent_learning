@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="第一个-agenthello-agent"><a class="header" href="#第一个-agenthello-agent">第一个 Agent：Hello Agent！</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="第一个-agenthello-agent"><a class="header" href="#第一个-agenthello-agent">第一个 Agent：Hello Agent！</a></h1>
 <p>终于到了激动人心的时刻——让我们构建第一个真正的 Agent！它能使用工具、进行推理，并完成实际任务。</p>
 <h2 id="什么才算是真正的-agent"><a class="header" href="#什么才算是真正的-agent">什么才算是真正的 Agent？</a></h2>
 <p>一个最简单的 Agent 必须具备以下能力：</p>
@@ -623,22 +624,6 @@ Agent：计算结果是 18,945。
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

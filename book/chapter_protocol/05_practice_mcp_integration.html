@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="实战基于-mcp-的完整工具集成"><a class="header" href="#实战基于-mcp-的完整工具集成">实战：基于 MCP 的完整工具集成</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="实战基于-mcp-的完整工具集成"><a class="header" href="#实战基于-mcp-的完整工具集成">实战：基于 MCP 的完整工具集成</a></h1>
 <p>本节展示如何将自定义工具封装为 MCP 服务器，并在 LangChain Agent 中使用。</p>
 <p>MCP 的核心价值在于<strong>标准化和解耦</strong>：工具的实现（MCP Server）和工具的使用（MCP Client / Agent）完全分离。这意味着你可以用任何语言编写工具服务器，任何支持 MCP 协议的 Agent 框架都能直接使用这些工具，不需要为每个框架单独适配。</p>
 <p>下面的代码实现了三个关键组件：</p>
@@ -434,22 +435,6 @@ def cached_database_query(db_path: str, sql: str) -&gt; str:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="自定义工具的设计与实现"><a class="header" href="#自定义工具的设计与实现">自定义工具的设计与实现</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="自定义工具的设计与实现"><a class="header" href="#自定义工具的设计与实现">自定义工具的设计与实现</a></h1>
 <p>好的工具设计是 Agent 成功的关键。如果说 LLM 是 Agent 的"大脑"，那么工具就是它的"手脚"——大脑再聪明，手脚笨拙也做不好事情。</p>
 <p>在实际开发中，很多 Agent 表现不佳的根本原因并非模型能力不足，而是工具设计存在问题：工具描述模糊导致模型选错工具、缺少输入验证导致工具崩溃、错误信息不清晰导致模型无法自我纠错。本节从实践角度，系统讲解如何设计出高质量、可靠的 Agent 工具。</p>
 <h2 id="工具设计原则"><a class="header" href="#工具设计原则">工具设计原则</a></h2>
@@ -583,22 +584,6 @@ cached_search = CachedTool(search_web, ttl_seconds=3600)  # 缓存1小时
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

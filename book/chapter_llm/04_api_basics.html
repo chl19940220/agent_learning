@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="模型-api-调用入门openai--开源模型"><a class="header" href="#模型-api-调用入门openai--开源模型">模型 API 调用入门（OpenAI / 开源模型）</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="模型-api-调用入门openai--开源模型"><a class="header" href="#模型-api-调用入门openai--开源模型">模型 API 调用入门（OpenAI / 开源模型）</a></h1>
 <p>理论学够了，动手写代码！本节将带你完成第一次真正的模型 API 调用，并掌握流式输出、错误处理等生产环境必备技能。</p>
 <h2 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h2>
 <pre><code class="language-bash"># 安装必要的库
@@ -601,22 +602,6 @@ print(result)
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

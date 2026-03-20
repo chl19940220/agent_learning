@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="143-anpagent-network-protocol协议"><a class="header" href="#143-anpagent-network-protocol协议">14.3 ANP（Agent Network Protocol）协议</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="143-anpagent-network-protocol协议"><a class="header" href="#143-anpagent-network-protocol协议">14.3 ANP（Agent Network Protocol）协议</a></h1>
 <blockquote>
 <p><strong>本节目标</strong>：理解 ANP 协议的设计理念，掌握去中心化智能体网络的核心机制，并与 MCP/A2A 进行对比分析。</p>
 </blockquote>
@@ -526,22 +527,6 @@ agent_capability = {
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

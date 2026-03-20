@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="成本控制与性能优化"><a class="header" href="#成本控制与性能优化">成本控制与性能优化</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="成本控制与性能优化"><a class="header" href="#成本控制与性能优化">成本控制与性能优化</a></h1>
 <blockquote>
 <p><strong>本节目标</strong>：学会在保证 Agent 质量的前提下，有效控制 API 调用成本和提升响应速度。</p>
 </blockquote>
@@ -199,7 +200,7 @@
 <tr><td>基础设施</td><td>服务器、存储、网络</td><td>10-20%</td></tr>
 </tbody></table>
 </div>
-<p>一个简单的计算：如果你的 Agent 每次对话平均消耗 5000 个 Token（含输入和输出），使用 GPT-4o，成本约为 $0.02。每天处理 10000 次对话，月费用约 $6000。</p>
+<p>一个简单的计算：如果你的 Agent 每次对话平均消耗 5000 个 Token（含输入和输出），使用 GPT-4o，成本约为 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">0.02</span><span class="mord cjk_fallback">。每天处理</span><span class="mord">10000</span><span class="mord cjk_fallback">次对话，月费用约</span></span></span></span>6000。</p>
 <hr />
 <h2 id="策略一智能模型路由"><a class="header" href="#策略一智能模型路由">策略一：智能模型路由</a></h2>
 <p>不是所有问题都需要最强大（也最贵）的模型。用便宜模型处理简单问题，复杂问题才用高端模型：</p>
@@ -546,22 +547,6 @@ class CostTracker:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

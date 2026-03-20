@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="短期记忆对话历史管理"><a class="header" href="#短期记忆对话历史管理">短期记忆：对话历史管理</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="短期记忆对话历史管理"><a class="header" href="#短期记忆对话历史管理">短期记忆：对话历史管理</a></h1>
 <p>短期记忆是最基础的记忆形式——维护对话历史，让 Agent 知道"刚才我们说了什么"。</p>
 <p>为什么这很重要？LLM 本身是<strong>无状态</strong>的——每次调用都是一次全新的请求，模型并不"记得"上一次对话的内容。如果用户在第一轮说"我叫张伟"，第二轮问"我叫什么名字"，模型如果不回传之前的对话历史，就会一脸茫然。短期记忆解决的正是这个问题：<strong>通过在每次请求中附带之前的对话记录，让模型"看起来"拥有了记忆。</strong></p>
 <p>但这带来一个新问题：LLM 的上下文窗口是有限的（GPT-4o 约 128K Token）。随着对话越来越长，Token 消耗急剧增加，不仅费用高昂，还可能超出模型的处理上限。因此，我们需要<strong>对话历史管理策略</strong>来平衡"记忆完整性"和"资源效率"。</p>
@@ -507,22 +508,6 @@ for msg in conversations:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

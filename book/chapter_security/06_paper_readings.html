@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="146-论文解读安全与可靠性前沿研究"><a class="header" href="#146-论文解读安全与可靠性前沿研究">14.6 论文解读：安全与可靠性前沿研究</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="146-论文解读安全与可靠性前沿研究"><a class="header" href="#146-论文解读安全与可靠性前沿研究">14.6 论文解读：安全与可靠性前沿研究</a></h1>
 <blockquote>
 <p>📖 <em>"安全不是功能，而是基线。理解攻击才能更好地防御。"</em><br />
 <em>本节深入解读 Prompt 注入攻防和幻觉检测缓解领域的核心论文。</em></p>
@@ -595,22 +596,6 @@ SecAlign 方法（对齐训练）：
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

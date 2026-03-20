@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="任务分解将复杂问题拆解为子任务"><a class="header" href="#任务分解将复杂问题拆解为子任务">任务分解：将复杂问题拆解为子任务</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="任务分解将复杂问题拆解为子任务"><a class="header" href="#任务分解将复杂问题拆解为子任务">任务分解：将复杂问题拆解为子任务</a></h1>
 <p>复杂任务往往超出单个 LLM 调用的能力范围。任务分解是将大问题拆成可管理的小问题，然后逐步解决。</p>
 <blockquote>
 <p>📄 <strong>学术背景</strong>：任务分解的思想在 AI 规划领域有悠久的历史（如层次任务网络 HTN），但将其与 LLM 结合是近年的研究热点。<em>"Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning"</em>（Wang et al., 2023）是该方向的代表性工作，它提出让 LLM 先制定计划（"Let's first understand the problem and devise a plan"），再逐步执行每个子任务，在 GSM8K 等数学推理基准上比标准 Zero-shot CoT 提升了 5-6 个百分点。</p>
@@ -444,22 +445,6 @@ print(json.dumps(task_tree, ensure_ascii=False, indent=2))
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

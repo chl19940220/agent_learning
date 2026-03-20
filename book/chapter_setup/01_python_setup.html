@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="python-环境与依赖管理"><a class="header" href="#python-环境与依赖管理">Python 环境与依赖管理</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="python-环境与依赖管理"><a class="header" href="#python-环境与依赖管理">Python 环境与依赖管理</a></h1>
 <p>Agent 项目依赖众多第三方库，版本冲突是常见的"头疼问题"。使用虚拟环境可以为每个项目创建独立的依赖空间，彻底避免冲突。</p>
 <h2 id="为什么需要虚拟环境"><a class="header" href="#为什么需要虚拟环境">为什么需要虚拟环境？</a></h2>
 <p><img src="../svg/chapter_setup_01_venv_compare.svg" alt="虚拟环境方案对比" /></p>
@@ -418,22 +419,6 @@ python check_env.py
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

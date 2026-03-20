@@ -1,0 +1,745 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>18.7 最新研究进展（2025—2026） - 从零开始学 Agent</title>
+
+
+        <!-- Custom HTML head -->
+        <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true
+          }
+        };
+        </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">从零开始学 Agent</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="187-最新研究进展20252026"><a class="header" href="#187-最新研究进展20252026">18.7 最新研究进展（2025—2026）</a></h1>
+<blockquote>
+<p>📖 <em>"从 DeepSeek-R1 登上 Nature 封面到 DAPO/VAPO 刷新推理基准，Agentic-RL 正以惊人的速度从实验室走向工程实践。本节将带你纵览这一领域最前沿的研究成果。"</em></p>
+</blockquote>
+<blockquote>
+<p>⏰ <strong>时效性说明</strong>：本节内容更新至 2026 年 3 月 20 日。由于该领域发展极为迅速，建议读者结合 <a href="https://github.com/yuezhao-zy/Awesome-RL-Reasoning-Recipes">Awesome-RL-Reasoning-Recipes</a> 等开源项目获取最新动态。</p>
+</blockquote>
+<hr />
+<h2 id="71-概览从-rlhf-到推理-rl-的范式转变"><a class="header" href="#71-概览从-rlhf-到推理-rl-的范式转变">7.1 概览：从 RLHF 到推理 RL 的范式转变</a></h2>
+<p>过去两年（2025—2026）是大模型强化学习领域爆发式发展的两年。以 <strong>DeepSeek-R1</strong> 登上 Nature 封面为标志，RL 训练 LLM 从"对齐人类偏好"（RLHF）的辅助角色，跃升为<strong>激发模型推理能力</strong>的核心技术。我们可以用一张时间线来概览关键里程碑：</p>
+<pre><code>2024.09  OpenAI o1 发布，首次展示"推理时间计算扩展"（test-time compute scaling）的潜力
+2025.01  DeepSeek-R1 发布，纯 RL 训练激发自主推理能力，使用 GRPO 算法
+2025.01  Kimi k1.5 发布，128K 长上下文 RL 训练，Long2Short 蒸馏技术
+2025.02  QwQ-32B 发布，展示中等规模模型的推理 RL 训练效果
+2025.03  DAPO 开源发布，提出可复现的大规模 RL 训练方案
+2025.04  VAPO 发布，基于价值增强的 PPO 框架，AIME 2024 达到 60.4 分
+2025.06  OpenAI o3 发布，推理能力进一步跃升
+2025.08  Self-Aligned Reward (SAR) 提出，利用困惑度信号解决过度思考
+2025.10  PURE 框架发布，最小形式信用分配解决奖励破解问题
+2025.12  Co-rewarding (ICLR 2026) 提出自监督 RL 学习方案
+2026.01  RLVR 新范式：基于问题拆解的高效强化学习方法
+2026.02  DRQA 动态推理配额分配，token 成本降低 31%
+2026.03  CoRLHF 提出协同策略-奖励联合优化
+</code></pre>
+<p>这些工作可以归纳为以下几个核心研究方向：</p>
+<div class="table-wrapper"><table><thead><tr><th>方向</th><th>代表工作</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><strong>推理模型训练</strong></td><td>DeepSeek-R1, Kimi k1.5, QwQ</td><td>如何通过 RL 激发 LLM 的推理能力？</td></tr>
+<tr><td><strong>RL 算法改进</strong></td><td>DAPO, VAPO, GRPO 变体</td><td>如何让大模型 RL 训练更稳定、更高效？</td></tr>
+<tr><td><strong>奖励设计与反馈</strong></td><td>SAR, Co-rewarding, CoRLHF</td><td>如何设计更好的奖励信号？</td></tr>
+<tr><td><strong>过度思考与效率</strong></td><td>PURE, DRQA, DEER</td><td>如何让模型"恰到好处"地推理？</td></tr>
+<tr><td><strong>Agentic 任务 RL</strong></td><td>AgentPRM, R³L, DeepSWE</td><td>如何将 RL 扩展到工具调用等 Agent 任务？</td></tr>
+</tbody></table>
+</div>
+<p>下面我们逐一深入介绍每个方向的重要论文。</p>
+<hr />
+<h2 id="72-推理模型纯-rl-训练激发自主推理"><a class="header" href="#72-推理模型纯-rl-训练激发自主推理">7.2 推理模型：纯 RL 训练激发自主推理</a></h2>
+<h3 id="721-deepseek-r1nature-封面的突破"><a class="header" href="#721-deepseek-r1nature-封面的突破">7.2.1 DeepSeek-R1：Nature 封面的突破</a></h3>
+<p><strong>论文</strong>：<em>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</em> (Nature, 2025) [1]</p>
+<p>DeepSeek-R1 是该领域最具里程碑意义的工作。它的核心发现是：</p>
+<blockquote>
+<p><strong>仅通过 RL 训练（不需要人工标注的推理链），模型可以自主涌现出多步推理、自我反思和动态策略调整等高级认知能力。</strong></p>
+</blockquote>
+<h4 id="核心技术要点"><a class="header" href="#核心技术要点">核心技术要点</a></h4>
+<ol>
+<li>
+<p><strong>GRPO 算法</strong>：使用组内相对策略优化（详见 <a href="./05_grpo.html">18.5 节</a>），通过组内回答竞争优化策略，避免昂贵的 Critic 网络，总训练成本约 29.4 万美元。</p>
+</li>
+<li>
+<p><strong>多阶段训练框架</strong>：</p>
+<ul>
+<li><strong>R1-Zero 阶段</strong>：仅使用结果正确性作为奖励（可验证奖励 RLVR），不使用任何 SFT 数据。模型自发涌现出 "Aha moment"——在推理过程中学会自我反思和纠错。</li>
+<li><strong>R1 阶段</strong>：在 R1-Zero 基础上，融入少量高质量 SFT 数据和人类偏好对齐，提升综合能力。</li>
+</ul>
+</li>
+<li>
+<p><strong>可验证奖励（RLVR）</strong>：奖励信号来源于可自动验证的任务（如数学题的最终答案），无需人工标注。</p>
+</li>
+</ol>
+<h4 id="关键实验结果"><a class="header" href="#关键实验结果">关键实验结果</a></h4>
+<ul>
+<li>在 MMLU、AIME 2024、LiveCodeBench 等 21 个基准上达到 SOTA</li>
+<li>R1-Zero 展示了"从零开始学推理"的可能性——RL 训练过程中推理链长度自发增长</li>
+<li>蒸馏到 7B/14B 小模型后仍保持强推理能力</li>
+</ul>
+<h4 id="为什么重要"><a class="header" href="#为什么重要">为什么重要？</a></h4>
+<p>DeepSeek-R1 证明了两个关键论点：</p>
+<ol>
+<li><strong>RL 可以激发预训练中潜在的推理能力</strong>——这些能力在 SFT 或 prompt engineering 中难以充分释放</li>
+<li><strong>推理能力可以在纯 RL 环境中"涌现"</strong>——无需依赖人工标注的推理链作为示范</li>
+</ol>
+<hr />
+<h3 id="722-kimi-k15长上下文-rl-的突破"><a class="header" href="#722-kimi-k15长上下文-rl-的突破">7.2.2 Kimi k1.5：长上下文 RL 的突破</a></h3>
+<p><strong>论文</strong>：<em>Kimi k1.5: Scaling Reinforcement Learning with LLMs</em> (2025) [2]</p>
+<p>Kimi k1.5 由 Moonshot AI 团队开发，在几个方面做出了独特贡献：</p>
+<h4 id="核心创新"><a class="header" href="#核心创新">核心创新</a></h4>
+<ol>
+<li>
+<p><strong>128K 长上下文 RL 训练</strong>：将 RL 训练的上下文窗口从传统的 4K-8K 扩展到 128K tokens，通过<strong>部分轨迹重用</strong>（Partial Rollout Reuse）提升训练效率。</p>
+</li>
+<li>
+<p><strong>简化 RL 框架</strong>：摒弃蒙特卡洛树搜索（MCTS）和价值函数，仅通过改进的在线镜像下降（Online Mirror Descent）直接优化模型，大幅降低计算负担。</p>
+</li>
+<li>
+<p><strong>Long2Short 蒸馏技术</strong>：将长上下文推理能力"压缩"到短上下文模型中。具体做法是：</p>
+<ul>
+<li>先在长上下文设置下训练出强推理能力</li>
+<li>然后通过知识蒸馏，让短上下文模型学会"精炼"推理</li>
+</ul>
+</li>
+</ol>
+<h4 id="关键结果"><a class="header" href="#关键结果">关键结果</a></h4>
+<ul>
+<li>在 LiveCodeBench 等短任务上超越 GPT-4o 达 550%</li>
+<li>Long2Short 技术证明了<strong>长链推理能力可以被压缩而不显著损失</strong></li>
+<li>首次展示 128K 上下文窗口的 RL 训练的可行性</li>
+</ul>
+<hr />
+<h3 id="723-qwq-32b中等规模的推理-rl"><a class="header" href="#723-qwq-32b中等规模的推理-rl">7.2.3 QwQ-32B：中等规模的推理 RL</a></h3>
+<p><strong>论文</strong>：<em>QwQ: Reflect and Question to Understand the World</em> (Alibaba, 2025) [3]</p>
+<p>QwQ-32B 是阿里巴巴通义团队发布的中等规模推理模型，其意义在于证明了 <strong>32B 参数量级的模型也能通过 RL 训练获得强大的推理能力</strong>。</p>
+<h4 id="技术特点"><a class="header" href="#技术特点">技术特点</a></h4>
+<ul>
+<li>基于 Qwen2.5-32B 进行 RL 训练</li>
+<li>在数学推理任务上接近 DeepSeek-R1 的表现</li>
+<li>训练成本远低于 670B 级别模型</li>
+</ul>
+<h4 id="为什么重要-1"><a class="header" href="#为什么重要-1">为什么重要？</a></h4>
+<p>QwQ 证明了推理 RL 不是"大模型专属"——中等规模模型通过合适的 RL 训练同样能获得显著的推理能力提升，这对资源有限的团队和边缘部署场景具有重大实践价值。</p>
+<hr />
+<h3 id="724-openai-o1o3推理时间计算扩展"><a class="header" href="#724-openai-o1o3推理时间计算扩展">7.2.4 OpenAI o1/o3：推理时间计算扩展</a></h3>
+<p><strong>模型</strong>：<em>OpenAI o1</em> (2024.09) / <em>OpenAI o3</em> (2025.06) [4]</p>
+<p>虽然 OpenAI 未公布完整的技术报告，但 o1 和 o3 系列模型在业界产生了深远影响：</p>
+<h4 id="核心理念test-time-compute-scaling"><a class="header" href="#核心理念test-time-compute-scaling">核心理念：Test-Time Compute Scaling</a></h4>
+<p>传统的 Scaling Law 关注<strong>训练时计算扩展</strong>（更大模型 + 更多数据）。o1/o3 系列提出了另一个维度：</p>
+<blockquote>
+<p><strong>在推理时投入更多计算（更长的思考链、更多的搜索/验证），也能持续提升模型能力。</strong></p>
+</blockquote>
+<p>这意味着存在两条互补的扩展路径：</p>
+<ol>
+<li><strong>训练时扩展</strong>：增大模型、增加数据</li>
+<li><strong>推理时扩展</strong>：增加推理步骤、验证回路</li>
+</ol>
+<h4 id="对领域的影响"><a class="header" href="#对领域的影响">对领域的影响</a></h4>
+<ul>
+<li>催生了"推理模型"这一新品类</li>
+<li>推动了 GRPO、DAPO、VAPO 等面向推理任务的 RL 算法研发</li>
+<li>引发了对"推理效率"的关注——过度思考（Overthinking）问题浮出水面</li>
+</ul>
+<hr />
+<h2 id="73-rl-算法改进让大模型-rl-训练更稳定高效"><a class="header" href="#73-rl-算法改进让大模型-rl-训练更稳定高效">7.3 RL 算法改进：让大模型 RL 训练更稳定高效</a></h2>
+<h3 id="731-dapo大规模可复现的-rl-训练"><a class="header" href="#731-dapo大规模可复现的-rl-训练">7.3.1 DAPO：大规模可复现的 RL 训练</a></h3>
+<p><strong>论文</strong>：<em>DAPO: An Open-Source LLM Reinforcement Learning System at Scale</em> (2025) [5]</p>
+<p>DAPO（Decoupled Clip and Dynamic Sampling PPO）由字节跳动 Seed 团队提出，核心目标是解决大规模 RL 训练的<strong>可复现性</strong>问题。</p>
+<h4 id="核心技术"><a class="header" href="#核心技术">核心技术</a></h4>
+<ol>
+<li>
+<p><strong>解耦裁剪（Decoupled Clipping）</strong>：传统 PPO 使用对称裁剪 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span>，DAPO 将上下裁剪边界分离：</p>
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">high</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>（较大）：鼓励对好回答的探索</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>（较小）：严格抑制坏回答</li>
+</ul>
+<p>这种不对称设计让模型在"保守抑制坏行为"的同时"大胆探索好行为"。</p>
+</li>
+<li>
+<p><strong>动态采样（Dynamic Sampling）</strong>：根据训练进度动态调整每个问题的采样数量：</p>
+<ul>
+<li>训练初期：多采样，增加探索</li>
+<li>训练后期：少采样，精细优化</li>
+</ul>
+</li>
+<li>
+<p><strong>Token 级策略约束</strong>：在 token 级别而非序列级别施加 KL 约束，更精细地控制策略偏移。</p>
+</li>
+</ol>
+<h4 id="开源贡献"><a class="header" href="#开源贡献">开源贡献</a></h4>
+<p>DAPO 完整开源了训练代码和数据集（基于 Qwen2.5-32B），是目前最具可复现性的大规模 RL 训练方案之一。</p>
+<hr />
+<h3 id="732-vapo基于价值增强的-ppo"><a class="header" href="#732-vapo基于价值增强的-ppo">7.3.2 VAPO：基于价值增强的 PPO</a></h3>
+<p><strong>论文</strong>：<em>VAPO: Efficient and Reliable RL Framework for Advanced Reasoning Tasks</em> (ByteDance Seed, 2025) [6]</p>
+<p>VAPO（Value-based Augmented PPO）是 DAPO 的后续工作，专门针对<strong>长链推理任务</strong>中的难题。</p>
+<h4 id="核心问题"><a class="header" href="#核心问题">核心问题</a></h4>
+<p>长链推理（如数学证明、复杂编程）中，RL 训练面临三大挑战：</p>
+<ol>
+<li><strong>价值模型偏差</strong>：Critic 网络对长序列的价值估计不准</li>
+<li><strong>异构序列长度</strong>：同一批次中回答长度差异极大</li>
+<li><strong>稀疏奖励</strong>：只有最终答案才有奖励信号</li>
+</ol>
+<h4 id="核心技术-1"><a class="header" href="#核心技术-1">核心技术</a></h4>
+<ol>
+<li>
+<p><strong>价值预训练（Value Pretraining）</strong>：使用蒙特卡洛回报预训练 Critic 网络，减小初始化偏差。</p>
+</li>
+<li>
+<p><strong>解耦 GAE（Decoupled GAE）</strong>：</p>
+<ul>
+<li>对价值网络使用 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.22222em;">V</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.0</span></span></span></span>（低偏差、高方差）</li>
+<li>对策略网络使用 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">P</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.95</span></span></span></span>（平衡偏差与方差）</li>
+</ul>
+</li>
+<li>
+<p><strong>长度自适应 GAE（Length-Adaptive GAE）</strong>：根据序列长度动态调整 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span></span></span></span>：</p>
+</li>
+</ol>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.05</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>其中 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span> 为序列长度。长序列使用更大的 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span></span></span></span>（减少偏差），短序列使用更小的 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span></span></span></span>（减少方差）。</p>
+<ol start="4">
+<li><strong>Clip-Higher 探索</strong>：使用不对称裁剪 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">high</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.28</span></span></span></span>, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">low</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.2</span></span></span></span>，鼓励多样性采样。</li>
+</ol>
+<h4 id="关键结果-1"><a class="header" href="#关键结果-1">关键结果</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>模型</th><th>AIME 2024</th><th>训练步数</th><th>稳定性</th></tr></thead><tbody>
+<tr><td>DeepSeek-R1-Zero (671B)</td><td>~50</td><td>大量</td><td>偶有崩溃</td></tr>
+<tr><td>DAPO (32B)</td><td>~50</td><td>中等</td><td>较稳定</td></tr>
+<tr><td><strong>VAPO (32B)</strong></td><td><strong>60.4</strong></td><td><strong>~5,000</strong></td><td><strong>无崩溃</strong></td></tr>
+</tbody></table>
+</div>
+<p>VAPO 仅用 Qwen-32B 和 5,000 步训练就超越了 671B 的 DeepSeek-R1-Zero，且训练过程完全无崩溃。</p>
+<hr />
+<h3 id="733-grpo-变体与改进"><a class="header" href="#733-grpo-变体与改进">7.3.3 GRPO 变体与改进</a></h3>
+<p>自 DeepSeek-R1 提出 GRPO 以来，多篇论文对其进行了改进：</p>
+<div class="table-wrapper"><table><thead><tr><th>改进方向</th><th>代表工作</th><th>解决的问题</th></tr></thead><tbody>
+<tr><td>移除均值归一化</td><td>Dr. GRPO</td><td>原始 GRPO 的组内均值归一化会引入偏差</td></tr>
+<tr><td>自适应组大小</td><td>Adaptive GRPO</td><td>固定组大小不适合所有问题难度</td></tr>
+<tr><td>Token 级优势</td><td>Token-level GRPO</td><td>序列级优势对长序列不够精细</td></tr>
+<tr><td>在线/离线混合</td><td>Hybrid GRPO</td><td>纯在线采样效率低</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="74-奖励设计如何告诉模型什么是好的推理"><a class="header" href="#74-奖励设计如何告诉模型什么是好的推理">7.4 奖励设计：如何告诉模型什么是好的推理？</a></h2>
+<p>奖励函数是 RL 训练的"灵魂"。2025—2026 年，奖励设计出现了三个重要方向。</p>
+<h3 id="741-self-aligned-reward-sar利用模型内部信号"><a class="header" href="#741-self-aligned-reward-sar利用模型内部信号">7.4.1 Self-Aligned Reward (SAR)：利用模型内部信号</a></h3>
+<p><strong>论文</strong>：<em>Self-Aligned Reward: Towards Effective and Efficient Reasoners</em> (UIUC &amp; Amazon AWS, 2025) [7]</p>
+<h4 id="核心思想"><a class="header" href="#核心思想">核心思想</a></h4>
+<p>SAR 的核心洞察是：<strong>模型内部的困惑度（Perplexity）差异可以作为高质量的奖励信号</strong>。</p>
+<p>具体来说，SAR 计算两种条件下的困惑度差异：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SAR</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">PPL</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">PPL</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord">PPL</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>其中：</p>
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">PPL</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span>：给定问题 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> 时生成回答 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> 的困惑度</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">PPL</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>：将回答 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> 视为独立文本时的困惑度</li>
+</ul>
+<p><strong>直觉解释</strong>：</p>
+<ul>
+<li><strong>高 SAR</strong>：回答高度依赖于问题（是针对性的、简洁的回答）</li>
+<li><strong>低 SAR</strong>：回答与问题关联弱（可能是冗长、泛泛的内容）</li>
+</ul>
+<h4 id="为什么有效"><a class="header" href="#为什么有效">为什么有效？</a></h4>
+<ol>
+<li><strong>无需外部奖励模型</strong>：利用模型自身的语言建模能力</li>
+<li><strong>细粒度评分</strong>：可以区分"正确且简洁"vs"正确但冗长"</li>
+<li><strong>跨任务泛化</strong>：在数学数据上训练，在逻辑推理等非数学任务上同样有效</li>
+</ol>
+<h4 id="实验效果"><a class="header" href="#实验效果">实验效果</a></h4>
+<p>在 4 个基础模型和 7 个数据集上：</p>
+<ul>
+<li>准确率平均提升 4%</li>
+<li>输出长度减少 30%</li>
+</ul>
+<hr />
+<h3 id="742-co-rewarding自监督-rl-学习"><a class="header" href="#742-co-rewarding自监督-rl-学习">7.4.2 Co-rewarding：自监督 RL 学习</a></h3>
+<p><strong>论文</strong>：<em>Co-rewarding: Self-Supervised RL for LLM Reasoning</em> (ICLR 2026) [8]</p>
+<h4 id="核心问题-1"><a class="header" href="#核心问题-1">核心问题</a></h4>
+<p>Self-rewarding RL（让模型自己给自己打分）容易出现<strong>训练坍塌</strong>——模型学会生成"容易给自己高分"而非"真正好"的回答。</p>
+<h4 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h4>
+<p>Co-rewarding 引入<strong>互补监督信号</strong>：</p>
+<ol>
+<li>对同一问题生成<strong>改写版本</strong></li>
+<li>使用改写问题的回答作为原问题回答的辅助评估</li>
+<li>两个方向的评估互相约束，防止坍塌</li>
+</ol>
+<h4 id="关键结果-2"><a class="header" href="#关键结果-2">关键结果</a></h4>
+<ul>
+<li>在推理任务上性能提升 12.9%（无需真实标签）</li>
+<li>训练过程显著更稳定</li>
+</ul>
+<hr />
+<h3 id="743-corlhf协同策略-奖励联合优化"><a class="header" href="#743-corlhf协同策略-奖励联合优化">7.4.3 CoRLHF：协同策略-奖励联合优化</a></h3>
+<p><strong>论文</strong>：<em>CoRLHF: Reinforcement Learning from Human Feedback with Cooperative Policy-Reward Optimization</em> (Expert Systems with Applications, 2026) [9]</p>
+<h4 id="核心创新-1"><a class="header" href="#核心创新-1">核心创新</a></h4>
+<p>传统 RLHF 分两步：先训练奖励模型，再用奖励模型训练策略。这导致了<strong>分布不匹配</strong>问题——奖励模型训练时看到的数据分布与策略优化时生成的数据分布不一致。</p>
+<p>CoRLHF 将策略优化和奖励模型优化<strong>合并为一个迭代过程</strong>：</p>
+<ol>
+<li>策略生成新数据</li>
+<li>奖励模型在新数据上更新</li>
+<li>策略在更新后的奖励上优化</li>
+<li>循环迭代</li>
+</ol>
+<p>这种方法桥接了 RLHF 和 RLAIF，在减少人工反馈依赖的同时保持了对齐质量。</p>
+<hr />
+<h3 id="744-内生奖励llm-是自带的奖励模型"><a class="header" href="#744-内生奖励llm-是自带的奖励模型">7.4.4 内生奖励：LLM 是自带的奖励模型</a></h3>
+<p><strong>论文</strong>：周志华团队相关工作 (南京大学, 2025) [10]</p>
+<h4 id="颠覆性发现"><a class="header" href="#颠覆性发现">颠覆性发现</a></h4>
+<p>这项研究发现：<strong>LLM 的 next-token prediction 能力本身就蕴含了通用奖励函数</strong>（内生奖励，Endogenous Reward）。</p>
+<p>也就是说，预训练过程中学到的语言模型分布已经隐式编码了"什么是好的输出"的判断能力，无需额外训练奖励模型。</p>
+<h4 id="实践意义"><a class="header" href="#实践意义">实践意义</a></h4>
+<ul>
+<li>减少了 RLHF pipeline 中的一个组件（奖励模型）</li>
+<li>降低了误差累积的风险</li>
+<li>在多个对齐基准上超越传统奖励模型</li>
+</ul>
+<hr />
+<h2 id="75-过度思考与推理效率"><a class="header" href="#75-过度思考与推理效率">7.5 过度思考与推理效率</a></h2>
+<p>随着推理模型的普及，一个新问题浮出水面：<strong>过度思考（Overthinking）</strong>——模型在简单问题上也生成冗长的推理链，浪费计算资源且可能降低准确率。</p>
+<h3 id="751-问题分析为什么推理模型会想太多"><a class="header" href="#751-问题分析为什么推理模型会想太多">7.5.1 问题分析：为什么推理模型会"想太多"？</a></h3>
+<p>过度思考的根源在于 RLVR（基于可验证奖励的 RL）的奖励结构：</p>
+<blockquote>
+<p><strong>只要最终答案正确，不管推理过程多长、多冗余，模型都会获得同样的奖励。</strong></p>
+</blockquote>
+<p>这导致了两个问题：</p>
+<ol>
+<li><strong>奖励膨胀</strong>：标准 RL 的求和形式信用分配使模型偏好生成更多步骤</li>
+<li><strong>无差别激励</strong>：无法区分"简洁正确"和"冗长正确"</li>
+</ol>
+<h3 id="752-pure最小形式信用分配"><a class="header" href="#752-pure最小形式信用分配">7.5.2 PURE：最小形式信用分配</a></h3>
+<p><strong>论文</strong>：<em>Stop Summation: Min-Form Credit Assignment Is All Process Reward Model Needs for Reasoning</em> (2025) [11]</p>
+<h4 id="核心洞察"><a class="header" href="#核心洞察">核心洞察</a></h4>
+<p>传统 RL 将轨迹价值定义为未来奖励的<strong>总和</strong>：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">sum</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.1304em;vertical-align:-1.3021em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8479em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mrel mtight">=</span><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.3021em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mbin mtight">−</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<p>PURE 提出用<strong>最小值</strong>替代总和：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3175em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">min</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">min</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p><strong>直觉</strong>：推理链的强度取决于<strong>最薄弱的一环</strong>。</p>
+<div class="table-wrapper"><table><thead><tr><th>方式</th><th>训练信号</th><th>后果</th></tr></thead><tbody>
+<tr><td>求和形式</td><td>"多生成'还行'的步骤来堆分"</td><td>冗长、循环论证</td></tr>
+<tr><td>最小形式</td><td>"每一步都必须正确，一步错满盘输"</td><td>简洁、精确</td></tr>
+</tbody></table>
+</div>
+<h4 id="实现方法"><a class="header" href="#实现方法">实现方法</a></h4>
+<p>PURE 通过温度参数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span> 将过程奖励转换为新奖励，使标准 RL 算法（PPO/GRPO）的求和公式在数学上等效于取最小值——<strong>无需修改底层算法，只需奖励预处理</strong>。</p>
+<h4 id="实验结果"><a class="header" href="#实验结果">实验结果</a></h4>
+<ul>
+<li>求和形式训练几乎立即崩溃</li>
+<li>最小形式训练稳定提升</li>
+<li>样本效率提升 2-3 倍</li>
+</ul>
+<hr />
+<h3 id="753-drqa动态推理配额分配"><a class="header" href="#753-drqa动态推理配额分配">7.5.3 DRQA：动态推理配额分配</a></h3>
+<p><strong>论文</strong>：<em>DRQA: Dynamic Reasoning Quota Allocation for Controlling Overthinking in Reasoning Large Language Models</em> (2026) [12]</p>
+<h4 id="核心观察"><a class="header" href="#核心观察">核心观察</a></h4>
+<p>一个有趣的发现：当模型<strong>批量处理</strong>多个问题时（而非逐个处理），总输出长度显著缩短——模型似乎能隐式区分问题难度并"压缩"简单问题的推理。</p>
+<h4 id="方法"><a class="header" href="#方法">方法</a></h4>
+<ol>
+<li>
+<p>构建偏好数据：</p>
+<ul>
+<li>单独生成的推理链（冗长版）</li>
+<li>批量生成的推理链（精炼版）</li>
+<li>按正确性和简洁性标注偏好</li>
+</ul>
+</li>
+<li>
+<p>使用 GRPO 训练模型同时优化<strong>逻辑正确性</strong>和<strong>推理简洁性</strong></p>
+</li>
+</ol>
+<h4 id="效果"><a class="header" href="#效果">效果</a></h4>
+<ul>
+<li>推理 token 成本降低 31%</li>
+<li>准确率反而提升</li>
+<li>在简单问题上缩短最多，复杂问题保持充分推理</li>
+</ul>
+<hr />
+<h3 id="754-deer动态早停推理"><a class="header" href="#754-deer动态早停推理">7.5.4 DEER：动态早停推理</a></h3>
+<p><strong>论文</strong>：<em>Dynamic Early Exit in Reasoning Models (DEER)</em> (2026) [13]</p>
+<p>DEER 是一种<strong>免训练</strong>的推理时优化方法：</p>
+<ol>
+<li>在推理过程中实时监控模型置信度</li>
+<li>当模型对当前答案高度自信时触发早停</li>
+<li>简单问题快速结束，复杂问题继续思考</li>
+</ol>
+<h4 id="效果-1"><a class="header" href="#效果-1">效果</a></h4>
+<ul>
+<li>推理链长度缩短 19.1%—80.1%</li>
+<li>准确率提升 0.3%—5.0%</li>
+<li>无需额外训练，即插即用</li>
+</ul>
+<hr />
+<h3 id="755-方案对比"><a class="header" href="#755-方案对比">7.5.5 方案对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>方法</th><th>核心思想</th><th>是否需要训练</th><th>效率提升</th><th>准确率影响</th></tr></thead><tbody>
+<tr><td><strong>SAR</strong></td><td>困惑度差异作为奖励</td><td>是（RL训练）</td><td>长度-30%</td><td>+4%</td></tr>
+<tr><td><strong>PURE</strong></td><td>最小形式信用分配</td><td>是（奖励预处理）</td><td>2-3x 样本效率</td><td>显著提升</td></tr>
+<tr><td><strong>DRQA</strong></td><td>模拟批量推理的配额分配</td><td>是（GRPO训练）</td><td>token-31%</td><td>提升</td></tr>
+<tr><td><strong>DEER</strong></td><td>置信度触发早停</td><td>否（推理时）</td><td>长度-19%~80%</td><td>+0.3%~5%</td></tr>
+<tr><td><strong>简洁 RL</strong></td><td>二阶段精炼训练</td><td>是（二阶段RL）</td><td>长度显著缩短</td><td>不降反升</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="76-rlvr基于可验证奖励的强化学习"><a class="header" href="#76-rlvr基于可验证奖励的强化学习">7.6 RLVR：基于可验证奖励的强化学习</a></h2>
+<p><strong>RLVR（Reinforcement Learning with Verifiable Rewards）</strong> 是 2025—2026 年最热门的研究方向之一，也是 DeepSeek-R1 成功的关键。</p>
+<h3 id="761-什么是-rlvr"><a class="header" href="#761-什么是-rlvr">7.6.1 什么是 RLVR？</a></h3>
+<p>与传统 RLHF 依赖人工标注的偏好数据不同，RLVR 使用<strong>可自动验证</strong>的信号作为奖励：</p>
+<div class="table-wrapper"><table><thead><tr><th>对比维度</th><th>RLHF</th><th>RLVR</th></tr></thead><tbody>
+<tr><td>奖励来源</td><td>人工标注偏好</td><td>自动验证（如答案对错）</td></tr>
+<tr><td>标注成本</td><td>高</td><td>极低</td></tr>
+<tr><td>适用任务</td><td>开放式（对话、写作）</td><td>有明确正确答案（数学、代码）</td></tr>
+<tr><td>扩展性</td><td>受标注速度限制</td><td>几乎无限扩展</td></tr>
+</tbody></table>
+</div>
+<h3 id="762-rlvr-的问题与改进"><a class="header" href="#762-rlvr-的问题与改进">7.6.2 RLVR 的问题与改进</a></h3>
+<p><strong>问题拆解框架</strong>（人大 &amp; 字节, 2026）[14]：</p>
+<p>传统 RLVR 仅在最终答案处给出奖励（稀疏奖励），导致长链推理中的信用分配困难。该工作提出 <strong>Decomposer-Reasoner 框架</strong>：</p>
+<ol>
+<li><strong>Decomposer</strong>：将复杂问题拆解为子问题</li>
+<li><strong>Reasoner</strong>：逐步解决子问题</li>
+<li><strong>密集奖励</strong>：每个子问题的解决都有可验证的奖励</li>
+</ol>
+<p>这种方法将稀疏奖励转化为密集奖励，显著提升了 RL 训练的探索效率。</p>
+<hr />
+<h2 id="77-agentic-任务的-rl-训练"><a class="header" href="#77-agentic-任务的-rl-训练">7.7 Agentic 任务的 RL 训练</a></h2>
+<p>前面讨论的大多是推理任务（数学、代码）的 RL 训练。一个更前沿的方向是将 RL 应用到真正的 <strong>Agentic 任务</strong>——需要工具调用、环境交互、多步决策的场景。</p>
+<h3 id="771-agentprm过程奖励模型用于-agent-评估"><a class="header" href="#771-agentprm过程奖励模型用于-agent-评估">7.7.1 AgentPRM：过程奖励模型用于 Agent 评估</a></h3>
+<p>在多轮 Agent 任务（如网页导航、API 调用）中，仅评估最终结果不够——需要评估<strong>每一步决策的质量</strong>。AgentPRM 引入了<strong>过程奖励模型（Process Reward Model）</strong> 来评估 Agent 的中间决策。</p>
+<h3 id="772-r³l反思-重试-rl"><a class="header" href="#772-r³l反思-重试-rl">7.7.2 R³L：反思-重试 RL</a></h3>
+<p><strong>R³L（Reflect-then-Retry RL）</strong> 针对 Agent 任务中的失败恢复：</p>
+<ol>
+<li>当 Agent 执行失败时，生成语言反馈诊断错误原因</li>
+<li>从失败点重新开始，利用反馈避免重蹈覆辙</li>
+<li>大幅减少了 rollout 成本</li>
+</ol>
+<h3 id="773-deepswe软件工程-agent-的-rl-训练"><a class="header" href="#773-deepswe软件工程-agent-的-rl-训练">7.7.3 DeepSWE：软件工程 Agent 的 RL 训练</a></h3>
+<p>DeepSeek 团队的 DeepSWE 展示了 RL 训练的软件工程 Agent 可以匹配闭源模型的 SWE-bench 表现，证明了 RL 在复杂 Agentic 任务中的潜力。</p>
+<hr />
+<h2 id="78-开放挑战与未来方向"><a class="header" href="#78-开放挑战与未来方向">7.8 开放挑战与未来方向</a></h2>
+<p>尽管进展迅速，该领域仍面临诸多开放挑战：</p>
+<h3 id="781-奖励破解reward-hacking"><a class="header" href="#781-奖励破解reward-hacking">7.8.1 奖励破解（Reward Hacking）</a></h3>
+<p>模型可能找到奖励函数中的漏洞来"作弊"，而非真正提升能力。例如：</p>
+<ul>
+<li>生成"看起来像推理"但实际是胡说八道的长文本</li>
+<li>利用格式技巧（如特定关键词）获得高奖励</li>
+<li>在自我评估中学会"自欺欺人"</li>
+</ul>
+<h3 id="782-训练稳定性"><a class="header" href="#782-训练稳定性">7.8.2 训练稳定性</a></h3>
+<p>大模型 RL 训练仍然不够稳定：</p>
+<ul>
+<li><strong>KL 散度管理</strong>：策略偏移过大会导致灾难性遗忘</li>
+<li><strong>奖励规模</strong>：不同奖励维度的尺度不一致</li>
+<li><strong>数据多样性</strong>：训练数据的多样性直接影响探索质量</li>
+</ul>
+<h3 id="783-泛化能力"><a class="header" href="#783-泛化能力">7.8.3 泛化能力</a></h3>
+<p>当前 RL 训练的推理能力主要在数学和代码领域验证，向以下领域的泛化仍需探索：</p>
+<ul>
+<li>开放域推理（科学推理、常识推理）</li>
+<li>多模态推理（视觉-语言、视频理解）</li>
+<li>跨语言推理</li>
+</ul>
+<h3 id="784-效率与成本"><a class="header" href="#784-效率与成本">7.8.4 效率与成本</a></h3>
+<p>RL 训练的计算成本仍然很高：</p>
+<ul>
+<li>大量的 rollout 采样</li>
+<li>多个模型（Policy、Reference、可能的 Critic）同时在显存中</li>
+<li>长序列推理的显存和时间开销</li>
+</ul>
+<h3 id="785-未来展望"><a class="header" href="#785-未来展望">7.8.5 未来展望</a></h3>
+<p>基于当前的研究趋势，我们预期以下方向将成为热点：</p>
+<div class="table-wrapper"><table><thead><tr><th>方向</th><th>预期进展</th></tr></thead><tbody>
+<tr><td><strong>内部信号挖掘</strong></td><td>更多利用模型自身信号（如 SAR、内生奖励）替代外部奖励模型</td></tr>
+<tr><td><strong>自我进化训练</strong></td><td>模型自主生成训练数据和奖励信号的闭环系统</td></tr>
+<tr><td><strong>多模态 RL</strong></td><td>将推理 RL 扩展到视觉、语音等多模态场景</td></tr>
+<tr><td><strong>Agentic RL 扩展</strong></td><td>将 RL 从推理任务扩展到工具调用、环境交互等 Agent 场景</td></tr>
+<tr><td><strong>高效训练</strong></td><td>减少 rollout 成本、提升样本效率的新算法</td></tr>
+<tr><td><strong>理论基础</strong></td><td>更深入理解 RL 如何激发 LLM 推理能力的理论分析</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="79-论文列表"><a class="header" href="#79-论文列表">7.9 论文列表</a></h2>
+<p>以下是本节涉及的主要论文，按主题分类：</p>
+<h3 id="推理模型"><a class="header" href="#推理模型">推理模型</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>#</th><th>论文</th><th>作者/机构</th><th>年份</th><th>核心贡献</th></tr></thead><tbody>
+<tr><td>[1]</td><td>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via RL</td><td>DeepSeek AI</td><td>2025</td><td>纯 RL 训练激发自主推理，GRPO 算法</td></tr>
+<tr><td>[2]</td><td>Kimi k1.5: Scaling Reinforcement Learning with LLMs</td><td>Moonshot AI</td><td>2025</td><td>128K 长上下文 RL，Long2Short 蒸馏</td></tr>
+<tr><td>[3]</td><td>QwQ: Reflect and Question to Understand the World</td><td>Alibaba</td><td>2025</td><td>中等规模推理 RL</td></tr>
+<tr><td>[4]</td><td>OpenAI o1/o3 System Card</td><td>OpenAI</td><td>2024/2025</td><td>推理时间计算扩展</td></tr>
+</tbody></table>
+</div>
+<h3 id="rl-算法"><a class="header" href="#rl-算法">RL 算法</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>#</th><th>论文</th><th>作者/机构</th><th>年份</th><th>核心贡献</th></tr></thead><tbody>
+<tr><td>[5]</td><td>DAPO: An Open-Source LLM RL System at Scale</td><td>ByteDance Seed</td><td>2025</td><td>解耦裁剪 + 动态采样，开源可复现</td></tr>
+<tr><td>[6]</td><td>VAPO: Efficient and Reliable RL for Advanced Reasoning</td><td>ByteDance Seed</td><td>2025</td><td>价值预训练 + 长度自适应 GAE，AIME 60.4</td></tr>
+</tbody></table>
+</div>
+<h3 id="奖励设计"><a class="header" href="#奖励设计">奖励设计</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>#</th><th>论文</th><th>作者/机构</th><th>年份</th><th>核心贡献</th></tr></thead><tbody>
+<tr><td>[7]</td><td>Self-Aligned Reward (SAR)</td><td>UIUC &amp; AWS</td><td>2025</td><td>困惑度差异作为内在奖励</td></tr>
+<tr><td>[8]</td><td>Co-rewarding</td><td>ICLR 2026</td><td>2025</td><td>自监督 RL，互补评估信号</td></tr>
+<tr><td>[9]</td><td>CoRLHF</td><td>Expert Systems with Applications</td><td>2026</td><td>策略-奖励联合迭代优化</td></tr>
+<tr><td>[10]</td><td>内生奖励</td><td>南京大学（周志华团队）</td><td>2025</td><td>LLM 内含通用奖励函数</td></tr>
+</tbody></table>
+</div>
+<h3 id="推理效率"><a class="header" href="#推理效率">推理效率</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>#</th><th>论文</th><th>作者/机构</th><th>年份</th><th>核心贡献</th></tr></thead><tbody>
+<tr><td>[11]</td><td>PURE: Min-Form Credit Assignment</td><td>—</td><td>2025</td><td>最小形式替代求和形式信用分配</td></tr>
+<tr><td>[12]</td><td>DRQA: Dynamic Reasoning Quota Allocation</td><td>—</td><td>2026</td><td>动态推理配额分配，token 降 31%</td></tr>
+<tr><td>[13]</td><td>DEER: Dynamic Early Exit in Reasoning Models</td><td>—</td><td>2026</td><td>免训练动态早停</td></tr>
+<tr><td>[14]</td><td>RLVR with Adaptive Problem Decomposition</td><td>人大 &amp; 字节</td><td>2026</td><td>问题拆解密集奖励</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="710-推荐阅读路线"><a class="header" href="#710-推荐阅读路线">7.10 推荐阅读路线</a></h2>
+<p>如果你是该领域的新入门者，建议按以下顺序阅读：</p>
+<pre><code>入门路线：
+1. DeepSeek-R1 论文（理解 RLVR + GRPO 的核心思想）
+   ↓
+2. DAPO 论文 + 代码（动手复现大模型 RL 训练）
+   ↓
+3. VAPO 论文（理解价值函数在长链推理中的作用）
+   ↓
+4. SAR / PURE 论文（理解奖励设计与过度思考问题）
+   ↓
+5. Kimi k1.5 / QwQ（了解不同团队的技术路线）
+</code></pre>
+<p>如果你对特定主题感兴趣：</p>
+<ul>
+<li><strong>想做推理模型训练</strong> → 重点读 DeepSeek-R1 + DAPO + VAPO</li>
+<li><strong>想设计奖励函数</strong> → 重点读 SAR + PURE + Co-rewarding</li>
+<li><strong>想优化推理效率</strong> → 重点读 DRQA + DEER + PURE</li>
+<li><strong>想做 Agent RL</strong> → 重点读 DeepSWE + AgentPRM + R³L</li>
+</ul>
+<hr />
+<h2 id="本节小结"><a class="header" href="#本节小结">本节小结</a></h2>
+<p>2025—2026 年，Agentic-RL 领域经历了从"对齐辅助工具"到"核心能力激发引擎"的根本转变。几个关键趋势值得关注：</p>
+<ol>
+<li><strong>RL 从辅助到核心</strong>：RL 不再仅用于"对齐"，而是用于<strong>激发预训练中潜在的推理能力</strong></li>
+<li><strong>算法从复杂到实用</strong>：从 PPO 的四模型架构到 GRPO 的两模型架构，再到 VAPO 的价值增强方案，训练越来越高效</li>
+<li><strong>奖励从外部到内部</strong>：从人工标注到可验证奖励再到模型内部信号，奖励设计越来越自洽</li>
+<li><strong>关注从"更强"到"更高效"</strong>：过度思考问题催生了一系列推理效率优化方案</li>
+</ol>
+<p>这些进展正在让 <strong>"让模型通过实践自主学习"</strong> 这一愿景逐步成为现实。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chapter_agentic_rl/06_practice_training.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../chapter_coding_agent/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chapter_agentic_rl/06_practice_training.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../chapter_coding_agent/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

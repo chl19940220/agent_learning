@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="从聊天机器人到智能体的演进"><a class="header" href="#从聊天机器人到智能体的演进">从聊天机器人到智能体的演进</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="从聊天机器人到智能体的演进"><a class="header" href="#从聊天机器人到智能体的演进">从聊天机器人到智能体的演进</a></h1>
 <blockquote>
 <p>📖 <em>"要理解 Agent 是什么，最好的方式是看看它是从哪里来的。"</em></p>
 </blockquote>
@@ -551,22 +552,6 @@ agent("北京明天需要带伞吗？")
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

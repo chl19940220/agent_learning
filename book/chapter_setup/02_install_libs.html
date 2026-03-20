@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="关键库安装langchainopenai-sdk-等"><a class="header" href="#关键库安装langchainopenai-sdk-等">关键库安装：LangChain、OpenAI SDK 等</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="关键库安装langchainopenai-sdk-等"><a class="header" href="#关键库安装langchainopenai-sdk-等">关键库安装：LangChain、OpenAI SDK 等</a></h1>
 <p>本节介绍 Agent 开发生态中最重要的库，并说明它们的用途和安装方式。</p>
 <h2 id="agent-开发核心库全景"><a class="header" href="#agent-开发核心库全景">Agent 开发核心库全景</a></h2>
 <p><img src="../svg/chapter_setup_02_tech_stack.svg" alt="Agent开发技术栈全景" /></p>
@@ -498,22 +499,6 @@ else:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

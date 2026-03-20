@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="function-calling-机制详解"><a class="header" href="#function-calling-机制详解">Function Calling 机制详解</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="function-calling-机制详解"><a class="header" href="#function-calling-机制详解">Function Calling 机制详解</a></h1>
 <p>Function Calling 是 OpenAI 于 2023 年推出的重要特性，让模型能够输出结构化的函数调用指令。理解其完整机制，是构建可靠 Agent 的基础。</p>
 <p>在传统的 LLM 使用中，模型只能输出纯文本。但现实世界的许多任务——查天气、发邮件、查数据库——都需要与外部系统交互。Function Calling 解决的正是这个问题：<strong>它让 LLM 不再只是"说"，还能"做"。</strong></p>
 <p>核心思想其实很朴素：我们告诉模型"你有哪些工具可以用"，模型分析用户的问题后，如果觉得需要使用工具，就输出一段结构化的 JSON，告诉我们"请帮我调用这个函数，参数是这些"。模型本身并不执行函数，执行由我们的代码完成，然后把结果再反馈给模型，让它组织最终的回答。</p>
@@ -567,22 +568,6 @@ print(json.dumps(weather_tool, ensure_ascii=False, indent=2))
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

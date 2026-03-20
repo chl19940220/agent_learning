@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="lcellangchain-表达式语言"><a class="header" href="#lcellangchain-表达式语言">LCEL：LangChain 表达式语言</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="lcellangchain-表达式语言"><a class="header" href="#lcellangchain-表达式语言">LCEL：LangChain 表达式语言</a></h1>
 <p>LCEL（LangChain Expression Language）是 LangChain 的核心构建语言，用 <code>|</code> 符号将组件连接成处理管道，代码简洁且功能强大。</p>
 <p>如果你用过 Unix 管道（<code>cat file.txt | grep "error" | wc -l</code>），LCEL 的思路完全相同：数据从左到右流过一系列处理组件，每个组件接收上一个的输出作为自己的输入。在 LLM 应用中，一个典型的管道是：<code>提示词模板 | LLM | 输出解析器</code>——模板填充变量生成完整提示，LLM 生成回复，解析器提取结构化结果。</p>
 <p>LCEL 的核心抽象是 <strong>Runnable 协议</strong>——所有组件都实现了统一的接口（<code>invoke</code>、<code>stream</code>、<code>batch</code> 等），因此任何组件都可以与其他组件自由组合。这种设计的好处是：你写好一条链之后，自动获得了流式输出、异步调用和批处理能力，不需要额外编码。</p>
@@ -417,22 +418,6 @@ chain_with_fallback = resilient_chain.with_fallbacks([fallback_chain])
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

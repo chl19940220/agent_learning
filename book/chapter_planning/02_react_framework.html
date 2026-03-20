@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="react推理--行动框架"><a class="header" href="#react推理--行动框架">ReAct：推理 + 行动框架</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="react推理--行动框架"><a class="header" href="#react推理--行动框架">ReAct：推理 + 行动框架</a></h1>
 <p>ReAct（Reasoning + Acting）是 Agent 开发中最重要的框架之一，来自 2022 年普林斯顿大学和 Google Brain 的论文《ReAct: Synergizing Reasoning and Acting in Language Models》（Yao et al.）。它将 LLM 的推理能力与工具使用结合起来，创造出更可靠、更透明的 Agent 行为。</p>
 <blockquote>
 <p>📄 <strong>论文背景</strong>：在 ReAct 之前，LLM 的推理（Chain-of-Thought）和行动（工具调用）是两个独立的研究方向。CoT 让模型"会想"但"不会做"——推理时无法获取外部信息；而工具调用让模型"会做"但"不会想"——盲目执行而不解释理由。ReAct 的核心洞察是：<strong>推理为行动提供方向，行动为推理提供依据，两者交替进行才能解决复杂问题。</strong></p>
@@ -474,22 +475,6 @@ result = agent.run("Python 是哪年发布的？距离今年有多少年了？")
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

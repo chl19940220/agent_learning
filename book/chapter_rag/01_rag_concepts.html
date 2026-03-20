@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="rag-的概念与工作原理"><a class="header" href="#rag-的概念与工作原理">RAG 的概念与工作原理</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="rag-的概念与工作原理"><a class="header" href="#rag-的概念与工作原理">RAG 的概念与工作原理</a></h1>
 <p>RAG（Retrieval-Augmented Generation）是一种将<strong>信息检索</strong>与<strong>语言生成</strong>结合的技术架构。它让 LLM 能够基于外部知识库回答问题，而不是仅依赖训练时学到的知识。</p>
 <blockquote>
 <p>📄 <strong>论文出处</strong>：RAG 的概念由 Meta AI（当时的 Facebook AI Research）在论文 <em>"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"</em>（Lewis et al., 2020）中首次提出。原始论文将检索模型（DPR）和生成模型（BART）端到端联合训练，在开放域问答任务上大幅超越了传统的"先检索后阅读"方案。虽然今天的 RAG 实现方式已经与原始论文有很大不同（我们通常不做端到端训练，而是将检索和生成解耦），但核心思想完全一致：<strong>让模型在生成回答时能够参考外部知识。</strong></p>
@@ -394,22 +395,6 @@ compare_approaches("我们公司的产品退款流程是什么？")
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

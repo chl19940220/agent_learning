@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="76-论文解读rag-前沿进展"><a class="header" href="#76-论文解读rag-前沿进展">7.6 论文解读：RAG 前沿进展</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="76-论文解读rag-前沿进展"><a class="header" href="#76-论文解读rag-前沿进展">7.6 论文解读：RAG 前沿进展</a></h1>
 <blockquote>
 <p>📖 <em>"RAG 是过去两年发展最迅猛的技术方向之一。"</em><br />
 <em>从朴素 RAG 到 Agentic RAG，本节深入解读推动这一演进的核心论文。</em></p>
@@ -457,22 +458,6 @@ Agentic RAG（Agent 驱动）：
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="mcpmodel-context-protocol详解"><a class="header" href="#mcpmodel-context-protocol详解">MCP（Model Context Protocol）详解</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="mcpmodel-context-protocol详解"><a class="header" href="#mcpmodel-context-protocol详解">MCP（Model Context Protocol）详解</a></h1>
 <p>MCP（Model Context Protocol）是 Anthropic 于 2024 年 11 月推出的开放协议，旨在标准化 LLM 与外部工具、数据源之间的连接方式。经过一年多的发展，MCP 已成为 Agent 工具接口的事实标准，被 Claude Desktop、Cursor、Windsurf、OpenAI Agents SDK 等主流产品广泛支持。</p>
 <h2 id="mcp-的核心思想"><a class="header" href="#mcp-的核心思想">MCP 的核心思想</a></h2>
 <p>在 MCP 之前，每个 Agent 框架都有自己的工具接口：</p>
@@ -608,22 +609,6 @@ async def call_tool(name: str, arguments: dict) -&gt; CallToolResult:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

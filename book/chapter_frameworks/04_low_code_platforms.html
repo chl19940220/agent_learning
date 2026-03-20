@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="dify--coze-等低代码-agent-平台"><a class="header" href="#dify--coze-等低代码-agent-平台">Dify / Coze 等低代码 Agent 平台</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="dify--coze-等低代码-agent-平台"><a class="header" href="#dify--coze-等低代码-agent-平台">Dify / Coze 等低代码 Agent 平台</a></h1>
 <p>低代码平台让非程序员也能构建 Agent 应用，降低了 AI 应用的开发门槛。2024-2025 年，这一领域涌现了大量平台，竞争日趋激烈。</p>
 <h2 id="主流低代码平台"><a class="header" href="#主流低代码平台">主流低代码平台</a></h2>
 <h3 id="dify"><a class="header" href="#dify">Dify</a></h3>
@@ -322,22 +323,6 @@ workflow = """
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

@@ -218,6 +218,68 @@ DPO loss 中的核心项 $\log \frac{\pi_\theta(y|x)}{\pi_{ref}(y|x)}$ 正是 KL
 
 ---
 
+## 面试常见题目
+
+### 基础理解类
+
+**1. DPO 相比 PPO 最核心的简化是什么？它是如何避免训练奖励模型和 Critic 模型的？**
+
+> **参考要点**：DPO 通过一个关键的数学推导——从 RLHF 优化目标推导出最优策略的闭式解，再将奖励函数用策略对数概率比来隐式表示。将这个隐式奖励代入 Bradley-Terry 偏好模型后，配分函数 $Z(x)$ 在做差时相消，最终得到一个只依赖策略概率和参考策略概率的监督学习 loss。因此不需要显式训练奖励模型，也不需要 Critic 和在线采样。
+
+**2. 请完整推导 DPO 损失函数的五步过程，并解释每一步的核心作用。**
+
+> **参考要点**：
+> - **Step 1**：写出标准 RLHF 优化目标（最大化奖励 - KL 惩罚）
+> - **Step 2**：用变分法求解最优策略闭式解 $\pi^*(y|x) \propto \pi_{ref}(y|x) \exp(r(x,y)/\beta)$
+> - **Step 3**：从闭式解反解奖励 $r(x,y) = \beta \log \frac{\pi^*(y|x)}{\pi_{ref}(y|x)} + \beta \log Z(x)$，关键发现：奖励可以用对数概率比表示
+> - **Step 4**：代入 Bradley-Terry 模型，$Z(x)$ 项在 $r(x,y_w) - r(x,y_l)$ 做差时被消去
+> - **Step 5**：取负对数似然得到最终 DPO loss
+
+### 深度理解类
+
+**3. DPO 的 loss 中到底有没有 KL 散度？如果没有显式的 KL 项，它是如何约束策略不偏离参考模型太远的？**
+
+> **参考要点**：DPO loss 中**没有显式的 KL 散度项**，但 KL 散度被隐式编码在了 $\log \frac{\pi_\theta(y|x)}{\pi_{ref}(y|x)}$ 这个对数概率比中——这正是 KL 散度的被积函数。直觉上，DPO 把奖励和 KL 约束合并为了同一个公式：对数概率比同时编码了"什么是好的"和"别偏离太远"。$\beta$ 参数控制这种约束的强度——$\beta$ 越大，策略越倾向于接近参考模型。
+
+**4. DPO 中 $\beta$ 参数的作用是什么？$\beta$ 过大和过小分别会导致什么问题？**
+
+> **参考要点**：
+> - $\beta$ 是温度参数，控制隐式奖励差的缩放，本质上等价于 PPO 中 KL 惩罚系数的作用
+> - $\beta$ **过小**（如 0.01）：loss 对偏好对的区分度极高，可能导致过拟合训练数据中的噪声偏好，训练不稳定
+> - $\beta$ **过大**（如 1.0 以上）：策略几乎不会偏离参考模型，等于 RL 训练没有生效，策略更新幅度极小
+> - 通常建议 $\beta \in [0.1, 0.5]$
+
+**5. DPO 为什么被认为是"离线"的？这给它带来了什么根本性限制？在什么场景下这种限制可以被接受？**
+
+> **参考要点**：
+> - DPO 完全依赖离线偏好数据 $(x, y_w, y_l)$，训练过程中不做任何新的采样
+> - **根本限制**：无法通过在线探索发现训练数据中未出现的新行为模式，模型能力受限于偏好数据的质量和覆盖范围上界
+> - **可接受场景**：已经拥有高质量偏好数据的场景（如人类标注的指令遵循偏好对）、对齐任务（alignment）中已有充分的好坏样本对比数据
+> - **不适合场景**：需要模型涌现全新推理策略的任务（如 DeepSeek-R1 的长链推理），此时需要在线 RL（PPO/GRPO）
+
+**6. DPO 中为什么需要 Reference 模型？如果去掉 Reference 模型（令 $\pi_{ref}$ 为均匀分布），DPO 会退化为什么？**
+
+> **参考要点**：
+> - Reference 模型是 DPO loss 的核心组件之一，$\log \frac{\pi_\theta}{\pi_{ref}}$ 提供了隐式奖励的计算基准
+> - 如果 $\pi_{ref}$ 为均匀分布，$\log \pi_{ref}$ 是常数，在好坏输出做差时被消去，DPO loss 退化为：$-\log\sigma(\beta \cdot [\log\pi_\theta(y_w|x) - \log\pi_\theta(y_l|x)])$，变成单纯的对数概率排序损失，失去了 KL 约束的效果，容易导致模型语言能力退化
+
+**7. 如果偏好数据中存在标注噪声（即 $y_w$ 和 $y_l$ 标反了），DPO 会如何受到影响？相比 PPO，DPO 对数据质量的敏感度如何？**
+
+> **参考要点**：
+> - DPO 会直接学到"差的输出是好的"，因为它完全依赖偏好标签做监督学习，没有在线纠错机制
+> - 相比之下，PPO 通过在线采样和奖励模型有一定的噪声鲁棒性——即使奖励模型有偏差，在线探索也能帮助策略找到真正高奖励的行为
+> - DPO 对数据质量的敏感度远高于 PPO，这也是工业界通常对偏好数据进行严格质控的原因
+
+**8. 在 DPO 的代码实现中，`chosen_rewards` 和 `rejected_rewards` 的物理含义是什么？`accuracy` 指标在训练过程中应该呈现什么趋势？**
+
+> **参考要点**：
+> - `chosen_rewards = policy_chosen_logps - ref_chosen_logps`：当前策略相对于参考策略，对"好输出"的隐式奖励（对数概率比）
+> - `rejected_rewards = policy_rejected_logps - ref_rejected_logps`：同理，对"差输出"的隐式奖励
+> - `reward_margin = β × (chosen_rewards - rejected_rewards)`：隐式奖励差，希望 > 0 且逐步增大
+> - `accuracy`（reward_margin > 0 的比例）：应从初始值（约 0.5）逐步上升至接近 1.0，表示模型越来越能正确区分好差输出。如果 accuracy 长期不上升，说明训练无效；如果一开始就是 1.0，说明任务太简单
+
+---
+
 ## 参考文献
 
 [1] RAFAILOV R, SHARMA A, MITCHELL E, et al. Direct preference optimization: Your language model is secretly a reward model[C]//Advances in Neural Information Processing Systems (NeurIPS). 2023.

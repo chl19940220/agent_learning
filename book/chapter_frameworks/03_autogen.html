@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="autogen微软的多-agent-对话框架"><a class="header" href="#autogen微软的多-agent-对话框架">AutoGen：微软的多 Agent 对话框架</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="autogen微软的多-agent-对话框架"><a class="header" href="#autogen微软的多-agent-对话框架">AutoGen：微软的多 Agent 对话框架</a></h1>
 <p>AutoGen 是微软开发的多 Agent 对话框架，其核心创新是：通过 <strong>Agent 之间的对话</strong> 来完成任务，而非传统的调用链。</p>
 <blockquote>
 <p>⚠️ <strong>重要更新</strong>：2024 年底，AutoGen 经历了重大变化。原 AutoGen 团队分叉为两个项目：微软官方的 <strong>AutoGen 0.4</strong>（完全重写，基于事件驱动架构）和社区维护的 <strong>AG2</strong>（延续 0.2 版本的 API）。本节以最新的 AutoGen 0.4 为主进行介绍。</p>
@@ -313,22 +314,6 @@ asyncio.run(main())
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

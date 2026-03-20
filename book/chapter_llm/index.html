@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="第2章-大语言模型基础"><a class="header" href="#第2章-大语言模型基础">第2章 大语言模型基础</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="第2章-大语言模型基础"><a class="header" href="#第2章-大语言模型基础">第2章 大语言模型基础</a></h1>
 <blockquote>
 <p>工欲善其事，必先利其器。在开始构建 Agent 之前，我们需要深入理解它的"大脑"——大语言模型（LLM）。</p>
 </blockquote>
@@ -253,22 +254,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

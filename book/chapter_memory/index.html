@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="第5章-记忆系统memory"><a class="header" href="#第5章-记忆系统memory">第5章 记忆系统（Memory）</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="第5章-记忆系统memory"><a class="header" href="#第5章-记忆系统memory">第5章 记忆系统（Memory）</a></h1>
 <blockquote>
 <p>🧩 <em>"没有记忆的 Agent，每次对话都是从零开始。记忆系统让 Agent 能够'记住'过去，提供真正个性化的体验。"</em></p>
 </blockquote>
@@ -249,22 +250,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

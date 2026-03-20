@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="agent-间的消息传递与状态共享"><a class="header" href="#agent-间的消息传递与状态共享">Agent 间的消息传递与状态共享</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="agent-间的消息传递与状态共享"><a class="header" href="#agent-间的消息传递与状态共享">Agent 间的消息传递与状态共享</a></h1>
 <blockquote>
 <p><strong>本节目标</strong>：学习 Agent 间消息传递的实现方式，并通过 MCP 工具集成实战加深理解。</p>
 </blockquote>
@@ -416,22 +417,6 @@ if __name__ == "__main__":
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

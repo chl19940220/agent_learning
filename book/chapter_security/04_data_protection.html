@@ -185,7 +185,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="敏感数据保护"><a class="header" href="#敏感数据保护">敏感数据保护</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="敏感数据保护"><a class="header" href="#敏感数据保护">敏感数据保护</a></h1>
 <blockquote>
 <p><strong>本节目标</strong>：学会识别和保护 Agent 交互中的敏感数据，防止数据泄露。</p>
 </blockquote>
@@ -391,22 +392,6 @@ for e in entities:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
