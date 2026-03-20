@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>5.2 Function Calling 机制 - 从零开始学 Agent</title>
+        <title>4.2 Function Calling 机制 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -192,6 +193,10 @@
 <p>核心思想其实很朴素：我们告诉模型"你有哪些工具可以用"，模型分析用户的问题后，如果觉得需要使用工具，就输出一段结构化的 JSON，告诉我们"请帮我调用这个函数，参数是这些"。模型本身并不执行函数，执行由我们的代码完成，然后把结果再反馈给模型，让它组织最终的回答。</p>
 <h2 id="function-calling-的完整流程"><a class="header" href="#function-calling-的完整流程">Function Calling 的完整流程</a></h2>
 <p><img src="../svg/chapter_tools_02_function_calling.svg" alt="Function Calling 流程" /></p>
+<blockquote>
+<p>🎬 <strong>交互式动画</strong>：观看用户、LLM 和工具引擎之间的消息传递全过程——包含多轮工具调用的完整 5 步通信协议，理解 Function Calling 如何让 LLM 从"只会说"变成"会做事"。</p>
+<p><a href="../animations/function_calling.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#9C27B0;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 Function Calling 交互动画</a></p>
+</blockquote>
 <p>整个流程分为 5 个步骤：</p>
 <ol>
 <li><strong>定义工具</strong>：用 JSON Schema 描述函数的名称、参数和用途</li>
@@ -568,6 +573,22 @@ print(json.dumps(weather_tool, ensure_ascii=False, indent=2))
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

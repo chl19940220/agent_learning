@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -203,15 +204,15 @@
 </ul>
 <h2 id="本章结构"><a class="header" href="#本章结构">本章结构</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>小节</th><th>内容</th><th>难度</th></tr></thead><tbody>
-<tr><td>17.1 需求分析与架构设计</td><td>功能规划和架构</td><td>⭐⭐</td></tr>
-<tr><td>17.2 数据连接与查询</td><td>Text-to-SQL、安全访问</td><td>⭐⭐⭐</td></tr>
-<tr><td>17.3 自动化分析与可视化</td><td>统计分析、图表生成</td><td>⭐⭐⭐</td></tr>
-<tr><td>17.4 报告生成与导出</td><td>Markdown 报告</td><td>⭐⭐</td></tr>
-<tr><td>17.5 完整项目实现</td><td>整合所有组件</td><td>⭐⭐⭐⭐</td></tr>
+<tr><td>20.1 需求分析与架构设计</td><td>功能规划和架构</td><td>⭐⭐</td></tr>
+<tr><td>20.2 数据连接与查询</td><td>Text-to-SQL、安全访问</td><td>⭐⭐⭐</td></tr>
+<tr><td>20.3 自动化分析与可视化</td><td>统计分析、图表生成</td><td>⭐⭐⭐</td></tr>
+<tr><td>20.4 报告生成与导出</td><td>Markdown 报告</td><td>⭐⭐</td></tr>
+<tr><td>20.5 完整项目实现</td><td>整合所有组件</td><td>⭐⭐⭐⭐</td></tr>
 </tbody></table>
 </div>
 <hr />
-<p><em>下一节：<a href="./01_requirements.html">17.1 需求分析与架构设计</a></em></p>
+<p><em>下一节：<a href="./01_requirements.html">20.1 需求分析与架构设计</a></em></p>
 
                     </main>
 
@@ -242,6 +243,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

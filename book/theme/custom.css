@@ -1,0 +1,265 @@
+/* ============================================
+   从零开始学 Agent - 自定义样式
+   ============================================ */
+
+/* ---------- 字体与排版 ---------- */
+:root {
+  --content-max-width: 900px;
+  --sidebar-width: 300px;
+}
+
+.content {
+  font-size: 1.3rem;
+  line-height: 1.9;
+  letter-spacing: 0.015em;
+}
+
+/* 中文优化：段落间距 */
+.content p {
+  margin-bottom: 1.2em;
+}
+
+/* 侧边栏部分标题（分篇链接）加粗加大 */
+.sidebar .chapter > li > a {
+  font-size: 1.1rem;
+}
+
+/* ---------- 标题美化 ---------- */
+.content h1 {
+  border-bottom: 3px solid var(--links);
+  padding-bottom: 0.4em;
+  margin-top: 1.5em;
+}
+
+.content h2 {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.3em;
+  margin-top: 2em;
+  margin-bottom: 0.8em;
+}
+
+.content h3 {
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  color: var(--links);
+}
+
+/* ---------- 引用块 / Quote 美化 ---------- */
+.content blockquote {
+  border-left: 4px solid var(--links);
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.06);
+  padding: 0.8em 1.2em;
+  margin: 1.2em 0;
+  border-radius: 0 8px 8px 0;
+  font-style: normal;
+}
+
+.content blockquote p {
+  margin-bottom: 0.3em;
+}
+
+/* ---------- 代码块优化 ---------- */
+.content pre {
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.content code {
+  font-size: 0.95em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+/* ---------- 表格美化 ---------- */
+.content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.2em 0;
+  font-size: 1.15rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.content table thead {
+  background: var(--links);
+  color: #fff;
+}
+
+.content table th {
+  padding: 0.7em 1em;
+  font-weight: 600;
+  text-align: left;
+  border: none;
+}
+
+.content table td {
+  padding: 0.6em 1em;
+  border-bottom: 1px solid #eee;
+}
+
+.content table tbody tr:hover {
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.04);
+}
+
+.content table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---------- 侧边栏优化 ---------- */
+.sidebar .sidebar-scrollbox {
+  padding-top: 1em;
+  font-size: 1.1rem;
+}
+
+.sidebar .chapter li a {
+  padding: 0.35em 1em;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.sidebar .chapter li a:hover {
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.08);
+}
+
+.sidebar .chapter li.active > a {
+  font-weight: 600;
+  color: var(--links);
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.1);
+  border-radius: 4px;
+}
+
+/* 分篇标题样式（SUMMARY 中的 --- 分隔符） */
+.sidebar .chapter li.part-title {
+  font-size: 0.95em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--links);
+  padding: 1em 0 0.3em 0.8em;
+  margin-top: 0.6em;
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.sidebar .chapter li.part-title:first-child {
+  border-top: none;
+  margin-top: 0;
+}
+
+/* ---------- 复选框列表美化 ---------- */
+.content li > input[type="checkbox"] {
+  margin-right: 0.4em;
+}
+
+/* ---------- 学习目标列表 ---------- */
+.content ul li {
+  margin-bottom: 0.3em;
+}
+
+/* ---------- 分隔线 ---------- */
+.content hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ccc, transparent);
+  margin: 2.5em 0;
+}
+
+/* ---------- 图片居中 & 阴影 ---------- */
+.content img {
+  display: block;
+  margin: 1.5em auto;
+  max-width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- 链接样式 ---------- */
+.content a {
+  text-decoration: none;
+  border-bottom: 1px solid rgba(var(--links-rgb, 55, 131, 235), 0.3);
+  transition: border-color 0.2s ease;
+}
+
+.content a:hover {
+  border-bottom-color: var(--links);
+}
+
+/* ---------- 底部导航栏优化 ---------- */
+.nav-wrapper {
+  margin-top: 3em;
+}
+
+.nav-chapters {
+  padding: 0.8em 1.2em;
+  border-radius: 8px;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nav-chapters:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- 隐藏两侧翻页按钮（保留底部导航） ---------- */
+.nav-wide-wrapper {
+  display: none !important;
+}
+
+/* ---------- 暗色主题适配 ---------- */
+.navy .content table thead,
+.coal .content table thead,
+.ayu .content table thead {
+  background: var(--links);
+}
+
+.navy .content pre,
+.coal .content pre,
+.ayu .content pre {
+  border-color: #444;
+}
+
+.navy .content table td,
+.coal .content table td,
+.ayu .content table td {
+  border-bottom-color: #444;
+}
+
+.navy .content blockquote,
+.coal .content blockquote,
+.ayu .content blockquote {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.navy .content h2,
+.coal .content h2,
+.ayu .content h2 {
+  border-bottom-color: #555;
+}
+
+/* ---------- 滚动条美化 ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.5);
+}
+
+/* ---------- 打印优化 ---------- */
+@media print {
+  .sidebar,
+  .nav-wrapper,
+  .menu-bar {
+    display: none !important;
+  }
+
+  .content {
+    max-width: 100% !important;
+  }
+}

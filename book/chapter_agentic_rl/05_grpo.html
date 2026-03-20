@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>18.5 GRPO：组内相对策略优化与奖励函数设计 - 从零开始学 Agent</title>
+        <title>10.5 GRPO：组内相对策略优化与奖励函数设计 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -285,6 +286,10 @@ print("优势值:  ", [f"{a:+.3f}" for a in advantages])
 <h3 id="34-grpo-训练架构与流程"><a class="header" href="#34-grpo-训练架构与流程">3.4 GRPO 训练架构与流程</a></h3>
 <p><img src="../svg/chapter_agentic_rl_03_grpo_architecture.svg" alt="GRPO 训练架构" /></p>
 <p><img src="../svg/chapter_agentic_rl_03_grpo_iteration.svg" alt="GRPO 单次训练迭代流程" /></p>
+<blockquote>
+<p>🎬 <strong>交互式动画</strong>：动手体验 GRPO 的核心过程——G=8 组内采样、奖励打分、标准化优势计算、概率分布更新，直观理解"用同组比较替代 Critic"的精妙设计。</p>
+<p><a href="../animations/grpo_sampling.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#E91E63;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 GRPO 组内采样交互动画</a></p>
+</blockquote>
 <h3 id="35-基于-trl-的-grpo-完整实现"><a class="header" href="#35-基于-trl-的-grpo-完整实现">3.5 基于 TRL 的 GRPO 完整实现</a></h3>
 <pre><code class="language-python">"""
 GRPO 训练的完整实现
@@ -1053,6 +1058,22 @@ def _compute_text_coherence(text: str) -&gt; float:
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

@@ -4,7 +4,7 @@
 
 ---
 
-## 第一部分：基础概念篇
+- [第一部分：入门篇](./part1.md)
 
 - [第1章 什么是 Agent？](./chapter_intro/README.md)
   - [1.1 从聊天机器人到智能体的演进](./chapter_intro/01_evolution.md)
@@ -14,152 +14,152 @@
   - [1.5 Agent 的应用场景全景图](./chapter_intro/05_use_cases.md)
   - [1.6 智能体发展史：从符号主义到大模型驱动](./chapter_intro/06_history.md)
 
-- [第2章 大语言模型基础](./chapter_llm/README.md)
-  - [2.1 LLM 是如何工作的？（直觉理解）](./chapter_llm/01_how_llm_works.md)
-  - [2.2 Prompt Engineering](./chapter_llm/02_prompt_engineering.md)
-  - [2.3 Few-shot / Zero-shot / Chain-of-Thought 提示策略](./chapter_llm/03_prompting_strategies.md)
-  - [2.4 模型 API 调用入门](./chapter_llm/04_api_basics.md)
-  - [2.5 Token、Temperature 与模型参数详解](./chapter_llm/05_model_parameters.md)
+- [第2章 开发环境搭建](./chapter_setup/README.md)
+  - [2.1 Python 环境与依赖管理](./chapter_setup/01_python_setup.md)
+  - [2.2 关键库安装](./chapter_setup/02_install_libs.md)
+  - [2.3 API Key 管理与安全最佳实践](./chapter_setup/03_api_key_management.md)
+  - [2.4 第一个 Agent：Hello Agent！](./chapter_setup/04_hello_agent.md)
 
-- [第3章 上下文工程](./chapter_context_engineering/README.md)
-  - [3.1 从提示工程到上下文工程](./chapter_context_engineering/01_context_vs_prompt.md)
-  - [3.2 上下文窗口管理与注意力预算](./chapter_context_engineering/02_context_window.md)
-  - [3.3 长时程任务的上下文策略](./chapter_context_engineering/03_long_horizon.md)
-  - [3.4 实战：构建上下文管理器](./chapter_context_engineering/04_practice_context_builder.md)
-
-- [第4章 开发环境搭建](./chapter_setup/README.md)
-  - [4.1 Python 环境与依赖管理](./chapter_setup/01_python_setup.md)
-  - [4.2 关键库安装](./chapter_setup/02_install_libs.md)
-  - [4.3 API Key 管理与安全最佳实践](./chapter_setup/03_api_key_management.md)
-  - [4.4 第一个 Agent：Hello Agent！](./chapter_setup/04_hello_agent.md)
+- [第3章 大语言模型基础](./chapter_llm/README.md)
+  - [3.1 LLM 是如何工作的？（直觉理解）](./chapter_llm/01_how_llm_works.md)
+  - [3.2 Prompt Engineering](./chapter_llm/02_prompt_engineering.md)
+  - [3.3 Few-shot / Zero-shot / Chain-of-Thought 提示策略](./chapter_llm/03_prompting_strategies.md)
+  - [3.4 模型 API 调用入门](./chapter_llm/04_api_basics.md)
+  - [3.5 Token、Temperature 与模型参数详解](./chapter_llm/05_model_parameters.md)
 
 ---
 
-## 第二部分：核心技术篇
+- [第二部分：核心能力篇](./part2.md)
 
-- [第5章 工具调用（Tool Use / Function Calling）](./chapter_tools/README.md)
-  - [5.1 为什么 Agent 需要工具？](./chapter_tools/01_why_tools.md)
-  - [5.2 Function Calling 机制](./chapter_tools/02_function_calling.md)
-  - [5.3 自定义工具的设计与实现](./chapter_tools/03_custom_tools.md)
-  - [5.4 工具描述的编写技巧](./chapter_tools/04_tool_description.md)
-  - [5.5 实战：搜索引擎 + 计算器 Agent](./chapter_tools/05_practice_search_calc.md)
-  - [5.6 论文解读：工具学习前沿进展](./chapter_tools/06_paper_readings.md)
+- [第4章 工具调用（Tool Use / Function Calling）](./chapter_tools/README.md)
+  - [4.1 为什么 Agent 需要工具？](./chapter_tools/01_why_tools.md)
+  - [4.2 Function Calling 机制](./chapter_tools/02_function_calling.md)
+  - [4.3 自定义工具的设计与实现](./chapter_tools/03_custom_tools.md)
+  - [4.4 工具描述的编写技巧](./chapter_tools/04_tool_description.md)
+  - [4.5 实战：搜索引擎 + 计算器 Agent](./chapter_tools/05_practice_search_calc.md)
+  - [4.6 论文解读：工具学习前沿进展](./chapter_tools/06_paper_readings.md)
 
-- [第6章 Skill System](./chapter_skill/README.md)
-  - [6.1 技能系统概述](./chapter_skill/01_skill_overview.md)
-  - [6.2 技能的定义与封装](./chapter_skill/02_skill_definition.md)
-  - [6.3 技能学习与获取](./chapter_skill/03_skill_learning.md)
-  - [6.4 技能发现与注册](./chapter_skill/04_skill_discovery.md)
-  - [6.5 实战：构建可复用的技能系统](./chapter_skill/05_practice_skill_system.md)
-  - [6.6 论文解读：技能系统前沿研究](./chapter_skill/06_paper_readings.md)
+- [第5章 记忆系统（Memory）](./chapter_memory/README.md)
+  - [5.1 为什么 Agent 需要记忆？](./chapter_memory/01_why_memory.md)
+  - [5.2 短期记忆：对话历史管理](./chapter_memory/02_short_term_memory.md)
+  - [5.3 长期记忆：向量数据库与检索](./chapter_memory/03_long_term_memory.md)
+  - [5.4 工作记忆：Scratchpad 模式](./chapter_memory/04_working_memory.md)
+  - [5.5 实战：带记忆的个人助理 Agent](./chapter_memory/05_practice_memory_agent.md)
+  - [5.6 论文解读：记忆系统前沿进展](./chapter_memory/06_paper_readings.md)
 
-- [第7章 记忆系统（Memory）](./chapter_memory/README.md)
-  - [7.1 为什么 Agent 需要记忆？](./chapter_memory/01_why_memory.md)
-  - [7.2 短期记忆：对话历史管理](./chapter_memory/02_short_term_memory.md)
-  - [7.3 长期记忆：向量数据库与检索](./chapter_memory/03_long_term_memory.md)
-  - [7.4 工作记忆：Scratchpad 模式](./chapter_memory/04_working_memory.md)
-  - [7.5 实战：带记忆的个人助理 Agent](./chapter_memory/05_practice_memory_agent.md)
-  - [7.6 论文解读：记忆系统前沿进展](./chapter_memory/06_paper_readings.md)
+- [第6章 规划与推理（Planning & Reasoning）](./chapter_planning/README.md)
+  - [6.1 Agent 如何"思考"？](./chapter_planning/01_how_agents_think.md)
+  - [6.2 ReAct：推理 + 行动框架](./chapter_planning/02_react_framework.md)
+  - [6.3 任务分解：将复杂问题拆解为子任务](./chapter_planning/03_task_decomposition.md)
+  - [6.4 反思与自我纠错机制](./chapter_planning/04_reflection.md)
+  - [6.5 实战：自动化研究助手 Agent](./chapter_planning/05_practice_research_agent.md)
+  - [6.6 论文解读：规划与推理前沿研究](./chapter_planning/06_paper_readings.md)
 
-- [第8章 规划与推理（Planning & Reasoning）](./chapter_planning/README.md)
-  - [8.1 Agent 如何"思考"？](./chapter_planning/01_how_agents_think.md)
-  - [8.2 ReAct：推理 + 行动框架](./chapter_planning/02_react_framework.md)
-  - [8.3 任务分解：将复杂问题拆解为子任务](./chapter_planning/03_task_decomposition.md)
-  - [8.4 反思与自我纠错机制](./chapter_planning/04_reflection.md)
-  - [8.5 实战：自动化研究助手 Agent](./chapter_planning/05_practice_research_agent.md)
-  - [8.6 论文解读：规划与推理前沿研究](./chapter_planning/06_paper_readings.md)
+- [第7章 检索增强生成（RAG）](./chapter_rag/README.md)
+  - [7.1 RAG 的概念与工作原理](./chapter_rag/01_rag_concepts.md)
+  - [7.2 文档加载与文本分割](./chapter_rag/02_document_loading.md)
+  - [7.3 向量嵌入与向量数据库](./chapter_rag/03_embeddings_vectordb.md)
+  - [7.4 检索策略与重排序](./chapter_rag/04_retrieval_strategies.md)
+  - [7.5 实战：智能文档问答 Agent](./chapter_rag/05_practice_qa_agent.md)
+  - [7.6 论文解读：RAG 前沿进展](./chapter_rag/06_paper_readings.md)
 
-- [第9章 检索增强生成（RAG）](./chapter_rag/README.md)
-  - [9.1 RAG 的概念与工作原理](./chapter_rag/01_rag_concepts.md)
-  - [9.2 文档加载与文本分割](./chapter_rag/02_document_loading.md)
-  - [9.3 向量嵌入与向量数据库](./chapter_rag/03_embeddings_vectordb.md)
-  - [9.4 检索策略与重排序](./chapter_rag/04_retrieval_strategies.md)
-  - [9.5 实战：智能文档问答 Agent](./chapter_rag/05_practice_qa_agent.md)
-  - [9.6 论文解读：RAG 前沿进展](./chapter_rag/06_paper_readings.md)
+- [第8章 上下文工程](./chapter_context_engineering/README.md)
+  - [8.1 从提示工程到上下文工程](./chapter_context_engineering/01_context_vs_prompt.md)
+  - [8.2 上下文窗口管理与注意力预算](./chapter_context_engineering/02_context_window.md)
+  - [8.3 长时程任务的上下文策略](./chapter_context_engineering/03_long_horizon.md)
+  - [8.4 实战：构建上下文管理器](./chapter_context_engineering/04_practice_context_builder.md)
 
----
+- [第9章 Skill System](./chapter_skill/README.md)
+  - [9.1 技能系统概述](./chapter_skill/01_skill_overview.md)
+  - [9.2 技能的定义与封装](./chapter_skill/02_skill_definition.md)
+  - [9.3 技能学习与获取](./chapter_skill/03_skill_learning.md)
+  - [9.4 技能发现与注册](./chapter_skill/04_skill_discovery.md)
+  - [9.5 实战：构建可复用的技能系统](./chapter_skill/05_practice_skill_system.md)
+  - [9.6 论文解读：技能系统前沿研究](./chapter_skill/06_paper_readings.md)
 
-## 第三部分：框架实战篇
-
-- [第10章 LangChain 深入实战](./chapter_langchain/README.md)
-  - [10.1 LangChain 架构全景](./chapter_langchain/01_langchain_overview.md)
-  - [10.2 Chain：构建处理管道](./chapter_langchain/02_chains.md)
-  - [10.3 使用 LangChain 构建 Agent](./chapter_langchain/03_langchain_agents.md)
-  - [10.4 LCEL：LangChain 表达式语言](./chapter_langchain/04_lcel.md)
-  - [10.5 实战：多功能客服 Agent](./chapter_langchain/05_practice_customer_service.md)
-
-- [第11章 LangGraph：构建有状态的 Agent](./chapter_langgraph/README.md)
-  - [11.1 为什么需要图结构？](./chapter_langgraph/01_why_graph.md)
-  - [11.2 LangGraph 核心概念：节点、边、状态](./chapter_langgraph/02_core_concepts.md)
-  - [11.3 构建你的第一个 Graph Agent](./chapter_langgraph/03_first_graph_agent.md)
-  - [11.4 条件路由与循环控制](./chapter_langgraph/04_conditional_routing.md)
-  - [11.5 Human-in-the-Loop：人机协作](./chapter_langgraph/05_human_in_the_loop.md)
-  - [11.6 实战：工作流自动化 Agent](./chapter_langgraph/06_practice_workflow_agent.md)
-
-- [第12章 其他主流框架概览](./chapter_frameworks/README.md)
-  - [12.1 AutoGPT 与 BabyAGI 的启示](./chapter_frameworks/01_autogpt_babyagi.md)
-  - [12.2 CrewAI：角色扮演型多 Agent 框架](./chapter_frameworks/02_crewai.md)
-  - [12.3 AutoGen：多 Agent 对话框架](./chapter_frameworks/03_autogen.md)
-  - [12.4 Dify / Coze 等低代码 Agent 平台](./chapter_frameworks/04_low_code_platforms.md)
-  - [12.5 如何选择合适的框架？](./chapter_frameworks/05_how_to_choose.md)
+- [第10章 Agentic-RL：智能体强化学习训练](./chapter_agentic_rl/README.md)
+  - [10.1 什么是 Agentic-RL](./chapter_agentic_rl/01_agentic_rl_overview.md)
+  - [10.2 SFT + LoRA 基础训练](./chapter_agentic_rl/02_sft_lora.md)
+  - [10.3 PPO：近端策略优化](./chapter_agentic_rl/03_ppo.md)
+  - [10.4 DPO：直接偏好优化](./chapter_agentic_rl/04_dpo.md)
+  - [10.5 GRPO：组内相对策略优化与奖励函数设计](./chapter_agentic_rl/05_grpo.md)
+  - [10.6 实战：完整 SFT + GRPO 训练 Pipeline](./chapter_agentic_rl/06_practice_training.md)
+  - [10.7 最新研究进展（2025—2026）](./chapter_agentic_rl/07_latest_research.md)
 
 ---
 
-## 第四部分：多 Agent 系统篇
+- [第三部分：框架实战篇](./part3.md)
 
-- [第13章 多 Agent 协作](./chapter_multi_agent/README.md)
-  - [13.1 单 Agent 的局限性](./chapter_multi_agent/01_single_agent_limits.md)
-  - [13.2 多 Agent 通信模式](./chapter_multi_agent/02_communication_patterns.md)
-  - [13.3 角色分工与任务分配](./chapter_multi_agent/03_role_assignment.md)
-  - [13.4 Supervisor 模式 vs. 去中心化模式](./chapter_multi_agent/04_supervisor_vs_decentralized.md)
-  - [13.5 实战：多 Agent 软件开发团队](./chapter_multi_agent/05_practice_dev_team.md)
-  - [13.6 论文解读：多 Agent 系统前沿研究](./chapter_multi_agent/06_paper_readings.md)
+- [第11章 LangChain 深入实战](./chapter_langchain/README.md)
+  - [11.1 LangChain 架构全景](./chapter_langchain/01_langchain_overview.md)
+  - [11.2 Chain：构建处理管道](./chapter_langchain/02_chains.md)
+  - [11.3 使用 LangChain 构建 Agent](./chapter_langchain/03_langchain_agents.md)
+  - [11.4 LCEL：LangChain 表达式语言](./chapter_langchain/04_lcel.md)
+  - [11.5 实战：多功能客服 Agent](./chapter_langchain/05_practice_customer_service.md)
 
-- [第14章 Agent 通信协议](./chapter_protocol/README.md)
-  - [14.1 MCP（Model Context Protocol）详解](./chapter_protocol/01_mcp_protocol.md)
-  - [14.2 A2A（Agent-to-Agent）协议](./chapter_protocol/02_a2a_protocol.md)
-  - [14.3 ANP（Agent Network Protocol）协议](./chapter_protocol/03_anp_protocol.md)
-  - [14.4 Agent 间的消息传递与状态共享](./chapter_protocol/04_message_passing.md)
-  - [14.5 实战：基于 MCP 的工具集成](./chapter_protocol/05_practice_mcp_integration.md)
+- [第12章 LangGraph：构建有状态的 Agent](./chapter_langgraph/README.md)
+  - [12.1 为什么需要图结构？](./chapter_langgraph/01_why_graph.md)
+  - [12.2 LangGraph 核心概念：节点、边、状态](./chapter_langgraph/02_core_concepts.md)
+  - [12.3 构建你的第一个 Graph Agent](./chapter_langgraph/03_first_graph_agent.md)
+  - [12.4 条件路由与循环控制](./chapter_langgraph/04_conditional_routing.md)
+  - [12.5 Human-in-the-Loop：人机协作](./chapter_langgraph/05_human_in_the_loop.md)
+  - [12.6 实战：工作流自动化 Agent](./chapter_langgraph/06_practice_workflow_agent.md)
 
----
-
-## 第五部分：高级主题篇
-
-- [第15章 Agent 的评估与优化](./chapter_evaluation/README.md)
-  - [15.1 如何评估 Agent 的表现？](./chapter_evaluation/01_evaluation_methods.md)
-  - [15.2 基准测试与评估指标](./chapter_evaluation/02_benchmarks.md)
-  - [15.3 Prompt 调优策略](./chapter_evaluation/03_prompt_tuning.md)
-  - [15.4 成本控制与性能优化](./chapter_evaluation/04_cost_optimization.md)
-  - [15.5 可观测性：日志、追踪与监控](./chapter_evaluation/05_observability.md)
-
-- [第16章 安全与可靠性](./chapter_security/README.md)
-  - [16.1 Prompt 注入攻击与防御](./chapter_security/01_prompt_injection.md)
-  - [16.2 幻觉问题与事实性保障](./chapter_security/02_hallucination.md)
-  - [16.3 权限控制与沙箱隔离](./chapter_security/03_permission_sandbox.md)
-  - [16.4 敏感数据保护](./chapter_security/04_data_protection.md)
-  - [16.5 Agent 行为的可控性与对齐](./chapter_security/05_alignment.md)
-  - [16.6 论文解读：安全与可靠性前沿研究](./chapter_security/06_paper_readings.md)
-
-- [第17章 部署与生产化](./chapter_deployment/README.md)
-  - [17.1 Agent 应用的部署架构](./chapter_deployment/01_deployment_architecture.md)
-  - [17.2 API 服务化：FastAPI / Flask 封装](./chapter_deployment/02_api_service.md)
-  - [17.3 容器化与云部署](./chapter_deployment/03_containerization.md)
-  - [17.4 流式响应与并发处理](./chapter_deployment/04_streaming_concurrency.md)
-  - [17.5 实战：部署一个生产级 Agent 服务](./chapter_deployment/05_practice_production_agent.md)
-
-- [第18章 Agentic-RL：智能体强化学习训练](./chapter_agentic_rl/README.md)
-  - [18.1 什么是 Agentic-RL](./chapter_agentic_rl/01_agentic_rl_overview.md)
-  - [18.2 SFT + LoRA 基础训练](./chapter_agentic_rl/02_sft_lora.md)
-  - [18.3 PPO：近端策略优化](./chapter_agentic_rl/03_ppo.md)
-  - [18.4 DPO：直接偏好优化](./chapter_agentic_rl/04_dpo.md)
-  - [18.5 GRPO：组内相对策略优化与奖励函数设计](./chapter_agentic_rl/05_grpo.md)
-  - [18.6 实战：完整 SFT + GRPO 训练 Pipeline](./chapter_agentic_rl/06_practice_training.md)
-  - [18.7 最新研究进展（2025—2026）](./chapter_agentic_rl/07_latest_research.md)
+- [第13章 其他主流框架概览](./chapter_frameworks/README.md)
+  - [13.1 AutoGPT 与 BabyAGI 的启示](./chapter_frameworks/01_autogpt_babyagi.md)
+  - [13.2 CrewAI：角色扮演型多 Agent 框架](./chapter_frameworks/02_crewai.md)
+  - [13.3 AutoGen：多 Agent 对话框架](./chapter_frameworks/03_autogen.md)
+  - [13.4 Dify / Coze 等低代码 Agent 平台](./chapter_frameworks/04_low_code_platforms.md)
+  - [13.5 如何选择合适的框架？](./chapter_frameworks/05_how_to_choose.md)
 
 ---
 
-## 第六部分：综合项目篇
+- [第四部分：多 Agent 系统篇](./part4.md)
+
+- [第14章 多 Agent 协作](./chapter_multi_agent/README.md)
+  - [14.1 单 Agent 的局限性](./chapter_multi_agent/01_single_agent_limits.md)
+  - [14.2 多 Agent 通信模式](./chapter_multi_agent/02_communication_patterns.md)
+  - [14.3 角色分工与任务分配](./chapter_multi_agent/03_role_assignment.md)
+  - [14.4 Supervisor 模式 vs. 去中心化模式](./chapter_multi_agent/04_supervisor_vs_decentralized.md)
+  - [14.5 实战：多 Agent 软件开发团队](./chapter_multi_agent/05_practice_dev_team.md)
+  - [14.6 论文解读：多 Agent 系统前沿研究](./chapter_multi_agent/06_paper_readings.md)
+
+- [第15章 Agent 通信协议](./chapter_protocol/README.md)
+  - [15.1 MCP（Model Context Protocol）详解](./chapter_protocol/01_mcp_protocol.md)
+  - [15.2 A2A（Agent-to-Agent）协议](./chapter_protocol/02_a2a_protocol.md)
+  - [15.3 ANP（Agent Network Protocol）协议](./chapter_protocol/03_anp_protocol.md)
+  - [15.4 Agent 间的消息传递与状态共享](./chapter_protocol/04_message_passing.md)
+  - [15.5 实战：基于 MCP 的工具集成](./chapter_protocol/05_practice_mcp_integration.md)
+
+---
+
+- [第五部分：生产化篇](./part5.md)
+
+- [第16章 Agent 的评估与优化](./chapter_evaluation/README.md)
+  - [16.1 如何评估 Agent 的表现？](./chapter_evaluation/01_evaluation_methods.md)
+  - [16.2 基准测试与评估指标](./chapter_evaluation/02_benchmarks.md)
+  - [16.3 Prompt 调优策略](./chapter_evaluation/03_prompt_tuning.md)
+  - [16.4 成本控制与性能优化](./chapter_evaluation/04_cost_optimization.md)
+  - [16.5 可观测性：日志、追踪与监控](./chapter_evaluation/05_observability.md)
+
+- [第17章 安全与可靠性](./chapter_security/README.md)
+  - [17.1 Prompt 注入攻击与防御](./chapter_security/01_prompt_injection.md)
+  - [17.2 幻觉问题与事实性保障](./chapter_security/02_hallucination.md)
+  - [17.3 权限控制与沙箱隔离](./chapter_security/03_permission_sandbox.md)
+  - [17.4 敏感数据保护](./chapter_security/04_data_protection.md)
+  - [17.5 Agent 行为的可控性与对齐](./chapter_security/05_alignment.md)
+  - [17.6 论文解读：安全与可靠性前沿研究](./chapter_security/06_paper_readings.md)
+
+- [第18章 部署与生产化](./chapter_deployment/README.md)
+  - [18.1 Agent 应用的部署架构](./chapter_deployment/01_deployment_architecture.md)
+  - [18.2 API 服务化：FastAPI / Flask 封装](./chapter_deployment/02_api_service.md)
+  - [18.3 容器化与云部署](./chapter_deployment/03_containerization.md)
+  - [18.4 流式响应与并发处理](./chapter_deployment/04_streaming_concurrency.md)
+  - [18.5 实战：部署一个生产级 Agent 服务](./chapter_deployment/05_practice_production_agent.md)
+
+---
+
+- [第六部分：综合项目篇](./part6.md)
 
 - [第19章 项目实战：AI 编程助手](./chapter_coding_agent/README.md)
   - [19.1 项目架构设计](./chapter_coding_agent/01_architecture.md)
@@ -183,7 +183,7 @@
 
 ---
 
-## 附录
+- [附录]()
 
 - [附录 A：常用 Prompt 模板大全](./appendix/prompt_templates.md)
 - [附录 B：Agent 开发常见问题 FAQ](./appendix/faq.md)

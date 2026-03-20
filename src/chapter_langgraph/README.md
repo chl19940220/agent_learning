@@ -1,4 +1,4 @@
-# 第9章 LangGraph：构建有状态的 Agent
+# 第12章 LangGraph：构建有状态的 Agent
 
 > 🕸️ *"LangGraph 用图结构取代线性链，让 Agent 拥有真正的状态管理和复杂工作流能力。"*
 

@@ -13,6 +13,6 @@ __pycache__/
 .env
 venv/
 .venv/
-
+.zhihu_blog/
 # macOS
 .DS_Store

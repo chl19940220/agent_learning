@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第3章 上下文工程 - 从零开始学 Agent</title>
+        <title>第8章 上下文工程 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -186,37 +187,60 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="第3章-上下文工程"><a class="header" href="#第3章-上下文工程">第3章 上下文工程</a></h1>
+<h1 id="第3章-上下文工程context-engineering"><a class="header" href="#第3章-上下文工程context-engineering">第3章 上下文工程（Context Engineering）</a></h1>
 <blockquote>
 <p>📖 <em>"提示工程让你学会如何跟 LLM 说话，上下文工程让你学会如何帮 LLM 看见全世界。"</em></p>
 </blockquote>
-<h2 id="章节概述"><a class="header" href="#章节概述">章节概述</a></h2>
-<p>如果说 Prompt Engineering 是"如何提一个好问题"，那么 <strong>Context Engineering（上下文工程）</strong> 就是"如何为 LLM 构建一个高质量的信息环境"。随着 Agent 承担的任务越来越复杂，单纯优化 prompt 已经远远不够——你需要精心管理 LLM 在每次推理时能看到的<strong>全部信息</strong>。</p>
-<p>这是 Agent 开发中最容易被忽视、但对实际效果影响最大的主题之一。Anthropic CEO Dario Amodei 曾表示："我更愿意称之为上下文工程，而不仅仅是提示工程" [1]。</p>
-<h2 id="你将学到"><a class="header" href="#你将学到">你将学到</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>节</th><th>内容</th><th>核心收获</th></tr></thead><tbody>
-<tr><td>3.1</td><td>从提示工程到上下文工程</td><td>理解两者的本质区别，掌握上下文工程的设计思维</td></tr>
-<tr><td>3.2</td><td>上下文窗口管理与注意力预算</td><td>了解上下文腐蚀现象，学会高效利用有限窗口</td></tr>
-<tr><td>3.3</td><td>长时程任务的上下文策略</td><td>掌握压缩整合、结构化笔记、子代理架构三大策略</td></tr>
-<tr><td>3.4</td><td>实战：构建上下文管理器</td><td>动手实现 GSSC 上下文构建流水线</td></tr>
+<hr />
+<h2 id="本章概览"><a class="header" href="#本章概览">本章概览</a></h2>
+<p>如果说 Prompt Engineering 是"如何提一个好问题"，那么 <strong>Context Engineering（上下文工程）</strong> 就是"如何为 LLM 构建一个高质量的信息环境"。</p>
+<p>随着 Agent 承担的任务越来越复杂——从简单的问答到跨越数百轮交互的长时程任务——单纯优化 prompt 已经远远不够。你需要<strong>系统性地管理</strong> LLM 在每次推理时能看到的<strong>全部信息</strong>：对话历史、工具返回、检索文档、任务状态……这些信息的总量可能轻松超过 100K tokens，而上下文窗口是有限的。</p>
+<p>这是 Agent 开发中<strong>最容易被忽视、但对实际效果影响最大</strong>的主题之一。Anthropic CEO Dario Amodei 曾明确表示："我更愿意称之为上下文工程，而不仅仅是提示工程" [1]。掌握上下文工程，是从"能写 prompt"到"能构建生产级 Agent"的关键跨越。</p>
+<h2 id="本章目标"><a class="header" href="#本章目标">本章目标</a></h2>
+<p>学完本章，你将能够：</p>
+<ul>
+<li>✅ 理解提示工程与上下文工程的本质区别，建立<strong>系统性的上下文设计思维</strong></li>
+<li>✅ 识别并诊断<strong>上下文腐蚀</strong>现象，掌握 Lost-in-the-Middle 效应的应对方法</li>
+<li>✅ 灵活运用<strong>压缩整合、结构化笔记、子代理架构</strong>三大长时程策略</li>
+<li>✅ 动手实现完整的 <strong>GSSC 上下文构建流水线</strong>，并应用于自己的 Agent 项目</li>
+</ul>
+<h2 id="本章结构"><a class="header" href="#本章结构">本章结构</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>小节</th><th>内容</th><th>核心收获</th><th>难度</th></tr></thead><tbody>
+<tr><td>3.1 从提示工程到上下文工程</td><td>定义上下文工程，对比两者差异</td><td>六大信息源模型 + 三大设计原则</td><td>⭐⭐</td></tr>
+<tr><td>3.2 上下文窗口管理与注意力预算</td><td>上下文腐蚀、注意力分布、管理技术</td><td>注意力预算分配 + 三种管理技术</td><td>⭐⭐⭐</td></tr>
+<tr><td>3.3 长时程任务的上下文策略</td><td>压缩整合、结构化笔记、子代理架构</td><td>三大策略的原理与组合使用</td><td>⭐⭐⭐</td></tr>
+<tr><td>3.4 实战：构建上下文管理器</td><td>完整 GSSC 流水线实现</td><td>可复用的上下文管理基础设施</td><td>⭐⭐⭐⭐</td></tr>
 </tbody></table>
 </div>
+<h2 id="-预计学习时间"><a class="header" href="#-预计学习时间">⏱️ 预计学习时间</a></h2>
+<p>约 <strong>90-120 分钟</strong>（含实战练习）</p>
 <h2 id="为什么-agent-开发者必须掌握上下文工程"><a class="header" href="#为什么-agent-开发者必须掌握上下文工程">为什么 Agent 开发者必须掌握上下文工程？</a></h2>
-<p>一个典型场景：你的 Agent 在第 1 轮对话中表现完美，但在第 20 轮后开始"忘事"、"重复"、"偏题"。这不是 LLM 变笨了——而是<strong>上下文空间被低质量信息填满了</strong>。上下文工程就是解决这类问题的系统方法论。</p>
-<h2 id="前置知识"><a class="header" href="#前置知识">前置知识</a></h2>
+<p>一个典型场景：你的 Agent 在第 1 轮对话中表现完美，但在第 20 轮后开始"忘事"、"重复"、"偏题"。这不是 LLM 变笨了——而是<strong>上下文空间被低质量信息填满了</strong>。</p>
+<p>上下文工程就是解决这类问题的系统方法论。它让你从"碰运气写 prompt"升级为"工程化管理信息流"：</p>
 <ul>
-<li>了解 LLM 的基本工作原理（第2章）</li>
-<li>了解 Token 和上下文窗口的概念</li>
+<li><strong>信息收集</strong>：从多个来源（对话、工具、RAG、任务状态）聚合候选信息</li>
+<li><strong>智能筛选</strong>：按优先级和相关性，在 token 预算内选出最优子集</li>
+<li><strong>动态压缩</strong>：对冗长内容进行摘要，释放空间给新信息</li>
+<li><strong>最优布局</strong>：利用注意力分布规律，将关键信息放在 LLM 最"关注"的位置</li>
+</ul>
+<h2 id="-前置知识"><a class="header" href="#-前置知识">💡 前置知识</a></h2>
+<ul>
+<li>已完成第 3 章（大语言模型基础），了解 LLM 的工作原理</li>
+<li>已完成第 4-7 章（工具调用、记忆系统、规划推理、RAG），了解 Agent 的核心信息源</li>
+<li>理解 Token 和上下文窗口的基本概念</li>
+<li>熟悉 Python 的 dataclass 和基本数据结构</li>
 </ul>
 <hr />
 <h2 id="参考文献"><a class="header" href="#参考文献">参考文献</a></h2>
 <p>[1] AMODEI D. Context engineering vs prompt engineering[EB/OL]. 2025.</p>
+<hr />
+<p><em>下一节：<a href="./01_context_vs_prompt.html">8.1 从提示工程到上下文工程</a></em></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../chapter_llm/05_model_parameters.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../chapter_rag/06_paper_readings.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -230,7 +254,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../chapter_llm/05_model_parameters.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../chapter_rag/06_paper_readings.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -241,6 +265,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

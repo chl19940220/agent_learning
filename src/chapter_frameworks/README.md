@@ -34,9 +34,9 @@ Agent 框架生态发展迅速，除了 LangChain/LangGraph 外，还有 AutoGPT
 
 ## 💡 前置知识
 
-- 已完成第 8-9 章的 LangChain/LangGraph 学习
+- 已完成第 11-12 章的 LangChain/LangGraph 学习
 - 对 Agent 的核心概念有基本理解
 
 ---
 
-*下一节：[10.1 AutoGPT 与 BabyAGI 的启示](./01_autogpt_babyagi.md)*
+*下一节：[13.1 AutoGPT 与 BabyAGI 的启示](./01_autogpt_babyagi.md)*

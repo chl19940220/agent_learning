@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第17章 部署与生产化 - 从零开始学 Agent</title>
+        <title>第18章 部署与生产化 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -203,11 +204,11 @@
 </ul>
 <h2 id="本章结构"><a class="header" href="#本章结构">本章结构</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>小节</th><th>内容</th></tr></thead><tbody>
-<tr><td>15.1 Agent 应用的部署架构</td><td>分层架构、状态管理</td></tr>
-<tr><td>15.2 API 服务化</td><td>FastAPI 封装、SSE 流式</td></tr>
-<tr><td>15.3 容器化与云部署</td><td>Dockerfile、Docker Compose</td></tr>
-<tr><td>15.4 流式响应与并发处理</td><td>异步、信号量、队列</td></tr>
-<tr><td>15.5 实战：生产级 Agent 服务</td><td>完整部署流程</td></tr>
+<tr><td>18.1 Agent 应用的部署架构</td><td>分层架构、状态管理</td></tr>
+<tr><td>18.2 API 服务化</td><td>FastAPI 封装、SSE 流式</td></tr>
+<tr><td>18.3 容器化与云部署</td><td>Dockerfile、Docker Compose</td></tr>
+<tr><td>18.4 流式响应与并发处理</td><td>异步、信号量、队列</td></tr>
+<tr><td>18.5 实战：生产级 Agent 服务</td><td>完整部署流程</td></tr>
 </tbody></table>
 </div>
 <h2 id="-预计学习时间"><a class="header" href="#-预计学习时间">⏱️ 预计学习时间</a></h2>
@@ -250,6 +251,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

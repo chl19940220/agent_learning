@@ -34,10 +34,10 @@
 
 ## 💡 前置知识
 
-- 已完成第 9 章 LangGraph 学习
+- 已完成第 12 章 LangGraph 学习
 - 理解 Agent 的工具调用和状态管理
 - 了解软件开发的基本流程（便于理解实战项目）
 
 ---
 
-*下一节：[11.1 单 Agent 的局限性](./01_single_agent_limits.md)*
+*下一节：[14.1 单 Agent 的局限性](./01_single_agent_limits.md)*

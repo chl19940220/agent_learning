@@ -1,4 +1,4 @@
-# 第2章 大语言模型基础
+# 第3章 大语言模型基础
 
 > 工欲善其事，必先利其器。在开始构建 Agent 之前，我们需要深入理解它的"大脑"——大语言模型（LLM）。
 
@@ -22,11 +22,11 @@
 
 | 小节 | 内容 | 难度 |
 |------|------|------|
-| 2.1 LLM 是如何工作的？ | 直觉理解 Transformer、预训练与涌现能力 | ⭐⭐ |
-| 2.2 Prompt Engineering | 系统消息、角色扮演、结构化输出 | ⭐⭐ |
-| 2.3 提示策略 | Zero-shot、Few-shot、CoT、ToT | ⭐⭐⭐ |
-| 2.4 模型 API 调用入门 | OpenAI SDK、开源模型、流式调用 | ⭐⭐ |
-| 2.5 Token 与模型参数 | Token 计数、Temperature、Top-p 等 | ⭐⭐ |
+| 3.1 LLM 是如何工作的？ | 直觉理解 Transformer、预训练与涌现能力 | ⭐⭐ |
+| 3.2 Prompt Engineering | 系统消息、角色扮演、结构化输出 | ⭐⭐ |
+| 3.3 提示策略 | Zero-shot、Few-shot、CoT、ToT | ⭐⭐⭐ |
+| 3.4 模型 API 调用入门 | OpenAI SDK、开源模型、流式调用 | ⭐⭐ |
+| 3.5 Token 与模型参数 | Token 计数、Temperature、Top-p 等 | ⭐⭐ |
 
 ## 核心概念速览
 
@@ -45,4 +45,4 @@
 
 ---
 
-*下一节：[2.1 LLM 是如何工作的？（直觉理解）](./01_how_llm_works.md)*
+*下一节：[3.1 LLM 是如何工作的？（直觉理解）](./01_how_llm_works.md)*

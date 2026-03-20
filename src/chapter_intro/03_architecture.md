@@ -36,6 +36,10 @@
 
 ![Agent感知-思考-行动循环](../svg/chapter_intro_03_loop.svg)
 
+> 🎬 **交互式动画**：想亲眼看看 PTA 循环如何运转？点击下方链接打开交互式演示，观察感知、思考、行动三个阶段的完整流转过程。
+>
+> <a href="../animations/pta_cycle.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#4CAF50;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 PTA 循环交互动画</a>
+
 ---
 
 ## 2. 深度拆解：PTA 循环的工程实现壁垒

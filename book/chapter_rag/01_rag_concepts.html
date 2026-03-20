@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>9.1 RAG 的概念与工作原理 - 从零开始学 Agent</title>
+        <title>7.1 RAG 的概念与工作原理 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -213,6 +214,10 @@ question = "张三博士2023年发表了哪些论文？"
 </ul>
 <h2 id="rag-工作流程"><a class="header" href="#rag-工作流程">RAG 工作流程</a></h2>
 <p><img src="../svg/chapter_rag_01_rag_flow.svg" alt="RAG 工作流程" /></p>
+<blockquote>
+<p>🎬 <strong>交互式动画</strong>：完整体验 RAG 的五步流水线——从文档分块、向量化、向量空间搜索可视化，到 Prompt 组装和 Token 流式生成，每一步都可以交互操作。</p>
+<p><a href="../animations/rag_flow.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#FF9800;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 RAG 工作流程交互动画</a></p>
+</blockquote>
 <h2 id="核心概念"><a class="header" href="#核心概念">核心概念</a></h2>
 <h3 id="1-chunk文本块"><a class="header" href="#1-chunk文本块">1. Chunk（文本块）</a></h3>
 <p>文档被分割为一段段的文本块（Chunk），每个 Chunk 独立存储和检索。</p>
@@ -395,6 +400,22 @@ compare_approaches("我们公司的产品退款流程是什么？")
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

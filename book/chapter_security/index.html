@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第16章 安全与可靠性 - 从零开始学 Agent</title>
+        <title>第17章 安全与可靠性 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -203,11 +204,11 @@
 </ul>
 <h2 id="本章结构"><a class="header" href="#本章结构">本章结构</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>小节</th><th>内容</th></tr></thead><tbody>
-<tr><td>14.1 Prompt 注入攻击与防御</td><td>攻击手法、多层防御</td></tr>
-<tr><td>14.2 幻觉问题与事实性保障</td><td>引用验证、RAG核查</td></tr>
-<tr><td>14.3 权限控制与沙箱隔离</td><td>最小权限、代码沙箱</td></tr>
-<tr><td>14.4 敏感数据保护</td><td>PII检测、数据脱敏</td></tr>
-<tr><td>14.5 Agent 行为的可控性与对齐</td><td>行为边界、拒绝策略</td></tr>
+<tr><td>17.1 Prompt 注入攻击与防御</td><td>攻击手法、多层防御</td></tr>
+<tr><td>17.2 幻觉问题与事实性保障</td><td>引用验证、RAG核查</td></tr>
+<tr><td>17.3 权限控制与沙箱隔离</td><td>最小权限、代码沙箱</td></tr>
+<tr><td>17.4 敏感数据保护</td><td>PII检测、数据脱敏</td></tr>
+<tr><td>17.5 Agent 行为的可控性与对齐</td><td>行为边界、拒绝策略</td></tr>
 </tbody></table>
 </div>
 <h2 id="-预计学习时间"><a class="header" href="#-预计学习时间">⏱️ 预计学习时间</a></h2>
@@ -249,6 +250,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第18章 Agentic-RL：智能体强化学习训练 - 从零开始学 Agent</title>
+        <title>第10章 Agentic-RL：智能体强化学习训练 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -186,7 +187,7 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="第18章-agentic-rl智能体强化学习训练"><a class="header" href="#第18章-agentic-rl智能体强化学习训练">第18章 Agentic-RL：智能体强化学习训练</a></h1>
+<h1 id="第10章-agentic-rl智能体强化学习训练"><a class="header" href="#第10章-agentic-rl智能体强化学习训练">第10章 Agentic-RL：智能体强化学习训练</a></h1>
 <blockquote>
 <p>📖 <em>"如果说 Prompt Engineering 是给 Agent 写'使用说明书'，那么 Agentic-RL 就是让 Agent 通过反复实践，自己悟出最优解法。"</em></p>
 </blockquote>
@@ -198,18 +199,18 @@
 <p><strong>Agentic-RL（Agentic Reinforcement Learning）</strong> 提供了另一条路径：<strong>通过强化学习训练，让模型自主习得完成 Agent 任务的最优策略</strong>。DeepSeek-R1 [1] 和 DeepSWE [2] 等工作已经证明，经过 RL 训练的模型可以涌现出训练数据中从未出现过的推理策略，在推理和工具使用能力上显著超越纯 prompt 方式。</p>
 <h2 id="你将学到"><a class="header" href="#你将学到">你将学到</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>节</th><th>内容</th><th>核心收获</th></tr></thead><tbody>
-<tr><td>18.1</td><td>什么是 Agentic-RL</td><td>理解 Agentic-RL 与传统后训练的本质区别，掌握 MDP 框架建模方法</td></tr>
-<tr><td>18.2</td><td>SFT + LoRA 基础训练</td><td>掌握监督微调的形式化原理与 LoRA 参数高效训练方法</td></tr>
-<tr><td>18.3</td><td>PPO：近端策略优化</td><td>从策略梯度出发，系统理解重要性采样、优势函数、GAE 和 Clip 机制</td></tr>
-<tr><td>18.4</td><td>DPO：直接偏好优化</td><td>掌握从 RLHF 到 DPO 的完整数学推导，理解隐式奖励的思想</td></tr>
-<tr><td>18.5</td><td>GRPO + 奖励函数设计</td><td>理解组内比较替代 Critic 的原理，掌握多维度奖励函数设计与奖励黑客防御</td></tr>
-<tr><td>18.6</td><td>实战：完整训练 Pipeline</td><td>基于 GSM8K 完成从数据准备到模型部署的完整 Agentic-RL 训练</td></tr>
-<tr><td>18.7</td><td>最新研究进展（2025—2026）</td><td>纵览 DeepSeek-R1、DAPO、VAPO、SAR 等前沿工作，掌握领域最新动态</td></tr>
+<tr><td>10.1</td><td>什么是 Agentic-RL</td><td>理解 Agentic-RL 与传统后训练的本质区别，掌握 MDP 框架建模方法</td></tr>
+<tr><td>10.2</td><td>SFT + LoRA 基础训练</td><td>掌握监督微调的形式化原理与 LoRA 参数高效训练方法</td></tr>
+<tr><td>10.3</td><td>PPO：近端策略优化</td><td>从策略梯度出发，系统理解重要性采样、优势函数、GAE 和 Clip 机制</td></tr>
+<tr><td>10.4</td><td>DPO：直接偏好优化</td><td>掌握从 RLHF 到 DPO 的完整数学推导，理解隐式奖励的思想</td></tr>
+<tr><td>10.5</td><td>GRPO + 奖励函数设计</td><td>理解组内比较替代 Critic 的原理，掌握多维度奖励函数设计与奖励黑客防御</td></tr>
+<tr><td>10.6</td><td>实战：完整训练 Pipeline</td><td>基于 GSM8K 完成从数据准备到模型部署的完整 Agentic-RL 训练</td></tr>
+<tr><td>10.7</td><td>最新研究进展（2025—2026）</td><td>纵览 DeepSeek-R1、DAPO、VAPO、SAR 等前沿工作，掌握领域最新动态</td></tr>
 </tbody></table>
 </div>
 <h2 id="前置知识"><a class="header" href="#前置知识">前置知识</a></h2>
 <ul>
-<li>理解 LLM 的基本工作原理（第2章）</li>
+<li>理解 LLM 的基本工作原理（第 3 章）</li>
 <li>了解 Python 和 PyTorch 基础</li>
 <li>对机器学习/深度学习有基本概念</li>
 </ul>
@@ -222,7 +223,7 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../chapter_deployment/05_practice_production_agent.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../chapter_skill/06_paper_readings.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -236,7 +237,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../chapter_deployment/05_practice_production_agent.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../chapter_skill/06_paper_readings.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -247,6 +248,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

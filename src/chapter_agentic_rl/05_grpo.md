@@ -118,6 +118,10 @@ $$\mathcal{L}_{GRPO}(\theta) = -\frac{1}{G} \sum_{i=1}^{G} \frac{1}{|y_i|} \sum_
 
 ![GRPO 单次训练迭代流程](../svg/chapter_agentic_rl_03_grpo_iteration.svg)
 
+> 🎬 **交互式动画**：动手体验 GRPO 的核心过程——G=8 组内采样、奖励打分、标准化优势计算、概率分布更新，直观理解"用同组比较替代 Critic"的精妙设计。
+>
+> <a href="../animations/grpo_sampling.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#E91E63;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 GRPO 组内采样交互动画</a>
+
 ### 3.5 基于 TRL 的 GRPO 完整实现
 
 ```python

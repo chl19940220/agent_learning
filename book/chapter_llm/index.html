@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第2章 大语言模型基础 - 从零开始学 Agent</title>
+        <title>第3章 大语言模型基础 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -186,7 +187,7 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="第2章-大语言模型基础"><a class="header" href="#第2章-大语言模型基础">第2章 大语言模型基础</a></h1>
+<h1 id="第3章-大语言模型基础"><a class="header" href="#第3章-大语言模型基础">第3章 大语言模型基础</a></h1>
 <blockquote>
 <p>工欲善其事，必先利其器。在开始构建 Agent 之前，我们需要深入理解它的"大脑"——大语言模型（LLM）。</p>
 </blockquote>
@@ -204,11 +205,11 @@
 </ul>
 <h2 id="本章结构"><a class="header" href="#本章结构">本章结构</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>小节</th><th>内容</th><th>难度</th></tr></thead><tbody>
-<tr><td>2.1 LLM 是如何工作的？</td><td>直觉理解 Transformer、预训练与涌现能力</td><td>⭐⭐</td></tr>
-<tr><td>2.2 Prompt Engineering</td><td>系统消息、角色扮演、结构化输出</td><td>⭐⭐</td></tr>
-<tr><td>2.3 提示策略</td><td>Zero-shot、Few-shot、CoT、ToT</td><td>⭐⭐⭐</td></tr>
-<tr><td>2.4 模型 API 调用入门</td><td>OpenAI SDK、开源模型、流式调用</td><td>⭐⭐</td></tr>
-<tr><td>2.5 Token 与模型参数</td><td>Token 计数、Temperature、Top-p 等</td><td>⭐⭐</td></tr>
+<tr><td>3.1 LLM 是如何工作的？</td><td>直觉理解 Transformer、预训练与涌现能力</td><td>⭐⭐</td></tr>
+<tr><td>3.2 Prompt Engineering</td><td>系统消息、角色扮演、结构化输出</td><td>⭐⭐</td></tr>
+<tr><td>3.3 提示策略</td><td>Zero-shot、Few-shot、CoT、ToT</td><td>⭐⭐⭐</td></tr>
+<tr><td>3.4 模型 API 调用入门</td><td>OpenAI SDK、开源模型、流式调用</td><td>⭐⭐</td></tr>
+<tr><td>3.5 Token 与模型参数</td><td>Token 计数、Temperature、Top-p 等</td><td>⭐⭐</td></tr>
 </tbody></table>
 </div>
 <h2 id="核心概念速览"><a class="header" href="#核心概念速览">核心概念速览</a></h2>
@@ -223,13 +224,13 @@
 </ul>
 <p>理解 LLM 就像理解发动机原理——即使你不造发动机，懂原理也能让你成为更好的驾驶员。</p>
 <hr />
-<p><em>下一节：<a href="./01_how_llm_works.html">2.1 LLM 是如何工作的？（直觉理解）</a></em></p>
+<p><em>下一节：<a href="./01_how_llm_works.html">3.1 LLM 是如何工作的？（直觉理解）</a></em></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../chapter_intro/06_history.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../chapter_setup/04_hello_agent.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -243,7 +244,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../chapter_intro/06_history.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../chapter_setup/04_hello_agent.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -254,6 +255,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

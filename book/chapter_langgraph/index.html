@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第11章 LangGraph：构建有状态的 Agent - 从零开始学 Agent</title>
+        <title>第12章 LangGraph：构建有状态的 Agent - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -186,7 +187,7 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="第9章-langgraph构建有状态的-agent"><a class="header" href="#第9章-langgraph构建有状态的-agent">第9章 LangGraph：构建有状态的 Agent</a></h1>
+<h1 id="第12章-langgraph构建有状态的-agent"><a class="header" href="#第12章-langgraph构建有状态的-agent">第12章 LangGraph：构建有状态的 Agent</a></h1>
 <blockquote>
 <p>🕸️ <em>"LangGraph 用图结构取代线性链，让 Agent 拥有真正的状态管理和复杂工作流能力。"</em></p>
 </blockquote>
@@ -253,6 +254,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

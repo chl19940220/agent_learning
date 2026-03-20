@@ -39,4 +39,4 @@
 
 ---
 
-*下一节：[18.1 多模态能力概述](./01_multimodal_overview.md)*
+*下一节：[21.1 多模态能力概述](./01_multimodal_overview.md)*

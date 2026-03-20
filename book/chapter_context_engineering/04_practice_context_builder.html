@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>3.4 实战：构建上下文管理器 - 从零开始学 Agent</title>
+        <title>8.4 实战：构建上下文管理器 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -190,20 +191,34 @@
 <blockquote>
 <p>📖 <em>"Talk is cheap, show me the code." — 让我们用代码实现一个完整的上下文管理系统。</em></p>
 </blockquote>
+<p>经过前三节的理论学习，你已经掌握了上下文工程的核心概念：六大信息源、注意力预算、Lost-in-the-Middle 效应、三大长时程策略。现在，是时候把这些知识<strong>落地为可运行的代码</strong>了。</p>
 <h2 id="项目目标"><a class="header" href="#项目目标">项目目标</a></h2>
 <p>在本节中，我们将实现一个 <strong>GSSC（Gather-Select-Summarize-Construct）上下文构建流水线</strong> [1]——这是一个从信息收集到上下文组装的完整工作流，可以作为任何 Agent 项目的上下文管理基础设施。</p>
+<p>完成后，你将拥有一个可以直接复用的上下文管理模块，它能够：</p>
+<ul>
+<li>从六大信息源<strong>自动收集</strong>候选信息</li>
+<li>按优先级和 token 预算<strong>智能筛选</strong>最优子集</li>
+<li>对超长内容<strong>自动压缩</strong>为精炼摘要</li>
+<li>按 Lost-in-the-Middle 感知的最优布局<strong>组装</strong>最终上下文</li>
+</ul>
 <p><img src="../svg/chapter_context_02_gssc.svg" alt="GSSC 流水线架构图" /></p>
 <h2 id="gssc-流水线概述"><a class="header" href="#gssc-流水线概述">GSSC 流水线概述</a></h2>
-<p>GSSC 流水线包含四个阶段：</p>
-<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>名称</th><th>作用</th></tr></thead><tbody>
-<tr><td><strong>G</strong></td><td>Gather（收集）</td><td>从各种来源收集可能需要的信息</td></tr>
-<tr><td><strong>S</strong></td><td>Select（选择）</td><td>根据相关性和优先级筛选信息</td></tr>
-<tr><td><strong>S</strong></td><td>Summarize（摘要）</td><td>对冗长的信息进行压缩</td></tr>
-<tr><td><strong>C</strong></td><td>Construct（构建）</td><td>按照最优布局组装最终上下文</td></tr>
+<p>GSSC 流水线包含四个阶段，信息像流水线上的产品一样，依次经过每个阶段的处理：</p>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>名称</th><th>作用</th><th>对应的上下文工程原则</th></tr></thead><tbody>
+<tr><td><strong>G</strong></td><td>Gather（收集）</td><td>从六大来源收集所有候选信息</td><td>—</td></tr>
+<tr><td><strong>S</strong></td><td>Select（选择）</td><td>根据优先级和预算筛选最优子集</td><td>相关性优先 + 动态裁剪</td></tr>
+<tr><td><strong>S</strong></td><td>Summarize（摘要）</td><td>对超长内容进行压缩</td><td>动态裁剪</td></tr>
+<tr><td><strong>C</strong></td><td>Construct（构建）</td><td>按注意力分布最优布局组装</td><td>结构化呈现</td></tr>
 </tbody></table>
 </div>
+<blockquote>
+<p>💡 <strong>设计思路</strong>：GSSC 的每个阶段都是独立的、可替换的模块。你可以根据自己的需求替换任何一个阶段的实现——比如用更高级的语义过滤替换 Select 阶段，或者用专门的领域模型替换 Summarize 阶段。</p>
+</blockquote>
 <h2 id="完整实现"><a class="header" href="#完整实现">完整实现</a></h2>
+<p>接下来，我们将从数据结构定义开始，逐步构建 GSSC 流水线的完整实现。整个实现由 6 个步骤组成，每个步骤对应一个独立的模块——你可以按顺序阅读理解全貌，也可以单独替换某个模块来适配自己的场景。</p>
 <h3 id="步骤1定义数据结构"><a class="header" href="#步骤1定义数据结构">步骤1：定义数据结构</a></h3>
+<p>任何工程项目的第一步都是定义清晰的数据结构。在 GSSC 流水线中，我们需要两个核心数据结构：<code>ContextItem</code>（上下文中的一个信息片段）和 <code>ContextBudget</code>（预算配置）。</p>
+<p><code>ContextItem</code> 是流水线中流动的"货物"——每个信息源（对话、工具结果、检索文档等）都会被包装成一个 <code>ContextItem</code>，带上它的元信息（来源类型、优先级、相关性分数、token 数量）。这些元信息在后续的 Select 和 Construct 阶段中将被用于决策。</p>
 <pre><code class="language-python">"""
 GSSC 上下文构建流水线
 完整实现代码
@@ -262,6 +277,9 @@ class ContextBudget:
         return self.total_tokens - self.output_reserve
 </code></pre>
 <h3 id="步骤2实现-gather信息收集"><a class="header" href="#步骤2实现-gather信息收集">步骤2：实现 Gather（信息收集）</a></h3>
+<p>Gather 是流水线的第一个阶段，它的职责很简单：<strong>从各个来源收集所有可能需要的信息，形成一个候选池</strong>。</p>
+<p>这个阶段故意不做任何筛选——收集就是收集，判断交给后续阶段。就像图书馆的采购部门，先把可能有用的书都买进来，上架和推荐的事情留给其他部门做。</p>
+<p>注意 <code>add_conversation_history</code> 方法中的优先级计算逻辑：越近的消息优先级越高。这是因为在大多数 Agent 场景中，最近的对话往往与当前任务最相关——这一假设在后续的 Select 阶段会被利用。</p>
 <pre><code class="language-python">class GatherStage:
     """
     G - Gather 阶段：收集所有可能需要的信息
@@ -340,6 +358,9 @@ class ContextBudget:
         return self.items
 </code></pre>
 <h3 id="步骤3实现-select信息选择"><a class="header" href="#步骤3实现-select信息选择">步骤3：实现 Select（信息选择）</a></h3>
+<p>Select 是流水线中最关键的决策阶段——它决定了候选池中的哪些信息最终会进入上下文。这个阶段直接体现了 3.1 节中讲到的"相关性优先"和"动态裁剪"原则。</p>
+<p>核心设计思路是<strong>分层优先级</strong>：首先无条件保留 system prompt 和用户消息（它们永远是最高优先级），然后按重要性递减的顺序依次填充任务状态、Agent 笔记、工具结果、检索文档、对话历史。每一层都有自己的 token 预算上限，超出的部分会被截断。</p>
+<p>这种分层设计的好处是：<strong>当总预算紧张时，低优先级的信息会被自动裁剪，而高优先级的信息始终得到保障</strong>。就像航空公司在超售时的处理策略——头等舱的乘客永远能登机，经济舱的可能需要改签。</p>
 <pre><code class="language-python">class SelectStage:
     """
     S1 - Select 阶段：根据预算和优先级筛选信息
@@ -431,6 +452,8 @@ class ContextBudget:
         return selected
 </code></pre>
 <h3 id="步骤4实现-summarize摘要压缩"><a class="header" href="#步骤4实现-summarize摘要压缩">步骤4：实现 Summarize（摘要压缩）</a></h3>
+<p>经过 Select 阶段筛选后，被选中的信息片段可能仍然很长——比如一个 SQL 查询返回了一张 3000 tokens 的大表格，或者一篇检索到的文档有 5000 tokens。Summarize 阶段的任务是<strong>对这些超长片段进行压缩，在保留核心信息的前提下减少 token 占用</strong>。</p>
+<p>一个重要的设计决策是：<strong>不同来源的信息使用不同的压缩策略</strong>。工具结果需要保留所有数字数据（因为数据分析 Agent 的核心价值就在于数据的准确性），而检索文档只需要保留关键知识点（冗余的背景介绍和引用格式可以去掉）。这种差异化压缩策略，比"一刀切"的通用摘要能保留更多有价值的信息。</p>
 <pre><code class="language-python">from openai import OpenAI
 
 client = OpenAI()
@@ -503,6 +526,9 @@ class SummarizeStage:
         )
 </code></pre>
 <h3 id="步骤5实现-construct上下文构建"><a class="header" href="#步骤5实现-construct上下文构建">步骤5：实现 Construct（上下文构建）</a></h3>
+<p>这是流水线的最后一个处理阶段，也是 3.2 节 Lost-in-the-Middle 效应知识的直接应用。Construct 阶段负责<strong>把经过筛选和压缩的信息片段，按照注意力最优的布局组装成最终的 messages 列表</strong>。</p>
+<p>布局策略的核心思想在代码注释中已经说明：开头区域（高注意力）放系统指令和任务状态——确保 Agent "不迷路"；中间区域（较低注意力）放辅助性的历史对话和检索文档——即使被部分忽略也不致命；结尾区域（最高注意力）放用户的当前消息——确保 Agent 紧紧围绕用户的最新需求来回答。</p>
+<p>这种"三明治"式的布局设计，让每类信息都被放在了最适合它的位置——关键信息不会被"埋"在中间而被忽略，辅助信息也不会抢占宝贵的头尾注意力位置。</p>
 <pre><code class="language-python">class ConstructStage:
     """
     C - Construct 阶段：按最优布局组装最终上下文
@@ -589,6 +615,8 @@ class SummarizeStage:
         return messages
 </code></pre>
 <h3 id="步骤6组装-gssc-流水线"><a class="header" href="#步骤6组装-gssc-流水线">步骤6：组装 GSSC 流水线</a></h3>
+<p>现在到了最激动人心的部分——把前面所有的模块组装成一个完整的流水线。<code>GSSCPipeline</code> 类是整个系统的入口点，它提供了一个简洁的 <code>build()</code> 接口，让调用者只需提供原始数据，就能获得一个优化过的 messages 列表——可以直接传给任何 LLM API。</p>
+<p>注意 <code>build()</code> 方法中的四行核心逻辑——每一行对应 GSSC 的一个阶段，信息像水流一样依次经过 Gather → Select → Summarize → Construct，最终输出高质量的上下文。每个阶段都会打印一条日志，让你清楚地看到信息在每个阶段的变化。</p>
 <pre><code class="language-python">class GSSCPipeline:
     """
     GSSC 上下文构建流水线
@@ -719,20 +747,40 @@ messages = pipeline.build(
 # 🏗️ Construct: 构建完成，约 XXX tokens
 </code></pre>
 <h2 id="本节小结"><a class="header" href="#本节小结">本节小结</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>概念</th><th>说明</th></tr></thead><tbody>
-<tr><td><strong>GSSC 流水线</strong></td><td>Gather → Select → Summarize → Construct 四阶段构建</td></tr>
-<tr><td><strong>Gather</strong></td><td>从各来源收集候选信息</td></tr>
-<tr><td><strong>Select</strong></td><td>按优先级和预算筛选</td></tr>
-<tr><td><strong>Summarize</strong></td><td>压缩超长内容</td></tr>
-<tr><td><strong>Construct</strong></td><td>按 Lost-in-the-Middle 感知的最优布局组装</td></tr>
+<p>恭喜你完成了 GSSC 上下文构建流水线的实现！这是一个可以直接应用于生产项目的上下文管理基础设施。</p>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>核心功能</th><th>关键设计</th></tr></thead><tbody>
+<tr><td><strong>Gather</strong></td><td>从六大来源收集候选信息</td><td>自动按新旧程度分配优先级</td></tr>
+<tr><td><strong>Select</strong></td><td>按优先级和预算筛选</td><td>必选项 → 高优先级 → 工具结果 → 文档 → 历史</td></tr>
+<tr><td><strong>Summarize</strong></td><td>压缩超长内容</td><td>按来源类型使用不同压缩策略</td></tr>
+<tr><td><strong>Construct</strong></td><td>按 Lost-in-the-Middle 最优布局组装</td><td>开头=系统+状态，中间=历史+知识，结尾=用户消息</td></tr>
 </tbody></table>
 </div>
+<h3 id="在你的项目中使用-gssc"><a class="header" href="#在你的项目中使用-gssc">在你的项目中使用 GSSC</a></h3>
+<p>GSSC 流水线是模块化的，你可以根据需要进行扩展：</p>
+<ul>
+<li><strong>增加缓存层</strong>：在 Summarize 阶段添加缓存，避免重复压缩相同内容</li>
+<li><strong>集成 embedding</strong>：在 Select 阶段使用语义相似度进行更精准的筛选</li>
+<li><strong>添加监控</strong>：记录每次构建的 token 分配和压缩比，用于优化预算配置</li>
+<li><strong>多模态支持</strong>：扩展 InfoSource 枚举以支持图片、音频等多模态信息</li>
+</ul>
 <h2 id="-思考练习"><a class="header" href="#-思考练习">🤔 思考练习</a></h2>
 <ol>
-<li>如何为 GSSC 流水线添加缓存机制，避免重复压缩相同的内容？</li>
-<li>如果 Agent 支持多模态输入（图片、音频），GSSC 流水线需要怎样扩展？</li>
-<li>如何评估上下文管理的效果？你会设计哪些指标？</li>
+<li>如何为 GSSC 流水线添加缓存机制，避免重复压缩相同的内容？设计缓存 key 的策略。</li>
+<li>如果 Agent 支持多模态输入（图片、音频），GSSC 流水线需要怎样扩展？Gather 和 Select 阶段分别需要什么改动？</li>
+<li>如何评估上下文管理的效果？尝试设计一个 A/B 测试方案，对比"无管理"vs"GSSC 管理"的 Agent 输出质量。</li>
 </ol>
+<h2 id="第3章回顾"><a class="header" href="#第3章回顾">第3章回顾</a></h2>
+<p>至此，你已经完整学习了上下文工程的理论与实践：</p>
+<div class="table-wrapper"><table><thead><tr><th>节</th><th>核心收获</th><th>关键概念</th></tr></thead><tbody>
+<tr><td>3.1</td><td>从提示工程跨越到上下文工程</td><td>六大信息源、三大原则、思维转变</td></tr>
+<tr><td>3.2</td><td>理解上下文窗口的约束和注意力分布</td><td>上下文腐蚀、Lost-in-the-Middle、注意力预算</td></tr>
+<tr><td>3.3</td><td>掌握长时程任务的三大策略</td><td>压缩整合、结构化笔记、子代理架构</td></tr>
+<tr><td>3.4</td><td>动手实现可复用的上下文管理基础设施</td><td>GSSC 流水线：Gather → Select → Summarize → Construct</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>💡 <strong>下一步</strong>：上下文工程是贯穿整本书的底层能力。在后续章节中，无论是工具调用（第5章）、记忆系统（第7章）、还是 RAG（第9章），你都会反复用到本章学到的上下文管理思维。建议将 GSSC 流水线的代码保存到自己的工具库中，后续章节的实战项目将直接复用。</p>
+</blockquote>
 <hr />
 <h2 id="参考文献"><a class="header" href="#参考文献">参考文献</a></h2>
 <p>[1] ANTHROPIC. Building effective agents[EB/OL]. 2024. https://www.anthropic.com/engineering/building-effective-agents.</p>
@@ -745,7 +793,7 @@ messages = pipeline.build(
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../chapter_setup/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../chapter_skill/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -759,13 +807,29 @@ messages = pipeline.build(
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../chapter_setup/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../chapter_skill/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

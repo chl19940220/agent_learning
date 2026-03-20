@@ -31,6 +31,10 @@ RAG 通过"先检索、再生成"解决这三个问题：
 
 ![RAG 工作流程](../svg/chapter_rag_01_rag_flow.svg)
 
+> 🎬 **交互式动画**：完整体验 RAG 的五步流水线——从文档分块、向量化、向量空间搜索可视化，到 Prompt 组装和 Token 流式生成，每一步都可以交互操作。
+>
+> <a href="../animations/rag_flow.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#FF9800;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 RAG 工作流程交互动画</a>
+
 ## 核心概念
 
 ### 1. Chunk（文本块）

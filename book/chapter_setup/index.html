@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>第4章 开发环境搭建 - 从零开始学 Agent</title>
+        <title>第2章 开发环境搭建 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -186,7 +187,7 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="第3章-开发环境搭建"><a class="header" href="#第3章-开发环境搭建">第3章 开发环境搭建</a></h1>
+<h1 id="第2章-开发环境搭建"><a class="header" href="#第2章-开发环境搭建">第2章 开发环境搭建</a></h1>
 <blockquote>
 <p>磨刀不误砍柴工。一个配置良好的开发环境，能让你的 Agent 开发事半功倍。</p>
 </blockquote>
@@ -203,10 +204,10 @@
 </ul>
 <h2 id="本章结构"><a class="header" href="#本章结构">本章结构</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>小节</th><th>内容</th><th>预计时间</th></tr></thead><tbody>
-<tr><td>3.1 Python 环境与依赖管理</td><td>venv、conda、uv 对比与使用</td><td>20分钟</td></tr>
-<tr><td>3.2 关键库安装</td><td>LangChain、OpenAI SDK 等</td><td>15分钟</td></tr>
-<tr><td>3.3 API Key 管理</td><td>.env 文件、环境变量最佳实践</td><td>10分钟</td></tr>
-<tr><td>3.4 Hello Agent！</td><td>第一个完整的 Agent</td><td>30分钟</td></tr>
+<tr><td>2.1 Python 环境与依赖管理</td><td>venv、conda、uv 对比与使用</td><td>20分钟</td></tr>
+<tr><td>2.2 关键库安装</td><td>LangChain、OpenAI SDK 等</td><td>15分钟</td></tr>
+<tr><td>2.3 API Key 管理</td><td>.env 文件、环境变量最佳实践</td><td>10分钟</td></tr>
+<tr><td>2.4 Hello Agent！</td><td>第一个完整的 Agent</td><td>30分钟</td></tr>
 </tbody></table>
 </div>
 <h2 id="前置要求"><a class="header" href="#前置要求">前置要求</a></h2>
@@ -225,13 +226,13 @@
 </tbody></table>
 </div>
 <hr />
-<p><em>下一节：<a href="./01_python_setup.html">3.1 Python 环境与依赖管理</a></em></p>
+<p><em>下一节：<a href="./01_python_setup.html">2.1 Python 环境与依赖管理</a></em></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../chapter_context_engineering/04_practice_context_builder.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../chapter_intro/06_history.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -245,7 +246,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../chapter_context_engineering/04_practice_context_builder.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../chapter_intro/06_history.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -256,6 +257,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

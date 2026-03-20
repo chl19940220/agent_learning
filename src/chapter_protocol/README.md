@@ -33,10 +33,10 @@
 
 ## 💡 前置知识
 
-- 已完成第 11 章多 Agent 协作
+- 已完成第 14 章多 Agent 协作
 - 了解 JSON-RPC 等基本通信协议概念
 - Python 异步编程（`asyncio`）基础
 
 ---
 
-*下一节：[12.1 MCP（Model Context Protocol）详解](./01_mcp_protocol.md)*
+*下一节：[15.1 MCP（Model Context Protocol）详解](./01_mcp_protocol.md)*

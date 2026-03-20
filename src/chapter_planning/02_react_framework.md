@@ -12,6 +12,10 @@ ReAct 的关键创新是**将思考过程显式化**：Agent 在行动之前先"
 
 ![ReAct 推理+行动循环](../svg/chapter_planning_02_react_loop.svg)
 
+> 🎬 **交互式动画**：通过动画对比 ReAct、纯 CoT 和 Act-only 三种范式在同一道多跳问答上的不同表现——推理如何为行动提供方向，行动如何为推理提供依据。
+>
+> <a href="../animations/react_cycle.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#2196F3;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 ReAct 推理循环交互动画</a>
+
 **与传统 Agent 的对比：**
 
 | 特点 | 传统 Agent（黑盒） | ReAct Agent（透明） |

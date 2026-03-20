@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>8.2 ReAct：推理 + 行动框架 - 从零开始学 Agent</title>
+        <title>6.2 ReAct：推理 + 行动框架 - 从零开始学 Agent</title>
 
 
         <!-- Custom HTML head -->
@@ -39,6 +39,7 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/custom.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -195,6 +196,10 @@
 <h2 id="react-的核心思想"><a class="header" href="#react-的核心思想">ReAct 的核心思想</a></h2>
 <p>ReAct 的关键创新是<strong>将思考过程显式化</strong>：Agent 在行动之前先"大声说出"自己的推理，然后再采取行动。</p>
 <p><img src="../svg/chapter_planning_02_react_loop.svg" alt="ReAct 推理+行动循环" /></p>
+<blockquote>
+<p>🎬 <strong>交互式动画</strong>：通过动画对比 ReAct、纯 CoT 和 Act-only 三种范式在同一道多跳问答上的不同表现——推理如何为行动提供方向，行动如何为推理提供依据。</p>
+<p><a href="../animations/react_cycle.html" target="_blank" style="display:inline-block;padding:8px 16px;background:#2196F3;color:white;border-radius:6px;text-decoration:none;font-weight:bold;">▶ 打开 ReAct 推理循环交互动画</a></p>
+</blockquote>
 <p><strong>与传统 Agent 的对比：</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>特点</th><th style="text-align: center">传统 Agent（黑盒）</th><th style="text-align: center">ReAct Agent（透明）</th></tr></thead><tbody>
 <tr><td>思考过程</td><td style="text-align: center">隐藏</td><td style="text-align: center">显式写入上下文</td></tr>
@@ -475,6 +480,22 @@ result = agent.run("Python 是哪年发布的？距离今年有多少年了？")
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

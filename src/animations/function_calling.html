@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Function Calling — 让 LLM 拥有"双手"</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    padding-bottom: 40px;
+  }
+
+  h1 {
+    margin: 28px 0 6px;
+    font-size: 26px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+  }
+  .subtitle { color: #94a3b8; font-size: 13px; margin-bottom: 18px; }
+
+  .controls {
+    display: flex; gap: 10px; margin-bottom: 14px;
+  }
+  .btn {
+    padding: 7px 20px; border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+  .btn-secondary { background: #334155; color: #e2e8f0; }
+
+  /* ── 三栏布局：用户 | LLM | 工具 ── */
+  .arena {
+    width: 840px;
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    gap: 0;
+    position: relative;
+    min-height: 560px;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .col-header {
+    padding: 10px 0;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 4px;
+  }
+  .col-user .col-header { background: linear-gradient(135deg, #1e3a5f, #1e40af); color: #60a5fa; }
+  .col-llm .col-header  { background: linear-gradient(135deg, #3b0764, #6d28d9); color: #c084fc; }
+  .col-tool .col-header { background: linear-gradient(135deg, #14532d, #166534); color: #4ade80; }
+
+  .col-body {
+    width: 100%;
+    flex: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* ── 消息气泡 ── */
+  .msg {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+    position: relative;
+  }
+  .msg.show { opacity: 1; transform: translateY(0); }
+
+  .msg-user {
+    background: #1e3a5f;
+    border: 1px solid #3b82f6;
+    color: #bfdbfe;
+  }
+  .msg-llm {
+    background: #2e1065;
+    border: 1px solid #7c3aed;
+    color: #ddd6fe;
+  }
+  .msg-tool {
+    background: #052e16;
+    border: 1px solid #16a34a;
+    color: #bbf7d0;
+  }
+  .msg-json {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 11px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: #a5b4fc;
+  }
+  .msg-final {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    border: 1px solid #6366f1;
+    color: #e0e7ff;
+  }
+
+  .msg-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    opacity: 0.7;
+  }
+
+  /* ── 飞行箭头 ── */
+  .fly-arrow {
+    position: absolute;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  svg.arrows-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 15;
+  }
+  .fly-path {
+    fill: none;
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+    stroke-linecap: round;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .fly-path.show { opacity: 0.7; }
+  .fly-path.u2l { stroke: #60a5fa; }
+  .fly-path.l2t { stroke: #4ade80; }
+  .fly-path.t2l { stroke: #4ade80; }
+  .fly-path.l2u { stroke: #c084fc; }
+
+  .fly-dot {
+    r: 5;
+    opacity: 0;
+  }
+  .fly-dot.u2l { fill: #60a5fa; }
+  .fly-dot.l2t { fill: #4ade80; }
+  .fly-dot.t2l { fill: #4ade80; }
+  .fly-dot.l2u { fill: #c084fc; }
+
+  /* ── 步骤标签 ── */
+  .step-badge {
+    position: absolute;
+    top: -8px; left: -8px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    z-index: 5;
+  }
+  .badge-1 { background: #3b82f6; color: white; }
+  .badge-2 { background: #8b5cf6; color: white; }
+  .badge-3 { background: #8b5cf6; color: white; }
+  .badge-4 { background: #22c55e; color: white; }
+  .badge-5 { background: #ec4899; color: white; }
+
+  /* ── 步骤说明 ── */
+  .step-desc {
+    width: 840px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.3s;
+  }
+  .step-desc .sd-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .step-desc .sd-text { color: #cbd5e1; }
+  .step-desc .sd-text strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<h1>🔧 Function Calling：5 步通信协议</h1>
+<p class="subtitle">模型不执行函数 — 它只输出调用指令，执行由代码完成</p>
+
+<div class="controls">
+  <button class="btn btn-primary" id="btnStart">▶ 开始演示</button>
+  <button class="btn btn-secondary" id="btnReset">↻ 重置</button>
+</div>
+
+<div class="arena" id="arena">
+  <svg class="arrows-svg" id="arrowsSvg" viewBox="0 0 840 560"></svg>
+
+  <div class="col col-user">
+    <div class="col-header">👤 用户 / 应用代码</div>
+    <div class="col-body" id="colUser"></div>
+  </div>
+
+  <div class="col col-llm">
+    <div class="col-header">🧠 LLM (GPT-4)</div>
+    <div class="col-body" id="colLlm"></div>
+  </div>
+
+  <div class="col col-tool">
+    <div class="col-header">⚡ 工具执行引擎</div>
+    <div class="col-body" id="colTool"></div>
+  </div>
+</div>
+
+<div class="step-desc" id="stepDesc">
+  <div class="sd-num" style="background:#334155;color:#94a3b8;">?</div>
+  <div class="sd-text" style="color:#94a3b8;">点击"开始演示"，模拟 Agent 查天气 + 发邮件的完整通信过程</div>
+</div>
+
+<script>
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+const colUser = document.getElementById('colUser');
+const colLlm  = document.getElementById('colLlm');
+const colTool = document.getElementById('colTool');
+const stepDesc = document.getElementById('stepDesc');
+const arrowsSvg = document.getElementById('arrowsSvg');
+
+let running = false;
+
+function addMsg(col, cls, label, html, badge) {
+  const el = document.createElement('div');
+  el.className = `msg ${cls}`;
+  let inner = '';
+  if (badge) inner += `<div class="step-badge badge-${badge}">${badge}</div>`;
+  if (label) inner += `<div class="msg-label">${label}</div>`;
+  inner += html;
+  el.innerHTML = inner;
+  col.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  return el;
+}
+
+function showStep(num, bg, color, text) {
+  stepDesc.innerHTML = `<div class="sd-num" style="background:${bg};color:${color};">${num}</div><div class="sd-text">${text}</div>`;
+  stepDesc.style.borderColor = color;
+}
+
+function drawArrow(cls, x1, y1, x2, y2) {
+  const mid = (x1 + x2) / 2;
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('class', `fly-path ${cls}`);
+  path.setAttribute('d', `M ${x1} ${y1} Q ${mid} ${(y1+y2)/2 - 20} ${x2} ${y2}`);
+  arrowsSvg.appendChild(path);
+  requestAnimationFrame(() => path.classList.add('show'));
+
+  // 飞行点
+  const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('class', `fly-dot ${cls}`);
+  dot.setAttribute('r', '5');
+  const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+  anim.setAttribute('dur', '0.8s');
+  anim.setAttribute('fill', 'freeze');
+  anim.setAttribute('begin', 'indefinite');
+  const mpath = document.createElementNS('http://www.w3.org/2000/svg', 'mpath');
+  mpath.setAttribute('href', '');
+  // Use path directly
+  anim.innerHTML = `<mpath href=""/>`;
+  // For simplicity, just animate opacity
+  dot.style.opacity = '0.8';
+  arrowsSvg.appendChild(dot);
+
+  return { path, dot };
+}
+
+async function run() {
+  // ── 步骤 1: 定义工具 + 发送请求 ──
+  showStep('1', '#1e40af', '#60a5fa',
+    '<strong>定义工具 + 发送请求</strong>：应用代码将用户消息和工具定义（JSON Schema）一起发给 LLM');
+
+  addMsg(colUser, 'msg-user', '用户输入', '🗣️ "广州天气如何？如果下雨帮我发提醒邮件给小张"', '1');
+  await delay(600);
+
+  addMsg(colUser, 'msg-json', 'tools 定义', `<pre style="margin:0;font-size:10px;">[
+  {
+    "name": "get_weather",
+    "params": { "city": "string" }
+  },
+  {
+    "name": "send_email",
+    "params": { "to": "str", "subject": "str" }
+  }
+]</pre>`);
+  await delay(1200);
+
+  // ── 步骤 2: LLM 分析决策 ──
+  showStep('2', '#6d28d9', '#c084fc',
+    '<strong>模型决策</strong>：LLM 分析用户意图 → 需要先查天气 → 输出结构化的函数调用 JSON（不是执行！）');
+
+  addMsg(colLlm, 'msg-llm', 'LLM 推理', '💭 用户需要查天气 + 条件发邮件<br>→ 先调用 get_weather', '2');
+  await delay(800);
+
+  addMsg(colLlm, 'msg-json', 'function_call 输出', `<pre style="margin:0;font-size:10px;">{
+  "name": "get_weather",
+  "arguments": {
+    "city": "广州"
+  }
+}</pre>`);
+  await delay(1200);
+
+  // ── 步骤 3: 代码执行工具 ──
+  showStep('3', '#166534', '#4ade80',
+    '<strong>执行工具</strong>：应用代码解析 JSON → 调用真实的 get_weather() 函数 → 获取实际天气数据');
+
+  addMsg(colTool, 'msg-tool', '执行 get_weather("广州")', '🌧️ 调用天气 API...', '3');
+  await delay(800);
+
+  addMsg(colTool, 'msg-json', '返回结果', `<pre style="margin:0;font-size:10px;">{
+  "city": "广州",
+  "temp": "25°C",
+  "condition": "小雨",
+  "humidity": "80%"
+}</pre>`);
+  await delay(1200);
+
+  // ── 步骤 4: 结果回传 → LLM 再次决策 ──
+  showStep('4', '#6d28d9', '#c084fc',
+    '<strong>二次决策</strong>：工具结果返回给 LLM → 发现是"小雨"→ 满足条件 → 再次输出 function_call 调用邮件工具');
+
+  addMsg(colLlm, 'msg-llm', 'LLM 分析结果', '💭 condition="小雨" → 满足发邮件条件！<br>→ 调用 send_email', '4');
+  await delay(800);
+
+  addMsg(colLlm, 'msg-json', 'function_call 输出', `<pre style="margin:0;font-size:10px;">{
+  "name": "send_email",
+  "arguments": {
+    "to": "xiaozhang@mail.com",
+    "subject": "广州下雨提醒",
+    "body": "广州今天小雨 25°C 请记得带伞"
+  }
+}</pre>`);
+  await delay(1000);
+
+  // 工具执行邮件
+  addMsg(colTool, 'msg-tool', '执行 send_email(...)', '📧 发送邮件中...', '4');
+  await delay(600);
+  addMsg(colTool, 'msg-json', '返回结果', `<pre style="margin:0;font-size:10px;">{ "status": "success", "msg_id": "MSG-12345" }</pre>`);
+  await delay(1000);
+
+  // ── 步骤 5: 最终回复 ──
+  showStep('5', '#9d174d', '#f472b6',
+    '<strong>生成回答</strong>：所有工具调用完成 → LLM 综合结果 → 输出自然语言回答给用户');
+
+  addMsg(colLlm, 'msg-final', '最终回复', '广州今天 <strong>25°C，小雨</strong>，湿度 80%。<br>已发送提醒邮件给小张 📧 ✅', '5');
+  await delay(600);
+
+  addMsg(colUser, 'msg-user', '用户收到回复 ✅', '🎉 完美！两步工具调用自动完成', '5');
+}
+
+document.getElementById('btnStart').onclick = () => {
+  if (running) return;
+  reset();
+  running = true;
+  run().then(() => running = false);
+};
+
+function reset() {
+  running = false;
+  colUser.innerHTML = '';
+  colLlm.innerHTML = '';
+  colTool.innerHTML = '';
+  arrowsSvg.innerHTML = '';
+  stepDesc.innerHTML = '<div class="sd-num" style="background:#334155;color:#94a3b8;">?</div><div class="sd-text" style="color:#94a3b8;">点击"开始演示"，模拟完整的 Function Calling 通信过程</div>';
+  stepDesc.style.borderColor = '#334155';
+}
+
+document.getElementById('btnReset').onclick = reset;
+</script>
+</body>
+</html>
