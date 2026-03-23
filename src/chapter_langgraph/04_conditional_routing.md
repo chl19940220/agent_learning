@@ -158,6 +158,107 @@ print(f"通过审查：{result['approved']}")
 print(f"迭代次数：{result['iteration']}")
 ```
 
+## 高级路由模式
+
+上面的代码审查示例展示了基本的条件路由。在真实的 Agent 系统中，你可能需要更复杂的路由逻辑：
+
+**模式 1：多路分发（Fan-out）**
+
+根据用户意图将请求路由到不同的专业处理流程：
+
+```python
+def intent_router(state: dict) -> str:
+    """根据用户意图路由到不同处理节点"""
+    intent = state.get("detected_intent", "unknown")
+    
+    routing_map = {
+        "code_review": "code_analyzer",
+        "bug_fix": "debugger",
+        "feature_request": "planner",
+        "documentation": "doc_writer",
+    }
+    
+    return routing_map.get(intent, "general_handler")
+
+graph.add_conditional_edges("intent_detector", intent_router, {
+    "code_analyzer": "code_analyzer",
+    "debugger": "debugger",
+    "planner": "planner",
+    "doc_writer": "doc_writer",
+    "general_handler": "general_handler",
+})
+```
+
+**模式 2：质量门控（Quality Gate）**
+
+在 Agent 输出之前添加质量检查，不合格的回退重做：
+
+```python
+def quality_gate(state: dict) -> str:
+    """检查输出质量，决定是通过还是重做"""
+    score = state.get("quality_score", 0)
+    retries = state.get("retry_count", 0)
+    
+    if score >= 0.8:
+        return "publish"      # 质量合格，发布
+    elif retries >= 3:
+        return "manual_review" # 重试次数用尽，交给人工
+    else:
+        return "regenerate"    # 重新生成
+```
+
+**模式 3：并行汇聚（Map-Reduce）**
+
+LangGraph 2.0 引入了 `Send()` API，支持动态创建并行分支：
+
+```python
+from langgraph.constants import Send
+
+def route_to_parallel(state: dict) -> list[Send]:
+    """将任务动态分发给多个并行节点"""
+    subtasks = state.get("subtasks", [])
+    
+    # 每个子任务创建一个独立的 Send
+    return [
+        Send("worker", {"task": subtask, "task_id": i})
+        for i, subtask in enumerate(subtasks)
+    ]
+
+graph.add_conditional_edges("planner", route_to_parallel)
+```
+
+## 调试条件路由
+
+当条件路由的行为不符合预期时，最有效的调试方法是**追踪每一步的路由决策**：
+
+```python
+# 方法 1：在条件函数中添加日志
+import logging
+logger = logging.getLogger("agent.routing")
+
+def route_with_logging(state: dict) -> str:
+    """带日志的条件路由"""
+    decision = state.get("review_result")
+    iteration = state.get("iteration", 0)
+    
+    if decision == "pass":
+        result = "approve"
+    elif iteration >= state.get("max_iterations", 3):
+        result = "approve"  # 超过最大次数，强制通过
+    else:
+        result = "fix"
+    
+    logger.info(f"路由决策: iteration={iteration}, decision={decision} → {result}")
+    return result
+
+# 方法 2：使用 stream 追踪完整执行路径
+for event in app.stream(initial_state):
+    for node_name, output in event.items():
+        print(f"  节点 [{node_name}] → iteration={output.get('iteration', '?')}")
+```
+
+> 💡 **最佳实践**：复杂的条件路由函数应该**先用单元测试验证**，确保每种输入组合都能返回正确的路由目标，再集成到图中。
+
 ---
 
 ## 小结
@@ -169,4 +270,4 @@ print(f"迭代次数：{result['iteration']}")
 
 ---
 
-*下一节：[9.5 Human-in-the-Loop：人机协作](./05_human_in_the_loop.md)*
+*下一节：[12.5 Human-in-the-Loop：人机协作](./05_human_in_the_loop.md)*

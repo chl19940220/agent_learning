@@ -7,16 +7,277 @@
 
 
         <!-- Custom HTML head -->
-        <script>
-        MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
+        <!-- ============================================
+           从零开始学 Agent - 自定义 HTML Head
+           ============================================ -->
+        
+        <!-- 阅读进度条 -->
+        <style>
+          #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #3783eb, #00d4ff);
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 8px rgba(55, 131, 235, 0.4);
           }
-        };
+          
+          /* 回到顶部按钮 */
+          #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--links, #3783eb);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+            z-index: 999;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+          }
+          #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          #back-to-top:hover {
+            background: var(--links, #3783eb);
+            filter: brightness(1.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+          }
+        
+          /* 代码块语言标签 */
+          .content pre {
+            position: relative;
+          }
+          .code-lang-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.25);
+            border-radius: 0 8px 0 6px;
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          }
+        
+          /* 信息提示框 (使用 blockquote + emoji 约定) */
+          .content blockquote.admonition-tip {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+          }
+          .content blockquote.admonition-warning {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.06);
+          }
+          .content blockquote.admonition-danger {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+          }
+          .content blockquote.admonition-info {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.06);
+          }
+        
+          /* 暗色主题适配 */
+          .navy #reading-progress,
+          .coal #reading-progress,
+          .ayu #reading-progress {
+            background: linear-gradient(90deg, #5ba3f5, #00d4ff);
+          }
+          .navy .code-lang-tag,
+          .coal .code-lang-tag,
+          .ayu .code-lang-tag {
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7);
+          }
+          .navy .content blockquote.admonition-tip,
+          .coal .content blockquote.admonition-tip,
+          .ayu .content blockquote.admonition-tip {
+            background: rgba(16, 185, 129, 0.08);
+          }
+          .navy .content blockquote.admonition-warning,
+          .coal .content blockquote.admonition-warning,
+          .ayu .content blockquote.admonition-warning {
+            background: rgba(245, 158, 11, 0.08);
+          }
+          .navy .content blockquote.admonition-danger,
+          .coal .content blockquote.admonition-danger,
+          .ayu .content blockquote.admonition-danger {
+            background: rgba(239, 68, 68, 0.08);
+          }
+          .navy .content blockquote.admonition-info,
+          .coal .content blockquote.admonition-info,
+          .ayu .content blockquote.admonition-info {
+            background: rgba(59, 130, 246, 0.08);
+          }
+        
+          /* 章节标题锚点链接 */
+          .content h2:hover .header-anchor,
+          .content h3:hover .header-anchor {
+            opacity: 1;
+          }
+          .header-anchor {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: 0.3em;
+            color: var(--links);
+            text-decoration: none;
+            font-size: 0.85em;
+          }
+        
+          /* 估计阅读时间标签 */
+          .reading-time {
+            display: inline-block;
+            margin-top: 0.5em;
+            padding: 0.3em 0.8em;
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(0,0,0,0.04);
+            border-radius: 20px;
+            font-weight: 500;
+          }
+          .navy .reading-time,
+          .coal .reading-time,
+          .ayu .reading-time {
+            color: #aaa;
+            background: rgba(255,255,255,0.06);
+          }
+        </style>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // === 1. 阅读进度条 ===
+          var progressBar = document.createElement('div');
+          progressBar.id = 'reading-progress';
+          document.body.prepend(progressBar);
+        
+          function updateProgress() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+          }
+        
+          // === 2. 回到顶部按钮 ===
+          var backBtn = document.createElement('button');
+          backBtn.id = 'back-to-top';
+          backBtn.innerHTML = '&#8679;';
+          backBtn.title = '回到顶部';
+          document.body.appendChild(backBtn);
+        
+          function toggleBackToTop() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if (scrollTop > 400) {
+              backBtn.classList.add('visible');
+            } else {
+              backBtn.classList.remove('visible');
+            }
+          }
+        
+          backBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        
+          // 合并 scroll 事件
+          var scrollTicking = false;
+          window.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+              window.requestAnimationFrame(function() {
+                updateProgress();
+                toggleBackToTop();
+                scrollTicking = false;
+              });
+              scrollTicking = true;
+            }
+          });
+        
+          // 初始化
+          updateProgress();
+          toggleBackToTop();
+        
+          // === 3. 代码块语言标签 ===
+          var codeBlocks = document.querySelectorAll('.content pre code');
+          codeBlocks.forEach(function(code) {
+            var classes = code.className.split(/\s+/);
+            var lang = '';
+            classes.forEach(function(cls) {
+              if (cls.startsWith('language-')) {
+                lang = cls.replace('language-', '');
+              }
+            });
+            if (lang && lang !== 'text' && lang !== 'plaintext') {
+              var langMap = {
+                'python': 'Python', 'py': 'Python',
+                'javascript': 'JS', 'js': 'JS',
+                'typescript': 'TS', 'ts': 'TS',
+                'bash': 'Bash', 'sh': 'Shell', 'shell': 'Shell', 'zsh': 'Shell',
+                'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML',
+                'toml': 'TOML', 'sql': 'SQL',
+                'html': 'HTML', 'css': 'CSS',
+                'rust': 'Rust', 'go': 'Go', 'java': 'Java',
+                'dockerfile': 'Docker', 'docker': 'Docker',
+                'markdown': 'MD', 'md': 'MD',
+                'xml': 'XML', 'graphql': 'GraphQL',
+                'mermaid': 'Mermaid'
+              };
+              var displayLang = langMap[lang.toLowerCase()] || lang.toUpperCase();
+              var tag = document.createElement('span');
+              tag.className = 'code-lang-tag';
+              tag.textContent = displayLang;
+              code.parentElement.appendChild(tag);
+            }
+          });
+        
+          // === 4. 信息提示框自动分类 ===
+          var blockquotes = document.querySelectorAll('.content blockquote');
+          blockquotes.forEach(function(bq) {
+            var firstP = bq.querySelector('p');
+            if (!firstP) return;
+            var text = firstP.textContent || '';
+            if (text.match(/^[\s]*[💡🔑✨]/)) {
+              bq.classList.add('admonition-tip');
+            } else if (text.match(/^[\s]*[⚠️🔶]/)) {
+              bq.classList.add('admonition-warning');
+            } else if (text.match(/^[\s]*[🚨❌⛔]/)) {
+              bq.classList.add('admonition-danger');
+            } else if (text.match(/^[\s]*[📖ℹ️📝📌🔗]/)) {
+              bq.classList.add('admonition-info');
+            }
+          });
+        
+          // === 5. 估计阅读时间 ===
+          var content = document.querySelector('.content');
+          if (content) {
+            var text = content.textContent || '';
+            var charCount = text.replace(/\s/g, '').length;
+            var readingMinutes = Math.max(1, Math.ceil(charCount / 500)); // 中文约500字/分钟
+            var h1 = content.querySelector('h1');
+            if (h1 && readingMinutes > 2) {
+              var timeTag = document.createElement('span');
+              timeTag.className = 'reading-time';
+              timeTag.textContent = '预计阅读 ' + readingMinutes + ' 分钟';
+              h1.insertAdjacentElement('afterend', timeTag);
+            }
+          }
+        });
         </script>
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -273,6 +534,177 @@ print(f"预估总成本：¥{cost['estimated_cost_cny']:.4f}")
 <li>代码约 1-2 Token/行</li>
 <li>数字和标点各占 1 Token</li>
 </ul>
+<h3 id="不同内容类型的-token-消耗详解"><a class="header" href="#不同内容类型的-token-消耗详解">不同内容类型的 Token 消耗详解</a></h3>
+<p>直觉上你可能会以为"一个字 = 一个 Token"，但实际情况远比这复杂。下面我们用具体示例拆解不同内容类型的 Token 消耗：</p>
+<pre><code class="language-python">import tiktoken
+
+encoding = tiktoken.encoding_for_model("gpt-4o")
+
+# === 英文文本 ===
+# 常见英文单词通常是 1 个 Token，短词/常见组合可能合并
+samples_en = {
+    "Hello":              encoding.encode("Hello"),           # 1 Token
+    "artificial":         encoding.encode("artificial"),      # 1 Token（常见词）
+    "superintelligence":  encoding.encode("superintelligence"),  # 2 Token（长/少见词）
+    "Hello, world!":      encoding.encode("Hello, world!"),   # 4 Token
+    "The quick brown fox jumps over the lazy dog.":
+        encoding.encode("The quick brown fox jumps over the lazy dog."),  # 10 Token
+}
+
+for text, tokens in samples_en.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 常见英文单词约 1 Token/词，不常见或超长单词会被拆成 2-3 个 Token
+# - 空格通常与后面的单词合并为 1 个 Token（如 ' how'）
+# - 平均来看，英文文本约 1 Token ≈ 4 个字符（含空格）
+</code></pre>
+<pre><code class="language-python"># === 中文文本 ===
+samples_cn = {
+    "你":       encoding.encode("你"),         # 1 Token
+    "好":       encoding.encode("好"),         # 1 Token
+    "你好":     encoding.encode("你好"),       # 1 Token（常见组合会合并）
+    "今天天气怎么样":  encoding.encode("今天天气怎么样"),   # 约 4 Token
+    "人工智能":  encoding.encode("人工智能"),    # 约 2 Token
+    "深度强化学习": encoding.encode("深度强化学习"),  # 约 3 Token
+}
+
+for text, tokens in samples_cn.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 常见中文字 1 个字 ≈ 1 个 Token
+# - 高频词组（如"你好""人工""智能"）可能被合并为 1 个 Token
+# - 罕见汉字可能占 2-3 个 Token（因为需要多个字节编码）
+# - 同样语义的内容，中文 Token 数通常是英文的 1.5～2 倍
+</code></pre>
+<pre><code class="language-python"># === 标点符号 ===
+samples_punct = {
+    "，":   encoding.encode("，"),     # 中文逗号：1 Token
+    "。":   encoding.encode("。"),     # 中文句号：1 Token
+    ",":    encoding.encode(","),      # 英文逗号：1 Token
+    ".":    encoding.encode("."),      # 英文句号：1 Token
+    "！？": encoding.encode("！？"),   # 两个标点 → 通常 2 Token
+    "...":  encoding.encode("..."),    # 英文省略号：可能 1 Token
+    "——":   encoding.encode("——"),     # 中文破折号：2 Token
+    "「」": encoding.encode("「」"),   # 中文引号：2 Token
+}
+
+for text, tokens in samples_punct.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 英文常见标点（, . ! ? : ;）通常 1 个 = 1 Token
+# - 中文标点（，。！？）也通常 1 个 = 1 Token
+# - 特殊/罕见标点可能消耗更多 Token
+# - 标点经常和相邻的文字合并（如 'world!' 可能是 1 个 Token）
+</code></pre>
+<pre><code class="language-python"># === 数字 ===
+samples_num = {
+    "42":       encoding.encode("42"),         # 1 Token
+    "3.14":     encoding.encode("3.14"),       # 2 Token（小数点拆分）
+    "2026":     encoding.encode("2026"),       # 1 Token
+    "1000000":  encoding.encode("1000000"),    # 1-2 Token
+    "3.141592653589793": encoding.encode("3.141592653589793"),  # 多个 Token
+}
+
+for text, tokens in samples_num.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 1-4 位整数通常为 1 Token
+# - 较长数字会被拆分，每 3-4 位约占 1 Token
+# - 小数点会导致额外的 Token 拆分
+</code></pre>
+<p><strong>图像的 Token 消耗（多模态模型）：</strong></p>
+<p>随着 GPT-4o、Claude 等多模态模型的普及，图像也需要消耗 Token。图像的 Token 计算方式与文本完全不同：</p>
+<pre><code class="language-python"># 图像 Token 消耗规则（以 OpenAI GPT-4o 为例）
+
+def estimate_image_tokens(width: int, height: int, detail: str = "auto") -&gt; int:
+    """
+    估算图像消耗的 Token 数量（GPT-4o 规则）
+    
+    detail 模式：
+    - "low"：固定 85 Token，不管图像多大
+    - "high"：根据图像尺寸计算，可能消耗数百到数千 Token
+    - "auto"：模型自动选择
+    """
+    if detail == "low":
+        return 85  # 固定消耗
+    
+    # high detail 模式的计算规则：
+    # 1. 图像先缩放到最长边 2048px 以内
+    max_dim = max(width, height)
+    if max_dim &gt; 2048:
+        scale = 2048 / max_dim
+        width = int(width * scale)
+        height = int(height * scale)
+    
+    # 2. 再缩放到最短边 768px
+    min_dim = min(width, height)
+    if min_dim &gt; 768:
+        scale = 768 / min_dim
+        width = int(width * scale)
+        height = int(height * scale)
+    
+    # 3. 计算需要多少个 512x512 的块
+    tiles_x = (width + 511) // 512   # 向上取整
+    tiles_y = (height + 511) // 512
+    num_tiles = tiles_x * tiles_y
+    
+    # 4. 每个块 170 Token + 基础 85 Token
+    total_tokens = num_tiles * 170 + 85
+    return total_tokens
+
+# 常见图像尺寸的 Token 消耗
+print("=== 图像 Token 消耗估算（GPT-4o, high detail）===")
+image_sizes = [
+    (256, 256,   "缩略图/图标"),
+    (512, 512,   "小图"),
+    (1024, 768,  "普通照片"),
+    (1920, 1080, "全高清截图"),
+    (4096, 2160, "4K 图像"),
+]
+
+for w, h, desc in image_sizes:
+    tokens_low = estimate_image_tokens(w, h, "low")
+    tokens_high = estimate_image_tokens(w, h, "high")
+    print(f"  {desc} ({w}x{h})：low={tokens_low}, high={tokens_high} Token")
+
+# 输出示例：
+#   缩略图/图标 (256x256)：  low=85,  high=255 Token
+#   小图 (512x512)：         low=85,  high=255 Token
+#   普通照片 (1024x768)：    low=85,  high=765 Token
+#   全高清截图 (1920x1080)： low=85,  high=1105 Token
+#   4K 图像 (4096x2160)：    low=85,  high=1105 Token
+</code></pre>
+<blockquote>
+<p>💡 <strong>实用提示：</strong> 如果你的 Agent 需要处理图像（如截图分析、文档 OCR），使用 <code>detail="low"</code> 可以大幅节省 Token 成本，适合只需要粗略理解图像内容的场景。需要读取图像中的细节文字时，再使用 <code>detail="high"</code>。</p>
+</blockquote>
+<p>下面是一张各类内容 Token 消耗的速查表：</p>
+<div class="table-wrapper"><table><thead><tr><th>内容类型</th><th>示例</th><th>约消耗 Token</th></tr></thead><tbody>
+<tr><td>英文单词</td><td>"Hello"</td><td>1 Token/词</td></tr>
+<tr><td>英文长/罕见词</td><td>"superintelligence"</td><td>2-3 Token/词</td></tr>
+<tr><td>中文常见字</td><td>"你"、"好"</td><td>1 Token/字</td></tr>
+<tr><td>中文高频词组</td><td>"你好"、"人工智能"</td><td>可能合并为 1 Token</td></tr>
+<tr><td>中文罕见字</td><td>生僻汉字</td><td>2-3 Token/字</td></tr>
+<tr><td>英文标点</td><td><code>, . ! ?</code></td><td>1 Token/个</td></tr>
+<tr><td>中文标点</td><td><code>，。！？</code></td><td>1 Token/个</td></tr>
+<tr><td>数字(1-4位)</td><td>"42"、"2026"</td><td>1 Token</td></tr>
+<tr><td>长数字</td><td>"3.141592653589793"</td><td>按 3-4 位拆分</td></tr>
+<tr><td>代码</td><td>Python/JS 等</td><td>约 1-2 Token/行</td></tr>
+<tr><td>图像(low)</td><td>任意尺寸</td><td>固定 85 Token</td></tr>
+<tr><td>图像(high)</td><td>1920×1080</td><td>~1105 Token</td></tr>
+<tr><td>图像(high)</td><td>4K</td><td>~1105 Token</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>⚠️ 以上数据基于 GPT-4o 使用的 <code>o200k_base</code> 编码器。不同模型使用不同的 Tokenizer，Token 消耗可能有差异。例如 Claude 系列使用自有分词器，中文效率可能略有不同。建议使用各模型官方提供的 Tokenizer 工具进行精确计算。</p>
+</blockquote>
 <h2 id="temperature创造力旋钮"><a class="header" href="#temperature创造力旋钮">Temperature：创造力旋钮</a></h2>
 <p>Temperature 控制输出的<strong>随机性</strong>，是最重要的参数之一：</p>
 <pre><code class="language-python">from openai import OpenAI
@@ -520,7 +952,7 @@ print(f"代码：\n{result['content']}")
 <li>计算一下：如果你的 Agent 每天处理 1000 次请求，每次平均消耗 2000 Token，使用 GPT-4o-mini，月费用大约是多少？</li>
 </ol>
 <hr />
-<p><em>下一章：<a href="../chapter_setup/README.html">第3章 开发环境搭建</a></em></p>
+<p><em>下一章：<a href="../chapter_tools/README.html">第4章 工具调用（Tool Use / Function Calling）</a></em></p>
 
                     </main>
 

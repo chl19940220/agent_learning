@@ -7,16 +7,277 @@
 
 
         <!-- Custom HTML head -->
-        <script>
-        MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
+        <!-- ============================================
+           从零开始学 Agent - 自定义 HTML Head
+           ============================================ -->
+        
+        <!-- 阅读进度条 -->
+        <style>
+          #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #3783eb, #00d4ff);
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 8px rgba(55, 131, 235, 0.4);
           }
-        };
+          
+          /* 回到顶部按钮 */
+          #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--links, #3783eb);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+            z-index: 999;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+          }
+          #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          #back-to-top:hover {
+            background: var(--links, #3783eb);
+            filter: brightness(1.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+          }
+        
+          /* 代码块语言标签 */
+          .content pre {
+            position: relative;
+          }
+          .code-lang-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.25);
+            border-radius: 0 8px 0 6px;
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          }
+        
+          /* 信息提示框 (使用 blockquote + emoji 约定) */
+          .content blockquote.admonition-tip {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+          }
+          .content blockquote.admonition-warning {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.06);
+          }
+          .content blockquote.admonition-danger {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+          }
+          .content blockquote.admonition-info {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.06);
+          }
+        
+          /* 暗色主题适配 */
+          .navy #reading-progress,
+          .coal #reading-progress,
+          .ayu #reading-progress {
+            background: linear-gradient(90deg, #5ba3f5, #00d4ff);
+          }
+          .navy .code-lang-tag,
+          .coal .code-lang-tag,
+          .ayu .code-lang-tag {
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7);
+          }
+          .navy .content blockquote.admonition-tip,
+          .coal .content blockquote.admonition-tip,
+          .ayu .content blockquote.admonition-tip {
+            background: rgba(16, 185, 129, 0.08);
+          }
+          .navy .content blockquote.admonition-warning,
+          .coal .content blockquote.admonition-warning,
+          .ayu .content blockquote.admonition-warning {
+            background: rgba(245, 158, 11, 0.08);
+          }
+          .navy .content blockquote.admonition-danger,
+          .coal .content blockquote.admonition-danger,
+          .ayu .content blockquote.admonition-danger {
+            background: rgba(239, 68, 68, 0.08);
+          }
+          .navy .content blockquote.admonition-info,
+          .coal .content blockquote.admonition-info,
+          .ayu .content blockquote.admonition-info {
+            background: rgba(59, 130, 246, 0.08);
+          }
+        
+          /* 章节标题锚点链接 */
+          .content h2:hover .header-anchor,
+          .content h3:hover .header-anchor {
+            opacity: 1;
+          }
+          .header-anchor {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: 0.3em;
+            color: var(--links);
+            text-decoration: none;
+            font-size: 0.85em;
+          }
+        
+          /* 估计阅读时间标签 */
+          .reading-time {
+            display: inline-block;
+            margin-top: 0.5em;
+            padding: 0.3em 0.8em;
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(0,0,0,0.04);
+            border-radius: 20px;
+            font-weight: 500;
+          }
+          .navy .reading-time,
+          .coal .reading-time,
+          .ayu .reading-time {
+            color: #aaa;
+            background: rgba(255,255,255,0.06);
+          }
+        </style>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // === 1. 阅读进度条 ===
+          var progressBar = document.createElement('div');
+          progressBar.id = 'reading-progress';
+          document.body.prepend(progressBar);
+        
+          function updateProgress() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+          }
+        
+          // === 2. 回到顶部按钮 ===
+          var backBtn = document.createElement('button');
+          backBtn.id = 'back-to-top';
+          backBtn.innerHTML = '&#8679;';
+          backBtn.title = '回到顶部';
+          document.body.appendChild(backBtn);
+        
+          function toggleBackToTop() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if (scrollTop > 400) {
+              backBtn.classList.add('visible');
+            } else {
+              backBtn.classList.remove('visible');
+            }
+          }
+        
+          backBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        
+          // 合并 scroll 事件
+          var scrollTicking = false;
+          window.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+              window.requestAnimationFrame(function() {
+                updateProgress();
+                toggleBackToTop();
+                scrollTicking = false;
+              });
+              scrollTicking = true;
+            }
+          });
+        
+          // 初始化
+          updateProgress();
+          toggleBackToTop();
+        
+          // === 3. 代码块语言标签 ===
+          var codeBlocks = document.querySelectorAll('.content pre code');
+          codeBlocks.forEach(function(code) {
+            var classes = code.className.split(/\s+/);
+            var lang = '';
+            classes.forEach(function(cls) {
+              if (cls.startsWith('language-')) {
+                lang = cls.replace('language-', '');
+              }
+            });
+            if (lang && lang !== 'text' && lang !== 'plaintext') {
+              var langMap = {
+                'python': 'Python', 'py': 'Python',
+                'javascript': 'JS', 'js': 'JS',
+                'typescript': 'TS', 'ts': 'TS',
+                'bash': 'Bash', 'sh': 'Shell', 'shell': 'Shell', 'zsh': 'Shell',
+                'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML',
+                'toml': 'TOML', 'sql': 'SQL',
+                'html': 'HTML', 'css': 'CSS',
+                'rust': 'Rust', 'go': 'Go', 'java': 'Java',
+                'dockerfile': 'Docker', 'docker': 'Docker',
+                'markdown': 'MD', 'md': 'MD',
+                'xml': 'XML', 'graphql': 'GraphQL',
+                'mermaid': 'Mermaid'
+              };
+              var displayLang = langMap[lang.toLowerCase()] || lang.toUpperCase();
+              var tag = document.createElement('span');
+              tag.className = 'code-lang-tag';
+              tag.textContent = displayLang;
+              code.parentElement.appendChild(tag);
+            }
+          });
+        
+          // === 4. 信息提示框自动分类 ===
+          var blockquotes = document.querySelectorAll('.content blockquote');
+          blockquotes.forEach(function(bq) {
+            var firstP = bq.querySelector('p');
+            if (!firstP) return;
+            var text = firstP.textContent || '';
+            if (text.match(/^[\s]*[💡🔑✨]/)) {
+              bq.classList.add('admonition-tip');
+            } else if (text.match(/^[\s]*[⚠️🔶]/)) {
+              bq.classList.add('admonition-warning');
+            } else if (text.match(/^[\s]*[🚨❌⛔]/)) {
+              bq.classList.add('admonition-danger');
+            } else if (text.match(/^[\s]*[📖ℹ️📝📌🔗]/)) {
+              bq.classList.add('admonition-info');
+            }
+          });
+        
+          // === 5. 估计阅读时间 ===
+          var content = document.querySelector('.content');
+          if (content) {
+            var text = content.textContent || '';
+            var charCount = text.replace(/\s/g, '').length;
+            var readingMinutes = Math.max(1, Math.ceil(charCount / 500)); // 中文约500字/分钟
+            var h1 = content.querySelector('h1');
+            if (h1 && readingMinutes > 2) {
+              var timeTag = document.createElement('span');
+              timeTag.className = 'reading-time';
+              timeTag.textContent = '预计阅读 ' + readingMinutes + ' 分钟';
+              h1.insertAdjacentElement('afterend', timeTag);
+            }
+          }
+        });
         </script>
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -344,6 +605,96 @@ def run_with_human_approval(task: str):
 result = run_with_human_approval("请帮我发邮件给 boss@company.com，主题是测试邮件")
 print(f"\n最终结果：{result}")
 </code></pre>
+<h2 id="三种审批模式"><a class="header" href="#三种审批模式">三种审批模式</a></h2>
+<p>在实际应用中，人机协作不止"批准/拒绝"这一种模式。根据业务场景的不同，可以设计三种审批策略：</p>
+<p><strong>模式 1：简单批准/拒绝（Gate Pattern）</strong></p>
+<p>这就是上面的例子——Agent 提出操作请求，人类决定是否执行。</p>
+<pre><code class="language-python"># 适用场景：不可逆操作（删除、发送、支付）
+# 流程：Agent → 暂停 → 人工决策 → 执行或取消
+</code></pre>
+<p><strong>模式 2：编辑后执行（Edit Pattern）</strong></p>
+<p>人类不仅可以批准/拒绝，还可以<strong>修改</strong> Agent 的决策内容后再执行。</p>
+<pre><code class="language-python">def edit_and_resume(app, config, state):
+    """允许人工编辑 Agent 的工具调用参数"""
+    last_msg = state["messages"][-1]
+    
+    if hasattr(last_msg, "tool_calls") and last_msg.tool_calls:
+        tc = last_msg.tool_calls[0]
+        print(f"Agent 想要执行：{tc['name']}({tc['args']})")
+        
+        # 允许人工修改参数
+        edited_args = input("修改参数（JSON格式，直接回车保持原样）：").strip()
+        
+        if edited_args:
+            import json
+            tc['args'] = json.loads(edited_args)
+            # 更新状态中的消息
+            app.update_state(config, {"messages": [last_msg]})
+        
+        # 继续执行（使用原始或修改后的参数）
+        return app.invoke(None, config=config)
+</code></pre>
+<p><strong>模式 3：分级审批（Tiered Pattern）</strong></p>
+<p>不同风险级别的操作采用不同的审批策略：</p>
+<pre><code class="language-python"># 风险分级定义
+TOOL_RISK_LEVELS = {
+    "search": "low",        # 低风险：自动执行
+    "read_file": "low",
+    "send_email": "medium",  # 中风险：需要确认
+    "create_order": "medium",
+    "delete_data": "high",   # 高风险：需要二次确认
+    "transfer_money": "high",
+}
+
+def tiered_approval(tool_name: str) -&gt; str:
+    """根据风险等级决定审批策略"""
+    risk = TOOL_RISK_LEVELS.get(tool_name, "medium")
+    
+    if risk == "low":
+        return "auto_approve"  # 自动执行
+    elif risk == "medium":
+        return "single_approve"  # 单次确认
+    else:
+        return "double_approve"  # 二次确认 + 审计日志
+</code></pre>
+<h2 id="生产环境中的-human-in-the-loop"><a class="header" href="#生产环境中的-human-in-the-loop">生产环境中的 Human-in-the-Loop</a></h2>
+<p>在生产环境中，"人工确认"通常不是命令行中的 <code>input()</code> 调用，而是通过异步通知系统实现的：</p>
+<pre><code class="language-python"># 生产环境的典型架构
+"""
+1. Agent 遇到需要审批的操作 → 暂停执行
+2. 后端保存 Checkpoint 到持久化存储（PostgreSQL/Redis）
+3. 发送审批通知（Slack/邮件/企业微信/钉钉）
+4. 人类在审批界面做出决策
+5. 前端/Webhook 调用恢复 API
+6. Agent 从 Checkpoint 恢复，继续执行
+"""
+
+# 使用 PostgreSQL 持久化 Checkpoint 的示例
+from langgraph.checkpoint.postgres import PostgresSaver
+
+# 连接数据库
+DB_URI = "postgresql://user:pass@localhost:5432/agent_db"
+checkpointer = PostgresSaver.from_conn_string(DB_URI)
+
+# 编译图，使用持久化检查点
+app = graph.compile(
+    checkpointer=checkpointer,
+    interrupt_before=["dangerous_tools"]
+)
+
+# FastAPI 端点：恢复执行
+# @app.post("/approve/{thread_id}")
+# async def approve_action(thread_id: str, approved: bool):
+#     config = {"configurable": {"thread_id": thread_id}}
+#     if approved:
+#         result = agent_app.invoke(None, config=config)
+#         return {"status": "completed", "result": result}
+#     else:
+#         return {"status": "rejected"}
+</code></pre>
+<blockquote>
+<p>💡 <strong>关键提示</strong>：生产环境中，<code>MemorySaver</code> 仅适合开发和测试。正式部署应使用 <code>PostgresSaver</code> 或 <code>RedisSaver</code> 来确保 Agent 状态在服务重启后仍可恢复。</p>
+</blockquote>
 <hr />
 <h2 id="小结"><a class="header" href="#小结">小结</a></h2>
 <p>Human-in-the-Loop 的实现要点：</p>
@@ -354,7 +705,7 @@ print(f"\n最终结果：{result}")
 <li><strong>安全策略</strong>：对危险操作（删除、发邮件、支付）必须要求确认</li>
 </ul>
 <hr />
-<p><em>下一节：<a href="./06_practice_workflow_agent.html">9.6 实战：工作流自动化 Agent</a></em></p>
+<p><em>下一节：<a href="./06_practice_workflow_agent.html">12.6 实战：工作流自动化 Agent</a></em></p>
 
                     </main>
 

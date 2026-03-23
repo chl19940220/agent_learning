@@ -224,7 +224,7 @@ results = discovery.discover("我想看看哪些客户可能要流失了")
 
 ## 方式三：MCP 与技能生态
 
-在第 12 章中我们将详细介绍 MCP 协议。这里先了解 MCP 如何支撑技能生态：
+在第 15 章中我们将详细介绍 MCP 协议。这里先了解 MCP 如何支撑技能生态：
 
 ![MCP 与技能的关系](../svg/chapter_skill_04_mcp_skill.svg)
 
@@ -347,4 +347,4 @@ class SkillOrchestrator:
 
 ---
 
-*下一节：[5.5 实战：构建可复用的技能系统](./05_practice_skill_system.md)*
+*下一节：[9.5 实战：构建可复用的技能系统](./05_practice_skill_system.md)*

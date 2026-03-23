@@ -211,4 +211,4 @@ class DynamicTaskAllocator:
 
 ---
 
-*下一节：[11.4 Supervisor 模式 vs. 去中心化模式](./04_supervisor_vs_decentralized.md)*
+*下一节：[14.4 Supervisor 模式 vs. 去中心化模式](./04_supervisor_vs_decentralized.md)*

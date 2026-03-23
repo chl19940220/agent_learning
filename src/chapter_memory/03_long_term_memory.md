@@ -364,7 +364,7 @@ def test_memory_system():
 
 ---
 
-*下一节：[7.4 工作记忆：Scratchpad 模式](./04_working_memory.md)*
+*下一节：[5.4 工作记忆：Scratchpad 模式](./04_working_memory.md)*
 
 ---
 

@@ -1,4 +1,4 @@
-# 14.3 ANP（Agent Network Protocol）协议
+# 15.3 ANP（Agent Network Protocol）协议
 
 > **本节目标**：理解 ANP 协议的设计理念，掌握去中心化智能体网络的核心机制，并与 MCP/A2A 进行对比分析。
 
@@ -345,7 +345,7 @@ class ANPRouter:
 
 ---
 
-*下一节：[14.4 Agent 间的消息传递与状态共享](./04_message_passing.md)*
+*下一节：[15.4 Agent 间的消息传递与状态共享](./04_message_passing.md)*
 
 ---
 

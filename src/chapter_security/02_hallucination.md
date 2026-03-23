@@ -216,10 +216,10 @@ def create_grounded_agent(llm, tools):
 | 自我一致性 | 通过多次生成检测不确定性 | 高风险决策 |
 | 工具兜底 | 用工具获取精确数据 | 数据查询 |
 
-> 📖 **想深入了解幻觉检测与缓解的学术前沿？** 请阅读 [14.6 论文解读：安全与可靠性前沿研究](./06_paper_readings.md)，涵盖 FActScore、SelfCheckGPT、Self-Consistency、CoVe 等核心论文的深度解读。
+> 📖 **想深入了解幻觉检测与缓解的学术前沿？** 请阅读 [17.6 论文解读：安全与可靠性前沿研究](./06_paper_readings.md)，涵盖 FActScore、SelfCheckGPT、Self-Consistency、CoVe 等核心论文的深度解读。
 
 > **下一节预告**：Agent 不仅要"说得对"，还要"做得安全"——权限控制至关重要。
 
 ---
 
-[下一节：14.3 权限控制与沙箱隔离 →](./03_permission_sandbox.md)
+[下一节：17.3 权限控制与沙箱隔离 →](./03_permission_sandbox.md)

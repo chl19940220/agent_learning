@@ -240,4 +240,4 @@ print(json.dumps(task_tree, ensure_ascii=False, indent=2))
 
 ---
 
-*下一节：[8.4 反思与自我纠错机制](./04_reflection.md)*
+*下一节：[6.4 反思与自我纠错机制](./04_reflection.md)*

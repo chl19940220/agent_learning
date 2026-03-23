@@ -7,16 +7,277 @@
 
 
         <!-- Custom HTML head -->
-        <script>
-        MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
+        <!-- ============================================
+           从零开始学 Agent - 自定义 HTML Head
+           ============================================ -->
+        
+        <!-- 阅读进度条 -->
+        <style>
+          #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #3783eb, #00d4ff);
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 8px rgba(55, 131, 235, 0.4);
           }
-        };
+          
+          /* 回到顶部按钮 */
+          #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--links, #3783eb);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+            z-index: 999;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+          }
+          #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          #back-to-top:hover {
+            background: var(--links, #3783eb);
+            filter: brightness(1.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+          }
+        
+          /* 代码块语言标签 */
+          .content pre {
+            position: relative;
+          }
+          .code-lang-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.25);
+            border-radius: 0 8px 0 6px;
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          }
+        
+          /* 信息提示框 (使用 blockquote + emoji 约定) */
+          .content blockquote.admonition-tip {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+          }
+          .content blockquote.admonition-warning {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.06);
+          }
+          .content blockquote.admonition-danger {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+          }
+          .content blockquote.admonition-info {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.06);
+          }
+        
+          /* 暗色主题适配 */
+          .navy #reading-progress,
+          .coal #reading-progress,
+          .ayu #reading-progress {
+            background: linear-gradient(90deg, #5ba3f5, #00d4ff);
+          }
+          .navy .code-lang-tag,
+          .coal .code-lang-tag,
+          .ayu .code-lang-tag {
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7);
+          }
+          .navy .content blockquote.admonition-tip,
+          .coal .content blockquote.admonition-tip,
+          .ayu .content blockquote.admonition-tip {
+            background: rgba(16, 185, 129, 0.08);
+          }
+          .navy .content blockquote.admonition-warning,
+          .coal .content blockquote.admonition-warning,
+          .ayu .content blockquote.admonition-warning {
+            background: rgba(245, 158, 11, 0.08);
+          }
+          .navy .content blockquote.admonition-danger,
+          .coal .content blockquote.admonition-danger,
+          .ayu .content blockquote.admonition-danger {
+            background: rgba(239, 68, 68, 0.08);
+          }
+          .navy .content blockquote.admonition-info,
+          .coal .content blockquote.admonition-info,
+          .ayu .content blockquote.admonition-info {
+            background: rgba(59, 130, 246, 0.08);
+          }
+        
+          /* 章节标题锚点链接 */
+          .content h2:hover .header-anchor,
+          .content h3:hover .header-anchor {
+            opacity: 1;
+          }
+          .header-anchor {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: 0.3em;
+            color: var(--links);
+            text-decoration: none;
+            font-size: 0.85em;
+          }
+        
+          /* 估计阅读时间标签 */
+          .reading-time {
+            display: inline-block;
+            margin-top: 0.5em;
+            padding: 0.3em 0.8em;
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(0,0,0,0.04);
+            border-radius: 20px;
+            font-weight: 500;
+          }
+          .navy .reading-time,
+          .coal .reading-time,
+          .ayu .reading-time {
+            color: #aaa;
+            background: rgba(255,255,255,0.06);
+          }
+        </style>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // === 1. 阅读进度条 ===
+          var progressBar = document.createElement('div');
+          progressBar.id = 'reading-progress';
+          document.body.prepend(progressBar);
+        
+          function updateProgress() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+          }
+        
+          // === 2. 回到顶部按钮 ===
+          var backBtn = document.createElement('button');
+          backBtn.id = 'back-to-top';
+          backBtn.innerHTML = '&#8679;';
+          backBtn.title = '回到顶部';
+          document.body.appendChild(backBtn);
+        
+          function toggleBackToTop() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if (scrollTop > 400) {
+              backBtn.classList.add('visible');
+            } else {
+              backBtn.classList.remove('visible');
+            }
+          }
+        
+          backBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        
+          // 合并 scroll 事件
+          var scrollTicking = false;
+          window.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+              window.requestAnimationFrame(function() {
+                updateProgress();
+                toggleBackToTop();
+                scrollTicking = false;
+              });
+              scrollTicking = true;
+            }
+          });
+        
+          // 初始化
+          updateProgress();
+          toggleBackToTop();
+        
+          // === 3. 代码块语言标签 ===
+          var codeBlocks = document.querySelectorAll('.content pre code');
+          codeBlocks.forEach(function(code) {
+            var classes = code.className.split(/\s+/);
+            var lang = '';
+            classes.forEach(function(cls) {
+              if (cls.startsWith('language-')) {
+                lang = cls.replace('language-', '');
+              }
+            });
+            if (lang && lang !== 'text' && lang !== 'plaintext') {
+              var langMap = {
+                'python': 'Python', 'py': 'Python',
+                'javascript': 'JS', 'js': 'JS',
+                'typescript': 'TS', 'ts': 'TS',
+                'bash': 'Bash', 'sh': 'Shell', 'shell': 'Shell', 'zsh': 'Shell',
+                'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML',
+                'toml': 'TOML', 'sql': 'SQL',
+                'html': 'HTML', 'css': 'CSS',
+                'rust': 'Rust', 'go': 'Go', 'java': 'Java',
+                'dockerfile': 'Docker', 'docker': 'Docker',
+                'markdown': 'MD', 'md': 'MD',
+                'xml': 'XML', 'graphql': 'GraphQL',
+                'mermaid': 'Mermaid'
+              };
+              var displayLang = langMap[lang.toLowerCase()] || lang.toUpperCase();
+              var tag = document.createElement('span');
+              tag.className = 'code-lang-tag';
+              tag.textContent = displayLang;
+              code.parentElement.appendChild(tag);
+            }
+          });
+        
+          // === 4. 信息提示框自动分类 ===
+          var blockquotes = document.querySelectorAll('.content blockquote');
+          blockquotes.forEach(function(bq) {
+            var firstP = bq.querySelector('p');
+            if (!firstP) return;
+            var text = firstP.textContent || '';
+            if (text.match(/^[\s]*[💡🔑✨]/)) {
+              bq.classList.add('admonition-tip');
+            } else if (text.match(/^[\s]*[⚠️🔶]/)) {
+              bq.classList.add('admonition-warning');
+            } else if (text.match(/^[\s]*[🚨❌⛔]/)) {
+              bq.classList.add('admonition-danger');
+            } else if (text.match(/^[\s]*[📖ℹ️📝📌🔗]/)) {
+              bq.classList.add('admonition-info');
+            }
+          });
+        
+          // === 5. 估计阅读时间 ===
+          var content = document.querySelector('.content');
+          if (content) {
+            var text = content.textContent || '';
+            var charCount = text.replace(/\s/g, '').length;
+            var readingMinutes = Math.max(1, Math.ceil(charCount / 500)); // 中文约500字/分钟
+            var h1 = content.querySelector('h1');
+            if (h1 && readingMinutes > 2) {
+              var timeTag = document.createElement('span');
+              timeTag.className = 'reading-time';
+              timeTag.textContent = '预计阅读 ' + readingMinutes + ' 分钟';
+              h1.insertAdjacentElement('afterend', timeTag);
+            }
+          }
+        });
         </script>
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -189,8 +450,57 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="完整项目实现"><a class="header" href="#完整项目实现">完整项目实现</a></h1>
 <blockquote>
-<p><strong>本节目标</strong>：整合所有组件，构建一个完整的智能数据分析 Agent。</p>
+<p><strong>本节目标</strong>：整合所有组件，构建一个完整的智能数据分析 Agent，并深入分析架构决策与生产化考量。</p>
 </blockquote>
+<hr />
+<h2 id="架构设计理念"><a class="header" href="#架构设计理念">架构设计理念</a></h2>
+<p>在将前面各节的组件整合为完整系统之前，我们先分析架构层面的关键设计决策。</p>
+<h3 id="管道式架构-vs-agent-循环架构"><a class="header" href="#管道式架构-vs-agent-循环架构">管道式架构 vs Agent 循环架构</a></h3>
+<p>数据分析 Agent 可以采用两种截然不同的架构：</p>
+<p><strong>管道式架构（Pipeline）</strong>——本章的选择：</p>
+<pre><code>用户问题 → Text-to-SQL → 执行查询 → 统计分析 → 图表生成 → 洞察提取 → 报告生成
+</code></pre>
+<p>每个步骤固定顺序执行，前一步的输出是后一步的输入。优点是流程清晰、可调试性强、延迟可预测；缺点是缺乏灵活性，无法根据中间结果动态调整策略。</p>
+<p><strong>Agent 循环架构（ReAct Loop）</strong>：</p>
+<pre><code>用户问题 → 思考 → 选择工具 → 执行 → 观察结果 → 思考 → ... → 最终回答
+</code></pre>
+<p>LLM 自主决定调用哪个工具、调用几次，可以根据中间结果追问或调整方向。优点是灵活智能；缺点是延迟不可控、调试困难、成本更高。</p>
+<p>本章选择管道式架构的原因：</p>
+<div class="table-wrapper"><table><thead><tr><th>考量因素</th><th>管道式</th><th>Agent 循环</th></tr></thead><tbody>
+<tr><td>执行步骤</td><td>固定 6 步</td><td>不确定（3-15 步）</td></tr>
+<tr><td>LLM 调用次数</td><td>3 次（Text-to-SQL + 洞察 + 报告）</td><td>5-10+ 次</td></tr>
+<tr><td>单次请求成本</td><td>~<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">0.05∣</span><span class="mspace nobreak"> </span></span></span></span>0.15-0.50</td><td></td></tr>
+<tr><td>可调试性</td><td>每步输出可检查</td><td>需要完整 trace</td></tr>
+<tr><td>适用场景</td><td>标准数据分析流程</td><td>开放式探索分析</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>💡 <strong>实践建议</strong>：如果你的场景需要 Agent 自主探索（如"帮我找出数据中的异常"），建议结合第 12 章 LangGraph 构建 Agent 循环版本。管道式架构更适合流程明确的场景。</p>
+</blockquote>
+<h3 id="组件交互时序"><a class="header" href="#组件交互时序">组件交互时序</a></h3>
+<p>完整的请求处理流程如下：</p>
+<pre><code>用户                SmartDataAnalyst       TextToSQL       SafeDB        Analyzer/Chart/Insight/Report
+ │                       │                    │              │                    │
+ │──── "分析问题" ───────→│                    │              │                    │
+ │                       │──── convert() ────→│              │                    │
+ │                       │                    │── get_schemas()→│                 │
+ │                       │                    │←── schemas ───│                   │
+ │                       │                    │── LLM 生成SQL  │                  │
+ │                       │←──── SQL ──────────│              │                    │
+ │                       │──── execute_readonly(sql) ───────→│                    │
+ │                       │←──── data[] ──────────────────────│                    │
+ │                       │──────────── describe(data) ──────────────────────────→│
+ │                       │──────────── auto_chart(data) ───────────────────────→│
+ │                       │──────────── generate_insights(data, stats) ─────────→│
+ │                       │──────────── generate_report(all) ──────────────────→│
+ │←──── 完整报告 ─────────│                    │              │                    │
+</code></pre>
+<p>注意几个关键设计点：</p>
+<ol>
+<li><strong>Schema 预加载</strong>：<code>TextToSQL</code> 在初始化时就缓存了表结构，避免每次查询都读取数据库元数据</li>
+<li><strong>分析与可视化并行</strong>：<code>describe()</code> 和 <code>auto_chart()</code> 理论上可以并行执行（当前为顺序执行，可优化）</li>
+<li><strong>洞察依赖统计结果</strong>：<code>generate_insights()</code> 需要统计结果作为输入，帮助 LLM 基于数据而非猜测生成分析</li>
+</ol>
 <hr />
 <h2 id="完整实现"><a class="header" href="#完整实现">完整实现</a></h2>
 <pre><code class="language-python">"""
@@ -202,13 +512,13 @@ from langchain_openai import ChatOpenAI
 
 # 导入前面实现的组件
 # 各组件的完整实现请参考对应章节：
-# from db_connector import SafeDatabaseConnector   # → 17.2 节
-# from text_to_sql import TextToSQL                # → 17.2 节
-# from data_analyzer import DataAnalyzer           # → 17.3 节
-# from chart_generator import ChartGenerator       # → 17.3 节
-# from insight_generator import InsightGenerator   # → 17.3 节
-# from report_generator import ReportGenerator     # → 17.4 节
-# 提示：运行本节代码前，需先将 17.2-17.4 节的代码保存为独立模块
+# from db_connector import SafeDatabaseConnector   # → 20.2 节
+# from text_to_sql import TextToSQL                # → 20.2 节
+# from data_analyzer import DataAnalyzer           # → 20.3 节
+# from chart_generator import ChartGenerator       # → 20.3 节
+# from insight_generator import InsightGenerator   # → 20.3 节
+# from report_generator import ReportGenerator     # → 20.4 节
+# 提示：运行本节代码前，需先将 20.2-20.4 节的代码保存为独立模块
 
 
 class SmartDataAnalyst:
@@ -337,6 +647,198 @@ if __name__ == "__main__":
 ✅ 报告已保存: report_20260312_140000.md
 </code></pre>
 <hr />
+<h2 id="错误处理与降级策略"><a class="header" href="#错误处理与降级策略">错误处理与降级策略</a></h2>
+<p>生产环境中，数据分析 Agent 的每个环节都可能失败。健壮的系统需要"优雅降级"——即使部分功能失败，仍能给出有价值的响应。</p>
+<h3 id="分层错误处理"><a class="header" href="#分层错误处理">分层错误处理</a></h3>
+<pre><code class="language-python">class ResilientDataAnalyst(SmartDataAnalyst):
+    """带降级能力的数据分析 Agent"""
+    
+    async def ask(self, question: str) -&gt; str:
+        """每个步骤独立 try-except，失败时降级而非中止"""
+        
+        # 步骤 1：Text-to-SQL（失败则终止，无法继续）
+        try:
+            sql = await self.text2sql.convert(question)
+        except Exception as e:
+            return f"❌ 无法理解您的问题，请换个表述试试。\n技术细节：{e}"
+        
+        # 步骤 2：执行查询（失败则尝试自我修正）
+        data = None
+        for attempt in range(3):
+            try:
+                data = self.db.execute_readonly(sql)
+                break
+            except Exception as e:
+                if attempt &lt; 2:
+                    # 让 LLM 根据错误修正 SQL
+                    sql = await self._fix_sql(sql, str(e))
+                else:
+                    return f"❌ 查询多次失败：{e}\n生成的 SQL：{sql}"
+        
+        if not data:
+            return "📭 查询没有返回结果，请换个问法试试。"
+        
+        # 步骤 3：统计分析（失败则跳过）
+        stats = None
+        try:
+            stats = self.analyzer.describe(data)
+        except Exception:
+            stats = {"error": "统计分析跳过"}
+        
+        # 步骤 4：图表生成（失败则跳过，不影响报告）
+        chart_path = None
+        try:
+            chart_path = self.chart_gen.auto_chart(data, question)
+        except Exception:
+            chart_path = None  # 报告中将不包含图表
+        
+        # 步骤 5：洞察生成（失败则使用默认洞察）
+        try:
+            insights = await self.insight_gen.generate_insights(
+                data, stats, question
+            )
+        except Exception:
+            insights = "（洞察生成暂时不可用，以下为原始数据摘要）"
+        
+        # 步骤 6：报告生成（失败则返回原始数据）
+        try:
+            report = await self.report_gen.generate_report(
+                question=question, sql_query=sql, data=data,
+                stats=stats, insights=insights, chart_path=chart_path
+            )
+        except Exception:
+            # 最低限度的降级输出
+            report = f"## 查询结果\n\nSQL: `{sql}`\n\n数据（前 5 条）:\n"
+            for row in data[:5]:
+                report += f"- {row}\n"
+        
+        return report
+</code></pre>
+<h3 id="降级层级示意"><a class="header" href="#降级层级示意">降级层级示意</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>失败环节</th><th>降级策略</th><th>用户体验</th></tr></thead><tbody>
+<tr><td>Text-to-SQL</td><td>终止并提示</td><td>请用户换个问法</td></tr>
+<tr><td>SQL 执行</td><td>自我修正，最多 3 次</td><td>透明重试，无感知</td></tr>
+<tr><td>统计分析</td><td>跳过</td><td>报告中无统计摘要</td></tr>
+<tr><td>图表生成</td><td>跳过</td><td>报告中无图表</td></tr>
+<tr><td>洞察生成</td><td>使用默认文案</td><td>报告中无 AI 洞察</td></tr>
+<tr><td>报告生成</td><td>返回原始数据</td><td>可读性下降但有数据</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="性能优化技巧"><a class="header" href="#性能优化技巧">性能优化技巧</a></h2>
+<p>当数据分析 Agent 服务多用户时，性能优化至关重要：</p>
+<h3 id="1-schema-缓存与增量更新"><a class="header" href="#1-schema-缓存与增量更新">1. Schema 缓存与增量更新</a></h3>
+<pre><code class="language-python">import time
+
+class CachedSchemaManager:
+    """带 TTL 缓存的 Schema 管理器"""
+    
+    def __init__(self, db: SafeDatabaseConnector, ttl_seconds: int = 300):
+        self.db = db
+        self.ttl = ttl_seconds
+        self._cache = None
+        self._cache_time = 0
+    
+    def get_schemas(self) -&gt; dict:
+        now = time.time()
+        if self._cache is None or (now - self._cache_time) &gt; self.ttl:
+            self._cache = self.db.get_table_schemas()
+            self._cache_time = now
+        return self._cache
+</code></pre>
+<h3 id="2-llm-调用优化"><a class="header" href="#2-llm-调用优化">2. LLM 调用优化</a></h3>
+<pre><code class="language-python"># 优化前：3 次串行 LLM 调用
+sql = await text2sql.convert(question)       # ~2s
+insights = await insight_gen.generate(...)    # ~3s
+report = await report_gen.generate(...)       # ~3s
+# 总计: ~8s
+
+# 优化后：洞察和报告大纲并行生成
+import asyncio
+insights, report_outline = await asyncio.gather(
+    insight_gen.generate(data, stats, question),
+    report_gen.generate_outline(question, stats)  
+)
+# 节省 ~2-3s
+</code></pre>
+<h3 id="3-查询结果缓存"><a class="header" href="#3-查询结果缓存">3. 查询结果缓存</a></h3>
+<p>对于重复或相似的查询，可以缓存 SQL 和结果：</p>
+<pre><code class="language-python">from functools import lru_cache
+import hashlib
+
+class QueryCache:
+    """简单的查询结果缓存"""
+    
+    def __init__(self, max_size: int = 100):
+        self._cache: dict[str, tuple[float, list]] = {}
+        self.max_size = max_size
+        self.ttl = 600  # 10 分钟过期
+    
+    def get(self, sql: str) -&gt; list[dict] | None:
+        key = hashlib.md5(sql.encode()).hexdigest()
+        if key in self._cache:
+            cached_time, results = self._cache[key]
+            if time.time() - cached_time &lt; self.ttl:
+                return results
+            del self._cache[key]
+        return None
+    
+    def set(self, sql: str, results: list[dict]):
+        if len(self._cache) &gt;= self.max_size:
+            # 淘汰最旧的缓存
+            oldest = min(self._cache, key=lambda k: self._cache[k][0])
+            del self._cache[oldest]
+        key = hashlib.md5(sql.encode()).hexdigest()
+        self._cache[key] = (time.time(), results)
+</code></pre>
+<hr />
+<h2 id="扩展方向"><a class="header" href="#扩展方向">扩展方向</a></h2>
+<p>本章实现的是数据分析 Agent 的基础版本。以下是值得探索的进阶方向：</p>
+<h3 id="方向一多轮对话式分析"><a class="header" href="#方向一多轮对话式分析">方向一：多轮对话式分析</a></h3>
+<p>当前系统每次问答独立，用户无法追问"按月份细分"或"只看华东地区"。可以引入对话上下文管理：</p>
+<pre><code class="language-python">class ConversationalAnalyst:
+    """支持多轮对话的数据分析 Agent"""
+    
+    def __init__(self, base_analyst: SmartDataAnalyst):
+        self.analyst = base_analyst
+        self.history: list[dict] = []
+    
+    async def ask(self, question: str) -&gt; str:
+        # 将历史对话注入 Prompt，帮助 LLM 理解上下文
+        context = "\n".join(
+            f"用户: {h['question']}\nSQL: {h['sql']}" 
+            for h in self.history[-3:]  # 保留最近 3 轮
+        )
+        
+        enhanced_question = f"对话历史:\n{context}\n\n当前问题: {question}"
+        result = await self.analyst.ask(enhanced_question)
+        
+        self.history.append({"question": question, "sql": "...", "result": result})
+        return result
+</code></pre>
+<h3 id="方向二自动异常检测"><a class="header" href="#方向二自动异常检测">方向二：自动异常检测</a></h3>
+<p>让 Agent 不仅回答问题，还主动发现数据异常：</p>
+<ul>
+<li>检测数值列中的离群值（Z-score &gt; 3）</li>
+<li>发现时间序列中的突变点</li>
+<li>标记不符合业务规则的数据（如负数订单金额）</li>
+</ul>
+<h3 id="方向三与可视化前端集成"><a class="header" href="#方向三与可视化前端集成">方向三：与可视化前端集成</a></h3>
+<p>将 Agent 后端与前端仪表板（如 Streamlit、Gradio）结合，提供交互式体验：</p>
+<ul>
+<li>自然语言问答 + 实时图表渲染</li>
+<li>拖拽式数据探索</li>
+<li>一键导出 PDF 报告</li>
+</ul>
+<h3 id="方向四多-agent-协作分析"><a class="header" href="#方向四多-agent-协作分析">方向四：多 Agent 协作分析</a></h3>
+<p>对于复杂分析任务（如"对比三个季度的销售趋势并给出营销建议"），可以将任务拆分给多个专业 Agent：</p>
+<ul>
+<li><strong>数据查询 Agent</strong>：负责 Text-to-SQL 和数据获取</li>
+<li><strong>统计分析 Agent</strong>：负责趋势检测、回归分析</li>
+<li><strong>报告撰写 Agent</strong>：负责整合所有结果生成报告</li>
+</ul>
+<p>这可以利用第 14 章介绍的 Multi-Agent 架构来实现。</p>
+<hr />
 <h2 id="小结"><a class="header" href="#小结">小结</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>步骤</th><th>组件</th><th>说明</th></tr></thead><tbody>
 <tr><td>理解</td><td>TextToSQL</td><td>自然语言 → SQL</td></tr>
@@ -351,7 +853,7 @@ if __name__ == "__main__":
 <p>🎓 <strong>本章总结</strong>：我们构建了一个"用自然语言做数据分析"的完整 Agent。从 Text-to-SQL 到自动可视化，展示了 Agent 在数据分析领域的强大应用。</p>
 </blockquote>
 <hr />
-<p><a href="../chapter_multimodal/README.html">下一章：第18章 项目实战：多模态 Agent →</a></p>
+<p><a href="../chapter_multimodal/README.html">下一章：第21章 项目实战：多模态 Agent →</a></p>
 
                     </main>
 

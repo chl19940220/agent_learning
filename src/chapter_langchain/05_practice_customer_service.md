@@ -212,4 +212,4 @@ if __name__ == "__main__":
 
 ---
 
-*下一章：[第9章 LangGraph：构建有状态的 Agent](../chapter_langgraph/README.md)*
+*下一章：[第12章 LangGraph：构建有状态的 Agent](../chapter_langgraph/README.md)*

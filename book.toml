@@ -14,7 +14,6 @@ after = ["links"]
 mathjax-support = false
 default-theme = "light"
 preferred-dark-theme = "navy"
-git-repository-url = ""
 additional-css = ["theme/custom.css"]
 no-section-label = true
 

@@ -233,7 +233,7 @@ Prompt 注入的特征包括：
 | 分层 Prompt | 系统指令与用户输入物理分离 |
 | 输出过滤 | 拦截输出中的敏感信息 |
 
-> 📖 **想深入了解 Prompt 注入攻防的学术前沿？** 请阅读 [14.6 论文解读：安全与可靠性前沿研究](./06_paper_readings.md)，涵盖间接注入、HackAPrompt、StruQ/SecAlign、Spotlighting 等核心论文的深度解读。
+> 📖 **想深入了解 Prompt 注入攻防的学术前沿？** 请阅读 [17.6 论文解读：安全与可靠性前沿研究](./06_paper_readings.md)，涵盖间接注入、HackAPrompt、StruQ/SecAlign、Spotlighting 等核心论文的深度解读。
 >
 > ⚠️ **给 Agent 开发者的警示**：如果你的 Agent 会读取外部数据（网页爬取、邮件读取、文档解析），那么间接 Prompt 注入就是一个真实且严重的威胁。务必对所有外部数据进行消毒处理，并在系统提示中明确告知模型"以下数据来自不可信来源"。
 
@@ -241,7 +241,7 @@ Prompt 注入的特征包括：
 
 ---
 
-[下一节：16.2 幻觉问题与事实性保障 →](./02_hallucination.md)
+[下一节：17.2 幻觉问题与事实性保障 →](./02_hallucination.md)
 
 ---
 

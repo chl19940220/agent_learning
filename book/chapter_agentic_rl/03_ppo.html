@@ -7,16 +7,277 @@
 
 
         <!-- Custom HTML head -->
-        <script>
-        MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
+        <!-- ============================================
+           从零开始学 Agent - 自定义 HTML Head
+           ============================================ -->
+        
+        <!-- 阅读进度条 -->
+        <style>
+          #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #3783eb, #00d4ff);
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 8px rgba(55, 131, 235, 0.4);
           }
-        };
+          
+          /* 回到顶部按钮 */
+          #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--links, #3783eb);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+            z-index: 999;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+          }
+          #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          #back-to-top:hover {
+            background: var(--links, #3783eb);
+            filter: brightness(1.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+          }
+        
+          /* 代码块语言标签 */
+          .content pre {
+            position: relative;
+          }
+          .code-lang-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.25);
+            border-radius: 0 8px 0 6px;
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          }
+        
+          /* 信息提示框 (使用 blockquote + emoji 约定) */
+          .content blockquote.admonition-tip {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+          }
+          .content blockquote.admonition-warning {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.06);
+          }
+          .content blockquote.admonition-danger {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+          }
+          .content blockquote.admonition-info {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.06);
+          }
+        
+          /* 暗色主题适配 */
+          .navy #reading-progress,
+          .coal #reading-progress,
+          .ayu #reading-progress {
+            background: linear-gradient(90deg, #5ba3f5, #00d4ff);
+          }
+          .navy .code-lang-tag,
+          .coal .code-lang-tag,
+          .ayu .code-lang-tag {
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7);
+          }
+          .navy .content blockquote.admonition-tip,
+          .coal .content blockquote.admonition-tip,
+          .ayu .content blockquote.admonition-tip {
+            background: rgba(16, 185, 129, 0.08);
+          }
+          .navy .content blockquote.admonition-warning,
+          .coal .content blockquote.admonition-warning,
+          .ayu .content blockquote.admonition-warning {
+            background: rgba(245, 158, 11, 0.08);
+          }
+          .navy .content blockquote.admonition-danger,
+          .coal .content blockquote.admonition-danger,
+          .ayu .content blockquote.admonition-danger {
+            background: rgba(239, 68, 68, 0.08);
+          }
+          .navy .content blockquote.admonition-info,
+          .coal .content blockquote.admonition-info,
+          .ayu .content blockquote.admonition-info {
+            background: rgba(59, 130, 246, 0.08);
+          }
+        
+          /* 章节标题锚点链接 */
+          .content h2:hover .header-anchor,
+          .content h3:hover .header-anchor {
+            opacity: 1;
+          }
+          .header-anchor {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: 0.3em;
+            color: var(--links);
+            text-decoration: none;
+            font-size: 0.85em;
+          }
+        
+          /* 估计阅读时间标签 */
+          .reading-time {
+            display: inline-block;
+            margin-top: 0.5em;
+            padding: 0.3em 0.8em;
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(0,0,0,0.04);
+            border-radius: 20px;
+            font-weight: 500;
+          }
+          .navy .reading-time,
+          .coal .reading-time,
+          .ayu .reading-time {
+            color: #aaa;
+            background: rgba(255,255,255,0.06);
+          }
+        </style>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // === 1. 阅读进度条 ===
+          var progressBar = document.createElement('div');
+          progressBar.id = 'reading-progress';
+          document.body.prepend(progressBar);
+        
+          function updateProgress() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+          }
+        
+          // === 2. 回到顶部按钮 ===
+          var backBtn = document.createElement('button');
+          backBtn.id = 'back-to-top';
+          backBtn.innerHTML = '&#8679;';
+          backBtn.title = '回到顶部';
+          document.body.appendChild(backBtn);
+        
+          function toggleBackToTop() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if (scrollTop > 400) {
+              backBtn.classList.add('visible');
+            } else {
+              backBtn.classList.remove('visible');
+            }
+          }
+        
+          backBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        
+          // 合并 scroll 事件
+          var scrollTicking = false;
+          window.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+              window.requestAnimationFrame(function() {
+                updateProgress();
+                toggleBackToTop();
+                scrollTicking = false;
+              });
+              scrollTicking = true;
+            }
+          });
+        
+          // 初始化
+          updateProgress();
+          toggleBackToTop();
+        
+          // === 3. 代码块语言标签 ===
+          var codeBlocks = document.querySelectorAll('.content pre code');
+          codeBlocks.forEach(function(code) {
+            var classes = code.className.split(/\s+/);
+            var lang = '';
+            classes.forEach(function(cls) {
+              if (cls.startsWith('language-')) {
+                lang = cls.replace('language-', '');
+              }
+            });
+            if (lang && lang !== 'text' && lang !== 'plaintext') {
+              var langMap = {
+                'python': 'Python', 'py': 'Python',
+                'javascript': 'JS', 'js': 'JS',
+                'typescript': 'TS', 'ts': 'TS',
+                'bash': 'Bash', 'sh': 'Shell', 'shell': 'Shell', 'zsh': 'Shell',
+                'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML',
+                'toml': 'TOML', 'sql': 'SQL',
+                'html': 'HTML', 'css': 'CSS',
+                'rust': 'Rust', 'go': 'Go', 'java': 'Java',
+                'dockerfile': 'Docker', 'docker': 'Docker',
+                'markdown': 'MD', 'md': 'MD',
+                'xml': 'XML', 'graphql': 'GraphQL',
+                'mermaid': 'Mermaid'
+              };
+              var displayLang = langMap[lang.toLowerCase()] || lang.toUpperCase();
+              var tag = document.createElement('span');
+              tag.className = 'code-lang-tag';
+              tag.textContent = displayLang;
+              code.parentElement.appendChild(tag);
+            }
+          });
+        
+          // === 4. 信息提示框自动分类 ===
+          var blockquotes = document.querySelectorAll('.content blockquote');
+          blockquotes.forEach(function(bq) {
+            var firstP = bq.querySelector('p');
+            if (!firstP) return;
+            var text = firstP.textContent || '';
+            if (text.match(/^[\s]*[💡🔑✨]/)) {
+              bq.classList.add('admonition-tip');
+            } else if (text.match(/^[\s]*[⚠️🔶]/)) {
+              bq.classList.add('admonition-warning');
+            } else if (text.match(/^[\s]*[🚨❌⛔]/)) {
+              bq.classList.add('admonition-danger');
+            } else if (text.match(/^[\s]*[📖ℹ️📝📌🔗]/)) {
+              bq.classList.add('admonition-info');
+            }
+          });
+        
+          // === 5. 估计阅读时间 ===
+          var content = document.querySelector('.content');
+          if (content) {
+            var text = content.textContent || '';
+            var charCount = text.replace(/\s/g, '').length;
+            var readingMinutes = Math.max(1, Math.ceil(charCount / 500)); // 中文约500字/分钟
+            var h1 = content.querySelector('h1');
+            if (h1 && readingMinutes > 2) {
+              var timeTag = document.createElement('span');
+              timeTag.className = 'reading-time';
+              timeTag.textContent = '预计阅读 ' + readingMinutes + ' 分钟';
+              h1.insertAdjacentElement('afterend', timeTag);
+            }
+          }
+        });
         </script>
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -187,8 +448,8 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="183-ppo近端策略优化"><a class="header" href="#183-ppo近端策略优化">18.3 PPO：近端策略优化</a></h1>
-<p>在 <a href="./01_agentic_rl_overview.html">18.1 节</a> 中，我们介绍了 Agentic-RL 的两阶段训练范式（SFT → RL）。RL 阶段的核心问题是：<strong>如何根据奖励信号来更新模型参数？</strong> 这正是策略优化算法要解决的问题。</p>
+<h1 id="103-ppo近端策略优化"><a class="header" href="#103-ppo近端策略优化">10.3 PPO：近端策略优化</a></h1>
+<p>在 <a href="./01_agentic_rl_overview.html">10.1 节</a> 中，我们介绍了 Agentic-RL 的两阶段训练范式（SFT → RL）。RL 阶段的核心问题是：<strong>如何根据奖励信号来更新模型参数？</strong> 这正是策略优化算法要解决的问题。</p>
 <p>本节将从零开始，<strong>系统性地讲解 PPO（Proximal Policy Optimization）算法</strong>——它是 InstructGPT 和 ChatGPT 的核心训练算法，也是理解后续 DPO、GRPO 算法的基础。我们将从最基本的直觉出发，逐步推导数学公式，并通过大量图示帮助理解。</p>
 <p><img src="../svg/chapter_agentic_rl_03_three_algorithms.svg" alt="三大策略优化算法架构对比" /></p>
 <h2 id="预备知识策略梯度的基本思想"><a class="header" href="#预备知识策略梯度的基本思想">预备知识：策略梯度的基本思想</a></h2>
@@ -319,7 +580,7 @@
 <tr><td><strong>步长不可控</strong></td><td>没有约束单步更新的大小</td><td>一次"大跳步"就可能毁掉整个策略</td></tr>
 </tbody></table>
 </div>
-<p><strong>PPO、DPO、GRPO 各自用不同方式解决了这两个问题。</strong> 本节详细讲解 PPO，DPO 和 GRPO 将分别在 <a href="./04_dpo.html">18.4</a> 和 <a href="./05_grpo.html">18.5</a> 中介绍。</p>
+<p><strong>PPO、DPO、GRPO 各自用不同方式解决了这两个问题。</strong> 本节详细讲解 PPO，DPO 和 GRPO 将分别在 <a href="./04_dpo.html">10.4</a> 和 <a href="./05_grpo.html">10.5</a> 中介绍。</p>
 <hr />
 <h3 id="11-ppo-解决了什么问题"><a class="header" href="#11-ppo-解决了什么问题">1.1 PPO 解决了什么问题？</a></h3>
 <p>PPO [2] 是 OpenAI 于 2017 年提出的策略优化算法，是 InstructGPT [3] 和 ChatGPT 的核心训练算法。PPO 的设计目标是：</p>

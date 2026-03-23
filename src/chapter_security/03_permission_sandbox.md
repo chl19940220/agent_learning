@@ -332,4 +332,4 @@ print(result)  # {"success": False, "error": "禁止导入: os", "output": ""}
 
 ---
 
-[下一节：14.4 敏感数据保护 →](./04_data_protection.md)
+[下一节：17.4 敏感数据保护 →](./04_data_protection.md)

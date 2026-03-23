@@ -42,6 +42,14 @@
 | VS Code | 代码编辑器 | ⭐⭐⭐⭐⭐ 推荐 |
 | Jupyter | 交互式开发和实验 | ⭐⭐⭐⭐ 推荐 |
 
+## 🔗 学习路径
+
+> **前置知识**：[第1章 什么是 Agent？](../chapter_intro/README.md)
+>
+> **后续推荐**：
+> - 👉 [第3章 大语言模型基础](../chapter_llm/README.md) — 理解 Agent 的核心"大脑"
+> - 👉 [第4章 工具调用](../chapter_tools/README.md) — 让 Agent 能"动手做事"
+
 ---
 
 *下一节：[2.1 Python 环境与依赖管理](./01_python_setup.md)*

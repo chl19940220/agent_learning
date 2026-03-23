@@ -1,4 +1,4 @@
-# 第17章 项目实战：智能数据分析 Agent
+# 第20章 项目实战：智能数据分析 Agent
 
 > 用自然语言做数据分析——从 "帮我分析上月销售" 到完整的分析报告。
 
@@ -25,6 +25,15 @@
 | 20.3 自动化分析与可视化 | 统计分析、图表生成 | ⭐⭐⭐ |
 | 20.4 报告生成与导出 | Markdown 报告 | ⭐⭐ |
 | 20.5 完整项目实现 | 整合所有组件 | ⭐⭐⭐⭐ |
+
+## 🔗 学习路径
+
+> **核心前置知识**：[第4章 工具调用](../chapter_tools/README.md)、[第6章 规划与推理](../chapter_planning/README.md)、[第12章 LangGraph](../chapter_langgraph/README.md)
+> 推荐但非必须：[第16-18章 生产化篇](../chapter_evaluation/README.md)
+>
+> **同系列项目**：
+> - 🔨 [第19章 AI 编程助手](../chapter_coding_agent/README.md)
+> - 🎨 [第21章 多模态 Agent](../chapter_multimodal/README.md)
 
 ---
 

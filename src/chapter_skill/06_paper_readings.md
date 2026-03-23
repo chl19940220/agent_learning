@@ -193,4 +193,4 @@ A2A + add-skill (2025，技能发现 + 跨平台安装)
 
 *返回：[Agent 技能系统](./README.md)*
 
-*下一章：[第6章 记忆系统（Memory）](../chapter_memory/README.md)*
+*下一章：[第10章 Agentic RL：用强化学习训练 Agent](../chapter_agentic_rl/README.md)*

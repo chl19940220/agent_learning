@@ -251,4 +251,4 @@ class InsightGenerator:
 
 ---
 
-[下一节：17.4 报告生成与导出 →](./04_report_generation.md)
+[下一节：20.4 报告生成与导出 →](./04_report_generation.md)

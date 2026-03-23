@@ -351,4 +351,4 @@ uvicorn main:app --reload
 
 ---
 
-*下一章：[第8章 LangChain 深入实战](../chapter_langchain/README.md)*
+*下一章：[第8章 上下文工程](../chapter_context_engineering/README.md)*

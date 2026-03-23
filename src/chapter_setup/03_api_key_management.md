@@ -300,4 +300,4 @@ logger.info("Using key: sk-proj-abc123xyz789...")
 
 ---
 
-*下一节：[3.4 第一个 Agent：Hello Agent！](./04_hello_agent.md)*
+*下一节：[2.4 第一个 Agent：Hello Agent！](./04_hello_agent.md)*

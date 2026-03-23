@@ -370,4 +370,4 @@ def analyze_with_detail_control(
 
 ---
 
-[下一节：18.2 图像理解与生成 →](./02_image_understanding.md)
+[下一节：21.2 图像理解与生成 →](./02_image_understanding.md)

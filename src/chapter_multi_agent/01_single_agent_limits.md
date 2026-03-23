@@ -150,8 +150,8 @@ print(should_use_multi_agent({
 - 任务超出单个 Context Window
 - 需要相互验证（提升准确性）
 
-> 📖 **想深入了解多 Agent 系统的学术前沿？** 请阅读 [11.6 论文解读：多 Agent 系统前沿研究](./06_paper_readings.md)，涵盖 MetaGPT、ChatDev、AutoGen、AgentVerse 等核心论文的深度解读。
+> 📖 **想深入了解多 Agent 系统的学术前沿？** 请阅读 [14.6 论文解读：多 Agent 系统前沿研究](./06_paper_readings.md)，涵盖 MetaGPT、ChatDev、AutoGen、AgentVerse 等核心论文的深度解读。
 
 ---
 
-*下一节：[11.2 多 Agent 通信模式](./02_communication_patterns.md)*
+*下一节：[14.2 多 Agent 通信模式](./02_communication_patterns.md)*

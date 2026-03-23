@@ -7,16 +7,277 @@
 
 
         <!-- Custom HTML head -->
-        <script>
-        MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
+        <!-- ============================================
+           从零开始学 Agent - 自定义 HTML Head
+           ============================================ -->
+        
+        <!-- 阅读进度条 -->
+        <style>
+          #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #3783eb, #00d4ff);
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 8px rgba(55, 131, 235, 0.4);
           }
-        };
+          
+          /* 回到顶部按钮 */
+          #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--links, #3783eb);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+            z-index: 999;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+          }
+          #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          #back-to-top:hover {
+            background: var(--links, #3783eb);
+            filter: brightness(1.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+          }
+        
+          /* 代码块语言标签 */
+          .content pre {
+            position: relative;
+          }
+          .code-lang-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.25);
+            border-radius: 0 8px 0 6px;
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          }
+        
+          /* 信息提示框 (使用 blockquote + emoji 约定) */
+          .content blockquote.admonition-tip {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+          }
+          .content blockquote.admonition-warning {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.06);
+          }
+          .content blockquote.admonition-danger {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+          }
+          .content blockquote.admonition-info {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.06);
+          }
+        
+          /* 暗色主题适配 */
+          .navy #reading-progress,
+          .coal #reading-progress,
+          .ayu #reading-progress {
+            background: linear-gradient(90deg, #5ba3f5, #00d4ff);
+          }
+          .navy .code-lang-tag,
+          .coal .code-lang-tag,
+          .ayu .code-lang-tag {
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7);
+          }
+          .navy .content blockquote.admonition-tip,
+          .coal .content blockquote.admonition-tip,
+          .ayu .content blockquote.admonition-tip {
+            background: rgba(16, 185, 129, 0.08);
+          }
+          .navy .content blockquote.admonition-warning,
+          .coal .content blockquote.admonition-warning,
+          .ayu .content blockquote.admonition-warning {
+            background: rgba(245, 158, 11, 0.08);
+          }
+          .navy .content blockquote.admonition-danger,
+          .coal .content blockquote.admonition-danger,
+          .ayu .content blockquote.admonition-danger {
+            background: rgba(239, 68, 68, 0.08);
+          }
+          .navy .content blockquote.admonition-info,
+          .coal .content blockquote.admonition-info,
+          .ayu .content blockquote.admonition-info {
+            background: rgba(59, 130, 246, 0.08);
+          }
+        
+          /* 章节标题锚点链接 */
+          .content h2:hover .header-anchor,
+          .content h3:hover .header-anchor {
+            opacity: 1;
+          }
+          .header-anchor {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: 0.3em;
+            color: var(--links);
+            text-decoration: none;
+            font-size: 0.85em;
+          }
+        
+          /* 估计阅读时间标签 */
+          .reading-time {
+            display: inline-block;
+            margin-top: 0.5em;
+            padding: 0.3em 0.8em;
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(0,0,0,0.04);
+            border-radius: 20px;
+            font-weight: 500;
+          }
+          .navy .reading-time,
+          .coal .reading-time,
+          .ayu .reading-time {
+            color: #aaa;
+            background: rgba(255,255,255,0.06);
+          }
+        </style>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // === 1. 阅读进度条 ===
+          var progressBar = document.createElement('div');
+          progressBar.id = 'reading-progress';
+          document.body.prepend(progressBar);
+        
+          function updateProgress() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+          }
+        
+          // === 2. 回到顶部按钮 ===
+          var backBtn = document.createElement('button');
+          backBtn.id = 'back-to-top';
+          backBtn.innerHTML = '&#8679;';
+          backBtn.title = '回到顶部';
+          document.body.appendChild(backBtn);
+        
+          function toggleBackToTop() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if (scrollTop > 400) {
+              backBtn.classList.add('visible');
+            } else {
+              backBtn.classList.remove('visible');
+            }
+          }
+        
+          backBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        
+          // 合并 scroll 事件
+          var scrollTicking = false;
+          window.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+              window.requestAnimationFrame(function() {
+                updateProgress();
+                toggleBackToTop();
+                scrollTicking = false;
+              });
+              scrollTicking = true;
+            }
+          });
+        
+          // 初始化
+          updateProgress();
+          toggleBackToTop();
+        
+          // === 3. 代码块语言标签 ===
+          var codeBlocks = document.querySelectorAll('.content pre code');
+          codeBlocks.forEach(function(code) {
+            var classes = code.className.split(/\s+/);
+            var lang = '';
+            classes.forEach(function(cls) {
+              if (cls.startsWith('language-')) {
+                lang = cls.replace('language-', '');
+              }
+            });
+            if (lang && lang !== 'text' && lang !== 'plaintext') {
+              var langMap = {
+                'python': 'Python', 'py': 'Python',
+                'javascript': 'JS', 'js': 'JS',
+                'typescript': 'TS', 'ts': 'TS',
+                'bash': 'Bash', 'sh': 'Shell', 'shell': 'Shell', 'zsh': 'Shell',
+                'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML',
+                'toml': 'TOML', 'sql': 'SQL',
+                'html': 'HTML', 'css': 'CSS',
+                'rust': 'Rust', 'go': 'Go', 'java': 'Java',
+                'dockerfile': 'Docker', 'docker': 'Docker',
+                'markdown': 'MD', 'md': 'MD',
+                'xml': 'XML', 'graphql': 'GraphQL',
+                'mermaid': 'Mermaid'
+              };
+              var displayLang = langMap[lang.toLowerCase()] || lang.toUpperCase();
+              var tag = document.createElement('span');
+              tag.className = 'code-lang-tag';
+              tag.textContent = displayLang;
+              code.parentElement.appendChild(tag);
+            }
+          });
+        
+          // === 4. 信息提示框自动分类 ===
+          var blockquotes = document.querySelectorAll('.content blockquote');
+          blockquotes.forEach(function(bq) {
+            var firstP = bq.querySelector('p');
+            if (!firstP) return;
+            var text = firstP.textContent || '';
+            if (text.match(/^[\s]*[💡🔑✨]/)) {
+              bq.classList.add('admonition-tip');
+            } else if (text.match(/^[\s]*[⚠️🔶]/)) {
+              bq.classList.add('admonition-warning');
+            } else if (text.match(/^[\s]*[🚨❌⛔]/)) {
+              bq.classList.add('admonition-danger');
+            } else if (text.match(/^[\s]*[📖ℹ️📝📌🔗]/)) {
+              bq.classList.add('admonition-info');
+            }
+          });
+        
+          // === 5. 估计阅读时间 ===
+          var content = document.querySelector('.content');
+          if (content) {
+            var text = content.textContent || '';
+            var charCount = text.replace(/\s/g, '').length;
+            var readingMinutes = Math.max(1, Math.ceil(charCount / 500)); // 中文约500字/分钟
+            var h1 = content.querySelector('h1');
+            if (h1 && readingMinutes > 2) {
+              var timeTag = document.createElement('span');
+              timeTag.className = 'reading-time';
+              timeTag.textContent = '预计阅读 ' + readingMinutes + ' 分钟';
+              h1.insertAdjacentElement('afterend', timeTag);
+            }
+          }
+        });
         </script>
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -196,50 +457,80 @@
 <tr><td>A2A 协议</td><td>Agent-to-Agent Protocol</td><td>Google 提出的 Agent 间通信标准，让不同框架的 Agent 可以相互发现和调用</td></tr>
 <tr><td>AG2</td><td>AG2 (AutoGen fork)</td><td>AutoGen 0.2 的社区分叉版本，由原 AutoGen 核心贡献者维护</td></tr>
 <tr><td>Agent</td><td>Agent / 智能体</td><td>能自主感知环境、做出决策并执行行动的 AI 系统</td></tr>
+<tr><td>Agentic-RL</td><td>Agentic Reinforcement Learning</td><td>将强化学习应用于 Agent 训练的范式，通过奖励信号让 Agent 学会更好地使用工具和规划</td></tr>
+<tr><td>ANP</td><td>Agent Network Protocol</td><td>Agent 网络协议，定义开放互联网中 Agent 间的发现和通信标准</td></tr>
 <tr><td>AST</td><td>Abstract Syntax Tree / 抽象语法树</td><td>源代码的树形结构化表示，用于代码分析和理解</td></tr>
+<tr><td>Attention</td><td>Attention Mechanism / 注意力机制</td><td>Transformer 的核心机制，让模型在处理每个 Token 时关注输入序列中最相关的位置</td></tr>
 <tr><td>Chain</td><td>Chain / 链</td><td>将多个 LLM 调用或处理步骤串联起来的序列</td></tr>
+<tr><td>Checkpoint</td><td>Checkpoint / 检查点</td><td>LangGraph 中保存图执行状态快照的机制，支持暂停和恢复</td></tr>
+<tr><td>Chunking</td><td>Text Chunking / 文本分块</td><td>将长文档切分为适合 Embedding 的小段落的过程</td></tr>
+<tr><td>Context Engineering</td><td>Context Engineering / 上下文工程</td><td>系统性地管理和优化 Agent 上下文信息的方法论，是 Prompt Engineering 的进阶</td></tr>
+<tr><td>Context Window</td><td>Context Window / 上下文窗口</td><td>LLM 单次推理能处理的最大 Token 数量</td></tr>
 <tr><td>CoT</td><td>Chain-of-Thought</td><td>链式思维提示，引导模型逐步推理</td></tr>
+<tr><td>CRAG</td><td>Corrective RAG</td><td>在检索后添加纠错机制的 RAG 变体，能判断检索结果是否相关并动态调整策略</td></tr>
+<tr><td>CrewAI</td><td>CrewAI</td><td>角色扮演型多 Agent 框架，通过定义 Agent 角色和任务来组建虚拟团队</td></tr>
 <tr><td>DeepSeek</td><td>DeepSeek</td><td>深度求索，中国 AI 公司，推出 DeepSeek-R2 等高性能推理模型</td></tr>
+<tr><td>Dify</td><td>Dify</td><td>开源的 LLM 应用开发平台，支持低代码构建 Agent 和 RAG 流程</td></tr>
 <tr><td>Docker</td><td>Docker</td><td>容器化平台，将应用和依赖打包为可移植的容器镜像</td></tr>
+<tr><td>DPO</td><td>Direct Preference Optimization</td><td>直接偏好优化，不需要训练奖励模型就能对齐人类偏好的训练方法</td></tr>
 <tr><td>Embedding</td><td>Embedding / 嵌入</td><td>将文本转化为高维向量的过程</td></tr>
+<tr><td>Emergent Abilities</td><td>Emergent Abilities / 涌现能力</td><td>大模型在参数规模达到临界点后突然涌现的新能力（如推理、代码生成）</td></tr>
 <tr><td>FastAPI</td><td>FastAPI</td><td>Python 高性能异步 Web 框架，常用于 Agent API 服务化</td></tr>
 <tr><td>FastMCP</td><td>FastMCP</td><td>MCP Server 的简化创建方式，用装饰器快速定义工具</td></tr>
 <tr><td>Few-shot</td><td>Few-shot Learning</td><td>通过少量示例引导模型完成任务</td></tr>
 <tr><td>Fine-tuning</td><td>Fine-tuning / 微调</td><td>在预训练模型基础上，用特定数据集进一步训练以适应特定任务</td></tr>
 <tr><td>Flows</td><td>Flows（CrewAI）</td><td>CrewAI 的事件驱动工作流编排特性，使用 @start/@listen/@router 装饰器</td></tr>
 <tr><td>Function Calling</td><td>Function Calling</td><td>LLM 生成结构化的工具调用请求的能力</td></tr>
+<tr><td>GAIA</td><td>GAIA Benchmark</td><td>General AI Assistants 基准测试，评估 Agent 解决真实世界任务的能力</td></tr>
 <tr><td>Graph Agent</td><td>Graph Agent / 图 Agent</td><td>基于有向图结构构建的 Agent 工作流</td></tr>
+<tr><td>GRPO</td><td>Group Relative Policy Optimization</td><td>组内相对策略优化，DeepSeek 提出的强化学习算法，不需要 Critic 模型</td></tr>
+<tr><td>Guardrails</td><td>Guardrails / 防护栏</td><td>对 Agent 输入输出进行安全检查和限制的机制</td></tr>
 <tr><td>Hallucination</td><td>Hallucination / 幻觉</td><td>LLM 生成看似合理但实际错误的内容</td></tr>
 <tr><td>Handoff</td><td>Handoff / 交接</td><td>OpenAI Agents SDK 中 Agent 间转交控制权的机制</td></tr>
 <tr><td>Human-in-the-Loop</td><td>Human-in-the-Loop</td><td>在 Agent 执行关键操作前请求人类确认</td></tr>
 <tr><td>LCEL</td><td>LangChain Expression Language</td><td>LangChain 的声明式链构建语法</td></tr>
 <tr><td>LLM</td><td>Large Language Model</td><td>大语言模型，如 GPT-5、Claude 4、DeepSeek-R2、Llama 4</td></tr>
+<tr><td>Long-term Memory</td><td>Long-term Memory / 长期记忆</td><td>持久化存储的 Agent 记忆，跨会话保留用户偏好和重要信息</td></tr>
+<tr><td>LoRA</td><td>Low-Rank Adaptation</td><td>低秩适配，一种参数高效的微调方法，只训练少量额外参数</td></tr>
 <tr><td>MCP</td><td>Model Context Protocol</td><td>Anthropic 提出的模型与工具交互的标准协议</td></tr>
+<tr><td>Mermaid</td><td>Mermaid</td><td>基于文本的图表绘制工具，用代码生成流程图、时序图等</td></tr>
 <tr><td>Multi-Agent</td><td>Multi-Agent System</td><td>多个 Agent 协作完成任务的系统</td></tr>
 <tr><td>OpenAI Agents SDK</td><td>OpenAI Agents SDK</td><td>OpenAI 推出的轻量 Agent 开发框架，Swarm 的生产级继承者</td></tr>
+<tr><td>OpenTelemetry</td><td>OpenTelemetry / OTel</td><td>开源的可观测性框架，用于收集 Agent 的追踪、指标和日志数据</td></tr>
 <tr><td>PII</td><td>Personally Identifiable Information</td><td>个人可识别信息，如姓名、身份证号、手机号等敏感数据</td></tr>
+<tr><td>PPO</td><td>Proximal Policy Optimization</td><td>近端策略优化，经典的强化学习算法，用于 RLHF 训练</td></tr>
 <tr><td>Prompt</td><td>Prompt / 提示词</td><td>发送给 LLM 的输入文本</td></tr>
 <tr><td>Prompt Injection</td><td>Prompt Injection</td><td>通过恶意输入覆盖 Agent 系统指令的攻击</td></tr>
 <tr><td>Pydantic</td><td>Pydantic</td><td>Python 数据验证库，常用于定义工具的输入/输出 Schema</td></tr>
 <tr><td>RAG</td><td>Retrieval-Augmented Generation</td><td>检索增强生成，先检索相关文档再生成回答</td></tr>
 <tr><td>ReAct</td><td>Reasoning + Acting</td><td>推理与行动交替进行的 Agent 框架</td></tr>
 <tr><td>Reasoning Model</td><td>Reasoning Model / 推理模型</td><td>具备深度推理能力的 LLM，如 o3、DeepSeek-R2、Claude 4 Extended Thinking</td></tr>
+<tr><td>Reducer</td><td>Reducer（LangGraph）</td><td>LangGraph 状态管理中的聚合函数，定义多个节点输出如何合并到同一状态字段</td></tr>
 <tr><td>Reflection</td><td>Reflection / 反思</td><td>Agent 检查和纠正自己输出的机制</td></tr>
 <tr><td>Retriever</td><td>Retriever / 检索器</td><td>从知识库中检索相关文档的组件</td></tr>
+<tr><td>RLHF</td><td>Reinforcement Learning from Human Feedback</td><td>基于人类反馈的强化学习，用于对齐模型输出与人类偏好</td></tr>
 <tr><td>Runnable</td><td>Runnable / 可运行对象</td><td>LangChain 中所有可执行组件的基础接口</td></tr>
 <tr><td>Sandbox</td><td>Sandbox / 沙箱</td><td>隔离的安全执行环境，防止恶意代码影响宿主系统</td></tr>
+<tr><td>Scaling Laws</td><td>Scaling Laws / 缩放定律</td><td>模型性能与参数量、数据量、计算量之间的幂律关系</td></tr>
+<tr><td>Scratchpad</td><td>Scratchpad / 草稿本</td><td>Agent 的工作记忆空间，用于存放中间推理步骤</td></tr>
 <tr><td>Semantic Cache</td><td>Semantic Cache / 语义缓存</td><td>基于语义相似度（而非精确匹配）缓存 LLM 查询结果的技术</td></tr>
+<tr><td>SFT</td><td>Supervised Fine-Tuning</td><td>监督微调，使用标注数据进行的模型微调</td></tr>
+<tr><td>Short-term Memory</td><td>Short-term Memory / 短期记忆</td><td>当前会话的对话历史，受上下文窗口限制</td></tr>
+<tr><td>Skill</td><td>Skill / 技能</td><td>封装了特定能力的可复用 Agent 组件，包含工具、提示词和执行逻辑</td></tr>
 <tr><td>SSE</td><td>Server-Sent Events</td><td>服务器向客户端推送实时事件的协议</td></tr>
-<tr><td>State</td><td>State / 状态</td><td>Agent 在执行过程中维护的上下文信息，包括对话历史、中间结果、工作记忆等，是 Graph Agent 中节点间数据传递的核心机制</td></tr>
-<tr><td>Streamable HTTP</td><td>Streamable HTTP</td><td>MCP 2025 年引入的新传输协议，替代 HTTP + SSE，支持按需流式和 Session 恢复</td></tr>
+<tr><td>State</td><td>State / 状态</td><td>Agent 在执行过程中维护的上下文信息，是 Graph Agent 中节点间数据传递的核心机制</td></tr>
+<tr><td>Streamable HTTP</td><td>Streamable HTTP</td><td>MCP 2025 年引入的新传输协议，支持按需流式和 Session 恢复</td></tr>
 <tr><td>Supervisor</td><td>Supervisor / 监督者</td><td>多 Agent 系统中协调其他 Agent 的中心节点</td></tr>
+<tr><td>SWE-bench</td><td>SWE-bench</td><td>Software Engineering 基准测试，评估 Agent 解决真实 GitHub Issue 的能力</td></tr>
 <tr><td>System Prompt</td><td>System Prompt / 系统提示词</td><td>定义 Agent 行为准则的初始指令</td></tr>
 <tr><td>Temperature</td><td>Temperature / 温度</td><td>控制 LLM 输出随机性的参数（0=确定性，1=更随机）</td></tr>
 <tr><td>Text-to-SQL</td><td>Text-to-SQL</td><td>将自然语言描述自动转换为 SQL 查询语句的技术</td></tr>
 <tr><td>Token</td><td>Token / 令牌</td><td>LLM 处理文本的最小单位（一个中文字约 1-2 个 Token）</td></tr>
 <tr><td>Tool</td><td>Tool / 工具</td><td>Agent 可以调用的外部功能（如搜索、计算、API 调用）</td></tr>
+<tr><td>Transformer</td><td>Transformer</td><td>现代 LLM 的核心架构，基于自注意力机制，由 Google 2017 年提出</td></tr>
 <tr><td>uv</td><td>uv</td><td>Rust 编写的高性能 Python 包管理器，已成为 Python 包管理新标准</td></tr>
 <tr><td>Vector DB</td><td>Vector Database / 向量数据库</td><td>存储和检索向量嵌入的专用数据库（如 ChromaDB、Pinecone）</td></tr>
+<tr><td>Working Memory</td><td>Working Memory / 工作记忆</td><td>Agent 执行任务时的临时推理空间，类似于人类的"草稿纸"</td></tr>
 <tr><td>Zero-shot</td><td>Zero-shot Learning</td><td>不提供示例，仅通过指令让模型完成任务</td></tr>
 </tbody></table>
 </div>

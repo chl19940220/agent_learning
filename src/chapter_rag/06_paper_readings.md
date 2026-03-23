@@ -280,7 +280,7 @@ Agentic RAG（Agent 驱动）：
 
 ### 对 Agent 开发的启示
 
-Agentic RAG 是 2025 年 Agent 开发中最实用的架构模式之一。LangGraph 是实现 Agentic RAG 的理想框架（详见第 9 章）——可以将检索决策、查询改写、质量评估等步骤编排为状态图中的节点。
+Agentic RAG 是 2025 年 Agent 开发中最实用的架构模式之一。LangGraph 是实现 Agentic RAG 的理想框架（详见第 12 章）——可以将检索决策、查询改写、质量评估等步骤编排为状态图中的节点。
 
 ---
 

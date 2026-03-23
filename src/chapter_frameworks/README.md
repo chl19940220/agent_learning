@@ -1,4 +1,4 @@
-# 第10章 其他主流框架概览
+# 第13章 其他主流框架概览
 
 > 🧭 *"框架只是工具，理解原理才是根本。本章快速浏览主流 Agent 框架，帮你做出明智的技术选择。"*
 
@@ -22,11 +22,11 @@ Agent 框架生态发展迅速，除了 LangChain/LangGraph 外，还有 AutoGPT
 
 | 小节 | 内容 | 难度 |
 |------|------|------|
-| 10.1 AutoGPT 与 BabyAGI 的启示 | 开创性项目的设计理念 | ⭐⭐ |
-| 10.2 CrewAI：角色扮演型框架 | 多 Agent 协作的简洁方案 | ⭐⭐⭐ |
-| 10.3 AutoGen：微软的对话框架 | 对话驱动的 Agent 设计 | ⭐⭐⭐ |
-| 10.4 低代码 Agent 平台 | Dify、Coze 等可视化工具 | ⭐⭐ |
-| 10.5 如何选择框架？ | 决策矩阵 | ⭐⭐ |
+| 13.1 AutoGPT 与 BabyAGI 的启示 | 开创性项目的设计理念 | ⭐⭐ |
+| 13.2 CrewAI：角色扮演型框架 | 多 Agent 协作的简洁方案 | ⭐⭐⭐ |
+| 13.3 AutoGen：微软的对话框架 | 对话驱动的 Agent 设计 | ⭐⭐⭐ |
+| 13.4 低代码 Agent 平台 | Dify、Coze 等可视化工具 | ⭐⭐ |
+| 13.5 如何选择框架？ | 决策矩阵 | ⭐⭐ |
 
 ## ⏱️ 预计学习时间
 
@@ -36,6 +36,14 @@ Agent 框架生态发展迅速，除了 LangChain/LangGraph 外，还有 AutoGPT
 
 - 已完成第 11-12 章的 LangChain/LangGraph 学习
 - 对 Agent 的核心概念有基本理解
+
+## 🔗 学习路径
+
+> **前置知识**：[第11章 LangChain](../chapter_langchain/README.md)、[第12章 LangGraph](../chapter_langgraph/README.md)
+>
+> **后续推荐**：
+> - 👉 [第14章 多 Agent 协作](../chapter_multi_agent/README.md) — 深入多 Agent 架构设计
+> - 👉 [第16章 评估与优化](../chapter_evaluation/README.md) — 评估不同框架的实际表现
 
 ---
 

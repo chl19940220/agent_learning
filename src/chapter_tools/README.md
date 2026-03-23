@@ -37,6 +37,15 @@
 - 了解 OpenAI API 的基本调用方式
 - 熟悉 Python 函数定义和 JSON 数据格式
 
+## 🔗 学习路径
+
+> **前置知识**：[第2章 环境搭建](../chapter_setup/README.md)、[第3章 LLM 基础](../chapter_llm/README.md)
+>
+> **后续推荐**：
+> - 👉 [第5章 记忆系统](../chapter_memory/README.md) — 让 Agent 拥有"回忆"
+> - 👉 [第9章 技能系统](../chapter_skill/README.md) — 从单个工具升级为完整技能
+> - 👉 [第15章 通信协议](../chapter_protocol/README.md) — MCP 等标准化工具协议
+
 ---
 
 *下一节：[4.1 为什么 Agent 需要工具？](./01_why_tools.md)*

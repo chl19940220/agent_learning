@@ -424,4 +424,4 @@ print(result)
 
 ---
 
-*下一节：[2.5 Token、Temperature 与模型参数详解](./05_model_parameters.md)*
+*下一节：[3.5 Token、Temperature 与模型参数详解](./05_model_parameters.md)*

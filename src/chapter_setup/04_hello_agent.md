@@ -430,4 +430,4 @@ Agent：计算结果是 18,945。
 
 ---
 
-*下一章：[第4章 工具调用（Tool Use / Function Calling）](../chapter_tools/README.md)*
+*下一章：[第3章 大语言模型基础](../chapter_llm/README.md)*

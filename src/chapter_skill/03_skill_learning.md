@@ -393,4 +393,4 @@ Level 5：自进化技能（Self-Evolving Skills）
 
 ---
 
-*下一节：[5.4 技能发现与注册](./04_skill_discovery.md)*
+*下一节：[9.4 技能发现与注册](./04_skill_discovery.md)*

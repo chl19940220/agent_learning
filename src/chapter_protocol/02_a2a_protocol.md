@@ -438,4 +438,4 @@ A2A 协议的价值：
 
 ---
 
-*下一节：[14.3 ANP（Agent Network Protocol）协议](./03_anp_protocol.md)*
+*下一节：[15.3 ANP（Agent Network Protocol）协议](./03_anp_protocol.md)*

@@ -169,7 +169,7 @@ class DataAnalysisAgent:
         - 这些结构信息将作为 LLM 生成 SQL 时的上下文
         """
         schemas = {}
-        # 实际实现见 17.2 节 SafeDatabaseConnector
+        # 实际实现见 20.2 节 SafeDatabaseConnector
         return schemas
     
     async def analyze(self, request: AnalysisRequest) -> AnalysisResult:
@@ -214,7 +214,7 @@ class DataAnalysisAgent:
         )
 ```
 
-> **架构要点**：这个六步 Pipeline 的关键设计决策是将"理解"（步骤1-2）和"执行"（步骤3-6）分离。理解阶段由 LLM 驱动，执行阶段由确定性代码完成。这种混合架构既利用了 LLM 的语义理解能力，又保证了数据处理的可靠性和可控性。各个方法的完整实现将在 17.2-17.4 节中逐步展开。
+> **架构要点**：这个六步 Pipeline 的关键设计决策是将"理解"（步骤1-2）和"执行"（步骤3-6）分离。理解阶段由 LLM 驱动，执行阶段由确定性代码完成。这种混合架构既利用了 LLM 的语义理解能力，又保证了数据处理的可靠性和可控性。各个方法的完整实现将在 20.2-20.4 节中逐步展开。
 
 ---
 
@@ -224,4 +224,4 @@ class DataAnalysisAgent:
 
 ---
 
-[下一节：17.2 数据连接与查询 →](./02_data_connection.md)
+[下一节：20.2 数据连接与查询 →](./02_data_connection.md)

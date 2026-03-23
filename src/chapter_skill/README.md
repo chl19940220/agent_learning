@@ -47,6 +47,14 @@
 - 了解 JSON Schema 和 Python 装饰器
 - 对 Agent 的基本工作流程有初步认识
 
+## 🔗 学习路径
+
+> **前置知识**：[第4章 工具调用](../chapter_tools/README.md)
+>
+> **后续推荐**：
+> - 👉 [第14章 多 Agent 协作](../chapter_multi_agent/README.md) — 在多 Agent 系统中共享和发现技能
+> - 👉 [第15章 通信协议](../chapter_protocol/README.md) — MCP/A2A 中的技能声明机制
+
 ---
 
-*下一节：[5.1 技能系统概述](./01_skill_overview.md)*
+*下一节：[9.1 技能系统概述](./01_skill_overview.md)*

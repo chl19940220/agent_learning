@@ -43,6 +43,14 @@
 
 理解 LLM 就像理解发动机原理——即使你不造发动机，懂原理也能让你成为更好的驾驶员。
 
+## 🔗 学习路径
+
+> **前置知识**：[第1章 什么是 Agent？](../chapter_intro/README.md)、[第2章 开发环境搭建](../chapter_setup/README.md)
+>
+> **后续推荐**：
+> - 👉 [第4章 工具调用](../chapter_tools/README.md) — Agent 的核心能力
+> - 👉 [第8章 上下文工程](../chapter_context_engineering/README.md) — 从 Prompt 工程升级到系统化的上下文管理
+
 ---
 
 *下一节：[3.1 LLM 是如何工作的？（直觉理解）](./01_how_llm_works.md)*

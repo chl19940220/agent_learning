@@ -134,4 +134,4 @@ DATA_ANALYSIS_SKILL = """
 
 ---
 
-*下一节：[5.2 技能的定义与封装](./02_skill_definition.md)*
+*下一节：[9.2 技能的定义与封装](./02_skill_definition.md)*

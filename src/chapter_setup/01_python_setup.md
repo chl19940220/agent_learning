@@ -237,4 +237,4 @@ python check_env.py
 
 ---
 
-*下一节：[3.2 关键库安装：LangChain、OpenAI SDK 等](./02_install_libs.md)*
+*下一节：[2.2 关键库安装：LangChain、OpenAI SDK 等](./02_install_libs.md)*

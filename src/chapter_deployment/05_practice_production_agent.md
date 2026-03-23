@@ -266,4 +266,4 @@ curl -X POST http://localhost:8000/chat/stream \
 
 ---
 
-[下一章：第16章 项目实战：AI 编程助手 →](../chapter_coding_agent/README.md)
+[下一章：第19章 项目实战：AI 编程助手 →](../chapter_coding_agent/README.md)

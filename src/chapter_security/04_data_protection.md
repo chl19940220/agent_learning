@@ -191,4 +191,4 @@ class DataMinimizer:
 
 ---
 
-[下一节：14.5 Agent 行为的可控性与对齐 →](./05_alignment.md)
+[下一节：17.5 Agent 行为的可控性与对齐 →](./05_alignment.md)

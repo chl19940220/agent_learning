@@ -9,7 +9,7 @@
 }
 
 .content {
-  font-size: 1.3rem;
+  font-size: 1.6rem;
   line-height: 1.9;
   letter-spacing: 0.015em;
 }
@@ -236,6 +236,226 @@
   border-bottom-color: #555;
 }
 
+/* 暗色主题下 SVG/图片：保持浅色背景，添加圆角和柔和边框 */
+.navy .content img,
+.coal .content img,
+.ayu .content img {
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 暗色主题下分隔线颜色适配 */
+.navy .content hr,
+.coal .content hr,
+.ayu .content hr {
+  background: linear-gradient(to right, transparent, #555, transparent);
+}
+
+/* ---------- Mermaid 图表美化 ---------- */
+.content .mermaid {
+  text-align: center;
+  margin: 1.5em 0;
+  padding: 1em;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.navy .content .mermaid,
+.coal .content .mermaid,
+.ayu .content .mermaid {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ---------- 内联代码优化（区别于代码块） ---------- */
+.content p > code,
+.content li > code,
+.content td > code,
+.content h2 > code,
+.content h3 > code {
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.08);
+  color: #d63384;
+  font-weight: 500;
+  border: 1px solid rgba(var(--links-rgb, 55, 131, 235), 0.12);
+}
+
+.navy .content p > code,
+.navy .content li > code,
+.navy .content td > code,
+.coal .content p > code,
+.coal .content li > code,
+.coal .content td > code,
+.ayu .content p > code,
+.ayu .content li > code,
+.ayu .content td > code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ff79c6;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ---------- 有序列表美化 ---------- */
+.content ol {
+  counter-reset: custom-counter;
+  list-style: none;
+  padding-left: 0;
+}
+
+.content ol > li {
+  counter-increment: custom-counter;
+  position: relative;
+  padding-left: 2.2em;
+  margin-bottom: 0.6em;
+}
+
+.content ol > li::before {
+  content: counter(custom-counter);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 50%;
+  background: var(--links, #3783eb);
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* 嵌套有序列表（二级）：使用方形浅色背景 + 序号 */
+.content ol ol {
+  counter-reset: nested-counter;
+  margin-top: 0.4em;
+  margin-bottom: 0.2em;
+}
+
+.content ol ol > li {
+  counter-increment: nested-counter;
+  padding-left: 2em;
+  margin-bottom: 0.3em;
+}
+
+.content ol ol > li::before {
+  content: counter(nested-counter, lower-alpha) ")";
+  width: auto;
+  height: auto;
+  border-radius: 3px;
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.1);
+  color: var(--links, #3783eb);
+  font-size: 0.78em;
+  font-weight: 600;
+  padding: 0.1em 0.4em;
+}
+
+/* 嵌套有序列表（三级）：使用罗马数字 */
+.content ol ol ol {
+  counter-reset: deep-counter;
+}
+
+.content ol ol ol > li {
+  counter-increment: deep-counter;
+  padding-left: 1.8em;
+}
+
+.content ol ol ol > li::before {
+  content: counter(deep-counter, lower-roman) ".";
+  background: none;
+  color: var(--fg);
+  font-size: 0.8em;
+  font-weight: 500;
+  padding: 0;
+  opacity: 0.7;
+}
+
+/* ---------- 关键词高亮 ---------- */
+.content strong {
+  color: var(--links, #3783eb);
+  font-weight: 700;
+}
+
+.navy .content strong,
+.coal .content strong,
+.ayu .content strong {
+  color: #5ba3f5;
+}
+
+/* ---------- 脚注样式 ---------- */
+.content .footnote-definition {
+  font-size: 0.9em;
+  padding: 0.5em 0;
+  border-top: 1px dashed #e0e0e0;
+  margin-top: 0.5em;
+}
+
+/* ---------- 章节标题装饰 ---------- */
+.content h1::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 1em;
+  background: var(--links, #3783eb);
+  margin-right: 0.5em;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+/* ---------- 页面容器过渡动画 ---------- */
+.content {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- 底部导航栏增强 ---------- */
+.nav-chapters {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  border: 1px solid rgba(var(--links-rgb, 55, 131, 235), 0.15);
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.03);
+}
+
+.nav-chapters:hover {
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.08);
+  border-color: rgba(var(--links-rgb, 55, 131, 235), 0.3);
+}
+
+/* ---------- 选中文本高亮 ---------- */
+::selection {
+  background: rgba(var(--links-rgb, 55, 131, 235), 0.25);
+  color: inherit;
+}
+
+/* ---------- 表格偶数行斑马纹 ---------- */
+.content table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.navy .content table tbody tr:nth-child(even),
+.coal .content table tbody tr:nth-child(even),
+.ayu .content table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ---------- 侧边栏书名 ---------- */
+.sidebar .sidebar-scrollbox .chapter:first-child {
+  margin-top: 0.5em;
+}
+
 /* ---------- 滚动条美化 ---------- */
 ::-webkit-scrollbar {
   width: 6px;
@@ -261,5 +481,75 @@
 
   .content {
     max-width: 100% !important;
+  }
+}
+
+/* ---------- 移动端响应式 ---------- */
+@media (max-width: 768px) {
+  .content {
+    font-size: 1.4rem;
+    line-height: 1.75;
+  }
+
+  .content h1 {
+    font-size: 1.6rem;
+  }
+
+  .content h2 {
+    font-size: 1.35rem;
+  }
+
+  .content h3 {
+    font-size: 1.15rem;
+  }
+
+  /* 表格在小屏可横向滚动 */
+  .content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.95rem;
+  }
+
+  /* 代码块字体缩小，防止横向溢出 */
+  .content pre {
+    font-size: 0.82em;
+    padding: 0.8em;
+  }
+
+  .content code {
+    font-size: 0.88em;
+  }
+
+  /* 图片移动端占满宽度 */
+  .content img {
+    margin: 1em auto;
+    border-radius: 4px;
+  }
+
+  /* 引用块紧凑化 */
+  .content blockquote {
+    padding: 0.5em 0.8em;
+    margin: 0.8em 0;
+  }
+
+  /* 有序列表移动端缩进 */
+  .content ol > li {
+    padding-left: 2em;
+  }
+
+  .content ol > li::before {
+    width: 1.4em;
+    height: 1.4em;
+    font-size: 0.75em;
+  }
+
+  /* 回到顶部按钮移动端调整 */
+  #back-to-top {
+    bottom: 1.2rem;
+    right: 1.2rem;
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
   }
 }

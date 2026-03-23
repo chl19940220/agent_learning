@@ -46,42 +46,150 @@ print(answer)
 
 字节跳动推出的 Agent 构建平台，是国内低代码 Agent 平台中功能最丰富的之一：
 
-```
-Coze 主要特性：
-├── 图形化 Agent 构建
-├── 丰富的内置插件（天气、搜索、代码、数据库等）
-├── 支持发布到微信、飞书、抖音、Discord 等平台
-├── Bot 市场（可分享和复用）
-├── 工作流编排（可视化拖拽）
-└── 知识库管理（支持 RAG）
+**主要特性**：
+- 图形化 Agent 构建，拖拽式工作流编排（支持条件分支、循环）
+- 丰富的内置插件（天气、搜索、代码执行、数据库等）
+- 多平台发布：微信、飞书、抖音、Discord、Telegram 等
+- Bot 市场（可分享和复用）
+- 知识库管理（支持 RAG 检索增强）
 
-优势：
-- 不需要写代码
-- 与字节系产品生态深度集成
-- 免费额度慷慨
-- 工作流功能强大（支持条件分支、循环）
+Coze 同样提供了 API，可以通过代码调用在 Coze 上构建的 Bot：
+
+```python
+import requests
+import json
+
+def call_coze_bot(
+    bot_id: str,
+    user_message: str,
+    access_token: str,
+    user_id: str = "user_001",
+) -> str:
+    """调用 Coze Bot API"""
+    url = "https://api.coze.cn/v3/chat"
+
+    response = requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "bot_id": bot_id,
+            "user_id": user_id,
+            "stream": False,
+            "auto_save_history": True,
+            "additional_messages": [
+                {
+                    "role": "user",
+                    "content": user_message,
+                    "content_type": "text",
+                }
+            ],
+        },
+    )
+
+    result = response.json()
+    # Coze API 返回的消息在 data.messages 中
+    if result.get("code") == 0:
+        messages = result.get("data", {}).get("messages", [])
+        # 找到 assistant 的回复
+        for msg in messages:
+            if msg.get("role") == "assistant" and msg.get("type") == "answer":
+                return msg.get("content", "")
+    return f"API 调用失败: {result.get('msg', '未知错误')}"
+
+
+# 使用示例
+answer = call_coze_bot(
+    bot_id="your-bot-id",
+    user_message="帮我分析一下最近的销售数据趋势",
+    access_token="your-access-token",
+)
+print(answer)
+```
+
+> 💡 **Coze vs Dify 选择**：Coze 更适合需要快速分发到多个即时通讯平台（微信、飞书、抖音）的场景；Dify 更适合需要私有化部署、自定义工作流的企业场景。
+
+### Dify 工作流 API 调用
+
+除了基础的对话 API，Dify 还支持通过 API 调用**工作流（Workflow）**，这对于将 Dify 编排的复杂逻辑嵌入到自有系统中非常有用：
+
+```python
+import requests
+
+def run_dify_workflow(
+    api_key: str,
+    inputs: dict,
+    user: str = "user_001",
+) -> dict:
+    """调用 Dify Workflow API"""
+    url = "https://api.dify.ai/v1/workflows/run"
+
+    response = requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "inputs": inputs,
+            "response_mode": "blocking",
+            "user": user,
+        },
+    )
+
+    result = response.json()
+    return result.get("data", {}).get("outputs", {})
+
+
+# 示例：调用一个"文档摘要+翻译"工作流
+outputs = run_dify_workflow(
+    api_key="app-your-workflow-key",
+    inputs={
+        "document_url": "https://example.com/report.pdf",
+        "target_language": "English",
+    },
+)
+print(outputs)
+# 输出：{"summary": "...", "translation": "..."}
 ```
 
 ### n8n：工作流自动化平台
 
+n8n 是一个开源的工作流自动化平台，内置了 AI Agent 节点，可以通过拖拽配置实现复杂的 LLM 工作流。它的核心优势是**连接一切** —— 支持 400+ 应用集成。
+
+n8n 通过 Webhook 与外部系统双向集成：
+
 ```python
-# n8n 通过 Webhook 与外部系统集成
-# 在 n8n 中可以构建：
-# 接收消息 → 调用 LLM → 处理结果 → 发送通知
+import requests
 
-# n8n 的 AI Agent 节点可以调用 OpenAI / Anthropic / 本地模型
-# 通过简单的拖拽配置实现复杂工作流
+# 调用 n8n 的 Webhook 触发一个 AI 工作流
+# 在 n8n 中配置：Webhook → AI Agent → Slack 通知
+def trigger_n8n_workflow(
+    webhook_url: str,
+    payload: dict,
+) -> dict:
+    """触发 n8n 工作流"""
+    response = requests.post(webhook_url, json=payload)
+    return response.json()
 
-# 典型工作流示例：
-workflow = """
-触发器：每天早上9点
-  ↓
-读取 Google Sheets 中的任务列表
-  ↓
-调用 GPT-4o 分析优先级
-  ↓
-发送日报到 Slack 频道
-"""
+
+# 示例：触发一个"每日任务智能排序"工作流
+result = trigger_n8n_workflow(
+    webhook_url="https://your-n8n.example.com/webhook/daily-tasks",
+    payload={
+        "tasks": [
+            "完成项目方案",
+            "修复线上 bug",
+            "写周报",
+            "团队代码 review",
+        ],
+        "context": "下午有一个重要的客户演示",
+    },
+)
+# n8n 工作流：读取任务 → 调用 GPT-4o 分析优先级 → 返回排序结果
+print(result)  # {"prioritized_tasks": [...], "reasoning": "..."}
 ```
 
 ### 其他值得关注的平台
@@ -130,4 +238,4 @@ decision_guide = {
 
 ---
 
-*下一节：[10.5 如何选择合适的框架？](./05_how_to_choose.md)*
+*下一节：[13.5 如何选择合适的框架？](./05_how_to_choose.md)*

@@ -211,4 +211,4 @@ Agent 通信协议的核心：
 
 ---
 
-*下一节：[14.5 实战：基于 MCP 的工具集成](./05_practice_mcp_integration.md)*
+*下一节：[15.5 实战：基于 MCP 的工具集成](./05_practice_mcp_integration.md)*

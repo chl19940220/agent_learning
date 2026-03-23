@@ -1,4 +1,4 @@
-# 第15章 部署与生产化
+# 第18章 部署与生产化
 
 > 代码在本地跑通只是第一步。让 Agent 在生产环境稳定服务用户，才是真正的考验。
 
@@ -36,6 +36,14 @@
 - 了解 HTTP API 和 REST 概念
 - 了解 Docker 的基本概念（不要求精通）
 
+## 🔗 学习路径
+
+> **前置知识**：[第16章 评估与优化](../chapter_evaluation/README.md)、[第17章 安全与可靠性](../chapter_security/README.md)
+>
+> **后续推荐**：
+> - 👉 [第19章 AI 编程助手](../chapter_coding_agent/README.md) — 综合项目实战
+> - 👉 [第20章 数据分析 Agent](../chapter_data_agent/README.md) — 综合项目实战
+
 ---
 
-*下一节：[15.1 Agent 应用的部署架构](./01_deployment_architecture.md)*
+*下一节：[18.1 Agent 应用的部署架构](./01_deployment_architecture.md)*

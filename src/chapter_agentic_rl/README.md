@@ -28,6 +28,15 @@
 - 了解 Python 和 PyTorch 基础
 - 对机器学习/深度学习有基本概念
 
+## 🔗 学习路径
+
+> **前置知识**：[第3章 LLM 基础](../chapter_llm/README.md)
+> 推荐但非必须：[第6章 规划与推理](../chapter_planning/README.md)、[附录 E KL 散度详解](../appendix/kl_divergence.md)
+>
+> **后续推荐**：
+> - 👉 [第11章 LangChain](../chapter_langchain/README.md) — 用框架快速实践你训练出的模型
+> - 👉 [第16章 评估与优化](../chapter_evaluation/README.md) — 评估 RL 训练后的 Agent 效果
+
 ---
 
 ## 参考文献

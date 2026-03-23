@@ -38,6 +38,15 @@
 - 了解 Python 的函数定义和字典操作
 - 对 LLM 的 API 调用有基本经验
 
+## 🔗 学习路径
+
+> **前置知识**：[第4章 工具调用](../chapter_tools/README.md)、[第5章 记忆系统](../chapter_memory/README.md)
+>
+> **后续推荐**：
+> - 👉 [第7章 RAG](../chapter_rag/README.md) — 给 Agent 接入外部知识
+> - 👉 [第11章 LangChain](../chapter_langchain/README.md) — 用框架高效实现 ReAct Agent
+> - 👉 [第12章 LangGraph](../chapter_langgraph/README.md) — 用图结构实现复杂推理流程
+
 ---
 
 *下一节：[6.1 Agent 如何"思考"？](./01_how_agents_think.md)*

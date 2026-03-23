@@ -7,16 +7,277 @@
 
 
         <!-- Custom HTML head -->
-        <script>
-        MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
+        <!-- ============================================
+           从零开始学 Agent - 自定义 HTML Head
+           ============================================ -->
+        
+        <!-- 阅读进度条 -->
+        <style>
+          #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #3783eb, #00d4ff);
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 8px rgba(55, 131, 235, 0.4);
           }
-        };
+          
+          /* 回到顶部按钮 */
+          #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--links, #3783eb);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+            z-index: 999;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+          }
+          #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          #back-to-top:hover {
+            background: var(--links, #3783eb);
+            filter: brightness(1.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+          }
+        
+          /* 代码块语言标签 */
+          .content pre {
+            position: relative;
+          }
+          .code-lang-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.25);
+            border-radius: 0 8px 0 6px;
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          }
+        
+          /* 信息提示框 (使用 blockquote + emoji 约定) */
+          .content blockquote.admonition-tip {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+          }
+          .content blockquote.admonition-warning {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.06);
+          }
+          .content blockquote.admonition-danger {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+          }
+          .content blockquote.admonition-info {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.06);
+          }
+        
+          /* 暗色主题适配 */
+          .navy #reading-progress,
+          .coal #reading-progress,
+          .ayu #reading-progress {
+            background: linear-gradient(90deg, #5ba3f5, #00d4ff);
+          }
+          .navy .code-lang-tag,
+          .coal .code-lang-tag,
+          .ayu .code-lang-tag {
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7);
+          }
+          .navy .content blockquote.admonition-tip,
+          .coal .content blockquote.admonition-tip,
+          .ayu .content blockquote.admonition-tip {
+            background: rgba(16, 185, 129, 0.08);
+          }
+          .navy .content blockquote.admonition-warning,
+          .coal .content blockquote.admonition-warning,
+          .ayu .content blockquote.admonition-warning {
+            background: rgba(245, 158, 11, 0.08);
+          }
+          .navy .content blockquote.admonition-danger,
+          .coal .content blockquote.admonition-danger,
+          .ayu .content blockquote.admonition-danger {
+            background: rgba(239, 68, 68, 0.08);
+          }
+          .navy .content blockquote.admonition-info,
+          .coal .content blockquote.admonition-info,
+          .ayu .content blockquote.admonition-info {
+            background: rgba(59, 130, 246, 0.08);
+          }
+        
+          /* 章节标题锚点链接 */
+          .content h2:hover .header-anchor,
+          .content h3:hover .header-anchor {
+            opacity: 1;
+          }
+          .header-anchor {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: 0.3em;
+            color: var(--links);
+            text-decoration: none;
+            font-size: 0.85em;
+          }
+        
+          /* 估计阅读时间标签 */
+          .reading-time {
+            display: inline-block;
+            margin-top: 0.5em;
+            padding: 0.3em 0.8em;
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(0,0,0,0.04);
+            border-radius: 20px;
+            font-weight: 500;
+          }
+          .navy .reading-time,
+          .coal .reading-time,
+          .ayu .reading-time {
+            color: #aaa;
+            background: rgba(255,255,255,0.06);
+          }
+        </style>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // === 1. 阅读进度条 ===
+          var progressBar = document.createElement('div');
+          progressBar.id = 'reading-progress';
+          document.body.prepend(progressBar);
+        
+          function updateProgress() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+          }
+        
+          // === 2. 回到顶部按钮 ===
+          var backBtn = document.createElement('button');
+          backBtn.id = 'back-to-top';
+          backBtn.innerHTML = '&#8679;';
+          backBtn.title = '回到顶部';
+          document.body.appendChild(backBtn);
+        
+          function toggleBackToTop() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            if (scrollTop > 400) {
+              backBtn.classList.add('visible');
+            } else {
+              backBtn.classList.remove('visible');
+            }
+          }
+        
+          backBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        
+          // 合并 scroll 事件
+          var scrollTicking = false;
+          window.addEventListener('scroll', function() {
+            if (!scrollTicking) {
+              window.requestAnimationFrame(function() {
+                updateProgress();
+                toggleBackToTop();
+                scrollTicking = false;
+              });
+              scrollTicking = true;
+            }
+          });
+        
+          // 初始化
+          updateProgress();
+          toggleBackToTop();
+        
+          // === 3. 代码块语言标签 ===
+          var codeBlocks = document.querySelectorAll('.content pre code');
+          codeBlocks.forEach(function(code) {
+            var classes = code.className.split(/\s+/);
+            var lang = '';
+            classes.forEach(function(cls) {
+              if (cls.startsWith('language-')) {
+                lang = cls.replace('language-', '');
+              }
+            });
+            if (lang && lang !== 'text' && lang !== 'plaintext') {
+              var langMap = {
+                'python': 'Python', 'py': 'Python',
+                'javascript': 'JS', 'js': 'JS',
+                'typescript': 'TS', 'ts': 'TS',
+                'bash': 'Bash', 'sh': 'Shell', 'shell': 'Shell', 'zsh': 'Shell',
+                'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML',
+                'toml': 'TOML', 'sql': 'SQL',
+                'html': 'HTML', 'css': 'CSS',
+                'rust': 'Rust', 'go': 'Go', 'java': 'Java',
+                'dockerfile': 'Docker', 'docker': 'Docker',
+                'markdown': 'MD', 'md': 'MD',
+                'xml': 'XML', 'graphql': 'GraphQL',
+                'mermaid': 'Mermaid'
+              };
+              var displayLang = langMap[lang.toLowerCase()] || lang.toUpperCase();
+              var tag = document.createElement('span');
+              tag.className = 'code-lang-tag';
+              tag.textContent = displayLang;
+              code.parentElement.appendChild(tag);
+            }
+          });
+        
+          // === 4. 信息提示框自动分类 ===
+          var blockquotes = document.querySelectorAll('.content blockquote');
+          blockquotes.forEach(function(bq) {
+            var firstP = bq.querySelector('p');
+            if (!firstP) return;
+            var text = firstP.textContent || '';
+            if (text.match(/^[\s]*[💡🔑✨]/)) {
+              bq.classList.add('admonition-tip');
+            } else if (text.match(/^[\s]*[⚠️🔶]/)) {
+              bq.classList.add('admonition-warning');
+            } else if (text.match(/^[\s]*[🚨❌⛔]/)) {
+              bq.classList.add('admonition-danger');
+            } else if (text.match(/^[\s]*[📖ℹ️📝📌🔗]/)) {
+              bq.classList.add('admonition-info');
+            }
+          });
+        
+          // === 5. 估计阅读时间 ===
+          var content = document.querySelector('.content');
+          if (content) {
+            var text = content.textContent || '';
+            var charCount = text.replace(/\s/g, '').length;
+            var readingMinutes = Math.max(1, Math.ceil(charCount / 500)); // 中文约500字/分钟
+            var h1 = content.querySelector('h1');
+            if (h1 && readingMinutes > 2) {
+              var timeTag = document.createElement('span');
+              timeTag.className = 'reading-time';
+              timeTag.textContent = '预计阅读 ' + readingMinutes + ' 分钟';
+              h1.insertAdjacentElement('afterend', timeTag);
+            }
+          }
+        });
         </script>
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -213,6 +474,91 @@ class CustomState(TypedDict):
     error_count: int
     result: Optional[str]
 </code></pre>
+<h3 id="state-reducer-的高级用法"><a class="header" href="#state-reducer-的高级用法">State Reducer 的高级用法</a></h3>
+<p>Reducer 是 LangGraph 中容易被忽视但极其强大的机制。当多个节点同时更新 State 的同一个字段时，Reducer 决定了<strong>如何合并这些更新</strong>。</p>
+<pre><code class="language-python">from typing import Annotated
+import operator
+
+# Reducer 示例 1：追加（最常用）
+# messages 字段使用 operator.add 作为 Reducer
+# 效果：新消息追加到列表末尾，而非替换整个列表
+class ChatState(TypedDict):
+    messages: Annotated[list, operator.add]  # 追加语义
+
+# Reducer 示例 2：自定义 Reducer 函数
+def merge_results(existing: dict, new: dict) -&gt; dict:
+    """自定义合并策略：深度合并两个字典"""
+    merged = {**existing}
+    for key, value in new.items():
+        if key in merged and isinstance(merged[key], list):
+            merged[key] = merged[key] + value  # 列表追加
+        else:
+            merged[key] = value  # 其他类型覆盖
+    return merged
+
+class AnalysisState(TypedDict):
+    # 使用自定义 Reducer：多个分析节点的结果会被合并而非覆盖
+    analysis_results: Annotated[dict, merge_results]
+    step_count: int
+
+# Reducer 示例 3：使用 add_messages（LangChain 内置）
+from langgraph.graph import add_messages
+
+class AgentState(TypedDict):
+    # add_messages 比 operator.add 更智能：
+    # - 自动处理消息去重（基于 message ID）
+    # - 支持消息更新（同 ID 的新消息会替换旧消息）
+    messages: Annotated[list, add_messages]
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>常见陷阱</strong>：如果你忘记给列表类型的字段添加 Reducer，每次节点返回 <code>{"messages": [new_msg]}</code> 时会<strong>替换</strong>而非<strong>追加</strong>消息列表。这是新手最常遇到的 bug。</p>
+</blockquote>
+<h3 id="checkpoint-持久化"><a class="header" href="#checkpoint-持久化">Checkpoint 持久化</a></h3>
+<p>Checkpoint 是 LangGraph 实现「断点恢复」和「会话持久化」的核心机制。每次状态转换时，LangGraph 可以自动保存一个 Checkpoint（快照），后续可以从任意 Checkpoint 恢复执行。</p>
+<pre><code class="language-python"># 内存 Checkpoint（开发/测试用）
+from langgraph.checkpoint.memory import MemorySaver
+
+memory_checkpointer = MemorySaver()
+app = graph.compile(checkpointer=memory_checkpointer)
+
+# 使用 thread_id 标识一个独立的执行会话
+config = {"configurable": {"thread_id": "user-session-001"}}
+
+# 第一轮对话
+result1 = app.invoke(
+    {"messages": [HumanMessage(content="我叫张伟")]},
+    config=config
+)
+
+# 第二轮对话——自动恢复之前的状态
+result2 = app.invoke(
+    {"messages": [HumanMessage(content="我叫什么名字？")]},
+    config=config
+)
+# Agent 能记住"张伟"，因为状态通过 Checkpoint 持久化了
+
+# SQLite Checkpoint（生产环境推荐）
+from langgraph.checkpoint.sqlite import SqliteSaver
+
+# 数据持久化到磁盘，重启后不丢失
+db_checkpointer = SqliteSaver.from_conn_string("checkpoints.db")
+app = graph.compile(checkpointer=db_checkpointer)
+
+# PostgreSQL Checkpoint（分布式生产环境）
+# pip install langgraph-checkpoint-postgres
+# from langgraph.checkpoint.postgres import PostgresSaver
+# pg_checkpointer = PostgresSaver.from_conn_string("postgresql://...")
+</code></pre>
+<p><strong>Checkpoint 的典型应用场景</strong>：</p>
+<div class="table-wrapper"><table><thead><tr><th>场景</th><th>说明</th></tr></thead><tbody>
+<tr><td>多轮对话持久化</td><td>用户关闭浏览器后再回来，对话状态不丢失</td></tr>
+<tr><td>Human-in-the-Loop</td><td>暂停执行等待人类审批，审批后从暂停点恢复</td></tr>
+<tr><td>长时间任务</td><td>数据分析可能运行几分钟，中途可以断点续传</td></tr>
+<tr><td>错误恢复</td><td>某个节点执行失败，修复后从失败点重试而非从头开始</td></tr>
+<tr><td>时间旅行调试</td><td>回溯到之前的 Checkpoint，检查当时的 State 状态</td></tr>
+</tbody></table>
+</div>
+<hr />
 <h2 id="节点node"><a class="header" href="#节点node">节点（Node）</a></h2>
 <pre><code class="language-python">from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
@@ -342,6 +688,62 @@ result = app.invoke({"messages": [HumanMessage(content="计算 sqrt(2) * pi")]})
 print(result["messages"][-1].content)
 </code></pre>
 <hr />
+<h2 id="错误处理与重试策略"><a class="header" href="#错误处理与重试策略">错误处理与重试策略</a></h2>
+<p>生产环境中，Agent 的节点（特别是调用外部 API 的节点）随时可能失败。LangGraph 提供了多种错误处理模式：</p>
+<pre><code class="language-python">import time
+from langchain_core.runnables import RunnableConfig
+
+# 模式 1：节点内部 try-except（最灵活）
+def resilient_tool_node(state: MessagesState) -&gt; dict:
+    """带错误处理的工具节点"""
+    last_msg = state["messages"][-1]
+    results = []
+    
+    for tool_call in last_msg.tool_calls:
+        try:
+            result = execute_tool(tool_call)
+            results.append(ToolMessage(
+                content=str(result),
+                tool_call_id=tool_call["id"]
+            ))
+        except Exception as e:
+            # 工具失败时，返回错误信息而非抛出异常
+            # 让 Agent 有机会自我纠正
+            results.append(ToolMessage(
+                content=f"工具执行失败：{str(e)}。请尝试其他方法。",
+                tool_call_id=tool_call["id"]
+            ))
+    
+    return {"messages": results}
+
+# 模式 2：带重试计数的条件路由
+class RetryState(MessagesState):
+    retry_count: int
+    max_retries: int
+
+def should_retry(state: RetryState) -&gt; str:
+    """重试决策：失败次数未超限则重试"""
+    last_msg = state["messages"][-1]
+    
+    if "失败" in last_msg.content and state["retry_count"] &lt; state["max_retries"]:
+        return "retry"
+    elif "失败" in last_msg.content:
+        return "fallback"  # 超过重试次数，走降级路径
+    else:
+        return "success"
+
+# 模式 3：超时控制
+# LangGraph 支持通过 RunnableConfig 设置超时
+config = RunnableConfig(
+    recursion_limit=25,  # 最大递归次数（防止无限循环）
+    # 其他配置...
+)
+result = app.invoke(input_data, config=config)
+</code></pre>
+<blockquote>
+<p>💡 <strong>最佳实践</strong>：在 Agent 的工具节点中，永远不要让异常直接抛出导致整个图崩溃。捕获异常后将错误信息作为 ToolMessage 返回给 Agent，让 LLM 根据错误信息自行决定下一步（重试、换方案、或告知用户）。这种「优雅降级」模式是生产级 Agent 的标志。</p>
+</blockquote>
+<hr />
 <h2 id="小结"><a class="header" href="#小结">小结</a></h2>
 <p>LangGraph 三要素：</p>
 <ul>
@@ -350,7 +752,7 @@ print(result["messages"][-1].content)
 <li><strong>Edge</strong>：连接关系，普通边或条件边</li>
 </ul>
 <hr />
-<p><em>下一节：<a href="./03_first_graph_agent.html">9.3 构建你的第一个 Graph Agent</a></em></p>
+<p><em>下一节：<a href="./03_first_graph_agent.html">12.3 构建你的第一个 Graph Agent</a></em></p>
 
                     </main>
 

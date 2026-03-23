@@ -431,4 +431,4 @@ MCP 的价值：
 
 ---
 
-*下一节：[12.2 A2A（Agent-to-Agent）协议](./02_a2a_protocol.md)*
+*下一节：[15.2 A2A（Agent-to-Agent）协议](./02_a2a_protocol.md)*

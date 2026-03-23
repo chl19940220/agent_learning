@@ -37,6 +37,20 @@
 - 了解 Python 列表和字典操作
 - 了解"向量"的直觉概念（不需要线性代数基础）
 
+## 🔗 学习路径
+
+> **前置知识**：[第4章 工具调用](../chapter_tools/README.md)
+>
+> **后续推荐**：
+> - 👉 [第6章 规划与推理](../chapter_planning/README.md) — 赋予 Agent "思考力"
+> - 👉 [第7章 RAG](../chapter_rag/README.md) — 用检索增强 Agent 的知识库
+
+## 🚀 扩展项目
+
+| 项目 | 简介 | Stars |
+|------|------|-------|
+| [supermemory](https://github.com/supermemoryai/supermemory) | AI 时代的记忆与上下文引擎。支持自动事实提取、用户画像构建、遗忘曲线式记忆衰减、混合搜索（RAG + Memory）。在 LongMemEval、LoCoMo、ConvoMem 三大基准测试中均排名第一。提供 API、MCP 服务及 LangChain/LangGraph 集成。 | 17.5k+ |
+
 ---
 
 *下一节：[5.1 为什么 Agent 需要记忆？](./01_why_memory.md)*

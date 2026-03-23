@@ -91,6 +91,190 @@ print(f"预估总成本：¥{cost['estimated_cost_cny']:.4f}")
 - 代码约 1-2 Token/行
 - 数字和标点各占 1 Token
 
+### 不同内容类型的 Token 消耗详解
+
+直觉上你可能会以为"一个字 = 一个 Token"，但实际情况远比这复杂。下面我们用具体示例拆解不同内容类型的 Token 消耗：
+
+```python
+import tiktoken
+
+encoding = tiktoken.encoding_for_model("gpt-4o")
+
+# === 英文文本 ===
+# 常见英文单词通常是 1 个 Token，短词/常见组合可能合并
+samples_en = {
+    "Hello":              encoding.encode("Hello"),           # 1 Token
+    "artificial":         encoding.encode("artificial"),      # 1 Token（常见词）
+    "superintelligence":  encoding.encode("superintelligence"),  # 2 Token（长/少见词）
+    "Hello, world!":      encoding.encode("Hello, world!"),   # 4 Token
+    "The quick brown fox jumps over the lazy dog.":
+        encoding.encode("The quick brown fox jumps over the lazy dog."),  # 10 Token
+}
+
+for text, tokens in samples_en.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 常见英文单词约 1 Token/词，不常见或超长单词会被拆成 2-3 个 Token
+# - 空格通常与后面的单词合并为 1 个 Token（如 ' how'）
+# - 平均来看，英文文本约 1 Token ≈ 4 个字符（含空格）
+```
+
+```python
+# === 中文文本 ===
+samples_cn = {
+    "你":       encoding.encode("你"),         # 1 Token
+    "好":       encoding.encode("好"),         # 1 Token
+    "你好":     encoding.encode("你好"),       # 1 Token（常见组合会合并）
+    "今天天气怎么样":  encoding.encode("今天天气怎么样"),   # 约 4 Token
+    "人工智能":  encoding.encode("人工智能"),    # 约 2 Token
+    "深度强化学习": encoding.encode("深度强化学习"),  # 约 3 Token
+}
+
+for text, tokens in samples_cn.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 常见中文字 1 个字 ≈ 1 个 Token
+# - 高频词组（如"你好""人工""智能"）可能被合并为 1 个 Token
+# - 罕见汉字可能占 2-3 个 Token（因为需要多个字节编码）
+# - 同样语义的内容，中文 Token 数通常是英文的 1.5～2 倍
+```
+
+```python
+# === 标点符号 ===
+samples_punct = {
+    "，":   encoding.encode("，"),     # 中文逗号：1 Token
+    "。":   encoding.encode("。"),     # 中文句号：1 Token
+    ",":    encoding.encode(","),      # 英文逗号：1 Token
+    ".":    encoding.encode("."),      # 英文句号：1 Token
+    "！？": encoding.encode("！？"),   # 两个标点 → 通常 2 Token
+    "...":  encoding.encode("..."),    # 英文省略号：可能 1 Token
+    "——":   encoding.encode("——"),     # 中文破折号：2 Token
+    "「」": encoding.encode("「」"),   # 中文引号：2 Token
+}
+
+for text, tokens in samples_punct.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 英文常见标点（, . ! ? : ;）通常 1 个 = 1 Token
+# - 中文标点（，。！？）也通常 1 个 = 1 Token
+# - 特殊/罕见标点可能消耗更多 Token
+# - 标点经常和相邻的文字合并（如 'world!' 可能是 1 个 Token）
+```
+
+```python
+# === 数字 ===
+samples_num = {
+    "42":       encoding.encode("42"),         # 1 Token
+    "3.14":     encoding.encode("3.14"),       # 2 Token（小数点拆分）
+    "2026":     encoding.encode("2026"),       # 1 Token
+    "1000000":  encoding.encode("1000000"),    # 1-2 Token
+    "3.141592653589793": encoding.encode("3.141592653589793"),  # 多个 Token
+}
+
+for text, tokens in samples_num.items():
+    decoded = [encoding.decode([t]) for t in tokens]
+    print(f"'{text}' → {len(tokens)} Token，分割：{decoded}")
+
+# 规律：
+# - 1-4 位整数通常为 1 Token
+# - 较长数字会被拆分，每 3-4 位约占 1 Token
+# - 小数点会导致额外的 Token 拆分
+```
+
+**图像的 Token 消耗（多模态模型）：**
+
+随着 GPT-4o、Claude 等多模态模型的普及，图像也需要消耗 Token。图像的 Token 计算方式与文本完全不同：
+
+```python
+# 图像 Token 消耗规则（以 OpenAI GPT-4o 为例）
+
+def estimate_image_tokens(width: int, height: int, detail: str = "auto") -> int:
+    """
+    估算图像消耗的 Token 数量（GPT-4o 规则）
+    
+    detail 模式：
+    - "low"：固定 85 Token，不管图像多大
+    - "high"：根据图像尺寸计算，可能消耗数百到数千 Token
+    - "auto"：模型自动选择
+    """
+    if detail == "low":
+        return 85  # 固定消耗
+    
+    # high detail 模式的计算规则：
+    # 1. 图像先缩放到最长边 2048px 以内
+    max_dim = max(width, height)
+    if max_dim > 2048:
+        scale = 2048 / max_dim
+        width = int(width * scale)
+        height = int(height * scale)
+    
+    # 2. 再缩放到最短边 768px
+    min_dim = min(width, height)
+    if min_dim > 768:
+        scale = 768 / min_dim
+        width = int(width * scale)
+        height = int(height * scale)
+    
+    # 3. 计算需要多少个 512x512 的块
+    tiles_x = (width + 511) // 512   # 向上取整
+    tiles_y = (height + 511) // 512
+    num_tiles = tiles_x * tiles_y
+    
+    # 4. 每个块 170 Token + 基础 85 Token
+    total_tokens = num_tiles * 170 + 85
+    return total_tokens
+
+# 常见图像尺寸的 Token 消耗
+print("=== 图像 Token 消耗估算（GPT-4o, high detail）===")
+image_sizes = [
+    (256, 256,   "缩略图/图标"),
+    (512, 512,   "小图"),
+    (1024, 768,  "普通照片"),
+    (1920, 1080, "全高清截图"),
+    (4096, 2160, "4K 图像"),
+]
+
+for w, h, desc in image_sizes:
+    tokens_low = estimate_image_tokens(w, h, "low")
+    tokens_high = estimate_image_tokens(w, h, "high")
+    print(f"  {desc} ({w}x{h})：low={tokens_low}, high={tokens_high} Token")
+
+# 输出示例：
+#   缩略图/图标 (256x256)：  low=85,  high=255 Token
+#   小图 (512x512)：         low=85,  high=255 Token
+#   普通照片 (1024x768)：    low=85,  high=765 Token
+#   全高清截图 (1920x1080)： low=85,  high=1105 Token
+#   4K 图像 (4096x2160)：    low=85,  high=1105 Token
+```
+
+> 💡 **实用提示：** 如果你的 Agent 需要处理图像（如截图分析、文档 OCR），使用 `detail="low"` 可以大幅节省 Token 成本，适合只需要粗略理解图像内容的场景。需要读取图像中的细节文字时，再使用 `detail="high"`。
+
+下面是一张各类内容 Token 消耗的速查表：
+
+| 内容类型 | 示例 | 约消耗 Token |
+|---------|------|-------------|
+| 英文单词 | "Hello" | 1 Token/词 |
+| 英文长/罕见词 | "superintelligence" | 2-3 Token/词 |
+| 中文常见字 | "你"、"好" | 1 Token/字 |
+| 中文高频词组 | "你好"、"人工智能" | 可能合并为 1 Token |
+| 中文罕见字 | 生僻汉字 | 2-3 Token/字 |
+| 英文标点 | `, . ! ?` | 1 Token/个 |
+| 中文标点 | `，。！？` | 1 Token/个 |
+| 数字(1-4位) | "42"、"2026" | 1 Token |
+| 长数字 | "3.141592653589793" | 按 3-4 位拆分 |
+| 代码 | Python/JS 等 | 约 1-2 Token/行 |
+| 图像(low) | 任意尺寸 | 固定 85 Token |
+| 图像(high) | 1920×1080 | ~1105 Token |
+| 图像(high) | 4K | ~1105 Token |
+
+> ⚠️ 以上数据基于 GPT-4o 使用的 `o200k_base` 编码器。不同模型使用不同的 Tokenizer，Token 消耗可能有差异。例如 Claude 系列使用自有分词器，中文效率可能略有不同。建议使用各模型官方提供的 Tokenizer 工具进行精确计算。
+
 ## Temperature：创造力旋钮
 
 Temperature 控制输出的**随机性**，是最重要的参数之一：
@@ -372,4 +556,4 @@ print(f"代码：\n{result['content']}")
 
 ---
 
-*下一章：[第3章 开发环境搭建](../chapter_setup/README.md)*
+*下一章：[第4章 工具调用（Tool Use / Function Calling）](../chapter_tools/README.md)*

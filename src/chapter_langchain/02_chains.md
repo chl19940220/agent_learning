@@ -211,4 +211,4 @@ LCEL（`|` 管道语法）是 LangChain 的核心构建方式：
 
 ---
 
-*下一节：[8.3 使用 LangChain 构建 Agent](./03_langchain_agents.md)*
+*下一节：[11.3 使用 LangChain 构建 Agent](./03_langchain_agents.md)*

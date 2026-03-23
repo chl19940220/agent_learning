@@ -21,7 +21,7 @@ from langchain_core.tools import tool, BaseTool
 from langchain_openai import ChatOpenAI
 from langchain.agents import AgentExecutor, create_openai_tools_agent
 # ⚠️ 注意：AgentExecutor 是 LangChain 的 legacy Agent 方案。
-# LangChain 官方推荐新项目使用 LangGraph 构建 Agent（见第10章）。
+# LangChain 官方推荐新项目使用 LangGraph 构建 Agent（见第12章）。
 # 此处使用 AgentExecutor 是为了快速理解 Agent 概念。
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import math
@@ -223,4 +223,4 @@ LangChain Agent 的关键组件：
 
 ---
 
-*下一节：[8.4 LCEL：LangChain 表达式语言](./04_lcel.md)*
+*下一节：[11.4 LCEL：LangChain 表达式语言](./04_lcel.md)*
