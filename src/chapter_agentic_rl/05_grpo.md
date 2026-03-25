@@ -1,8 +1,8 @@
-# 10.5 GRPO：组内相对策略优化与奖励函数设计
+# 10.5 GRPO/GSPO：组内相对策略优化与奖励函数设计
 
 在 [10.3 节](./03_ppo.md) 和 [10.4 节](./04_dpo.md) 中，我们分别介绍了 PPO 和 DPO 两种策略优化算法。PPO 需要额外的 Critic 模型（显存占用大），DPO 虽然简单但完全离线（无法探索新策略）。
 
-**GRPO（Group Relative Policy Optimization）** [1] 是 DeepSeek 团队为大模型 RL 训练量身打造的算法，它通过**组内采样比较**替代了 Critic 模型，在保持在线探索能力的同时大幅降低了资源消耗。本节同时介绍 GRPO 的核心驱动力——**奖励函数的设计**，因为奖励函数定义了"什么是好的 Agent 行为"，直接决定了 GRPO 的训练效果。
+**GRPO（Group Relative Policy Optimization）** [1] 是 DeepSeek 团队为大模型 RL 训练量身打造的算法，它通过**组内采样比较**替代了 Critic 模型，在保持在线探索能力的同时大幅降低了资源消耗。**GSPO（Group Sequence Policy Optimization）** [10] 则是阿里巴巴 Qwen 团队在 GRPO 基础上的改进，通过将优化粒度从 Token 级提升到序列级，解决了大规模模型（尤其是 MoE 架构）的训练稳定性问题。本节同时介绍这两个算法的核心驱动力——**奖励函数的设计**，因为奖励函数定义了"什么是好的 Agent 行为"，直接决定了训练效果。
 
 ---
 
@@ -757,7 +757,209 @@ retrieval_reward_config = RewardConfig(
 
 ---
 
-*掌握了算法原理与奖励函数设计后，下一节将把所有组件整合起来，完成一个从数据准备到模型部署的完整 Agentic-RL 训练 Pipeline。*
+## GSPO：从 Token 级到序列级的策略优化
+
+GRPO 在 DeepSeek-R1 等项目中大放异彩，但在训练超大规模模型（尤其是 MoE 架构）时暴露出一个深层问题：**训练不稳定，容易出现不可逆的性能坍塌**。
+
+2025 年 7 月，阿里巴巴 Qwen 团队在训练 Qwen3 系列模型的过程中提出了 **GSPO（Group Sequence Policy Optimization，组序列策略优化）** [10]，通过将优化粒度从 Token 级提升到序列级，从根本上解决了这一问题。
+
+### 6.1 GRPO 的隐患：Token 级重要性权重的高方差噪声
+
+回顾 GRPO 的目标函数（3.3 节），其中的重要性采样比率 $\rho_{i,t}$ 是在 **Token 级别**定义的：
+
+$$\rho_{i,t} = \frac{\pi_\theta(y_{i,t} | x, y_{i,<t})}{\pi_{\theta_{old}}(y_{i,t} | x, y_{i,<t})}$$
+
+这意味着**同一个序列中不同 token 的更新幅度可能天差地别**——某个 token 的 $\rho$ 可能是 2.8，而相邻 token 的 $\rho$ 可能只有 0.4。这种不一致带来了三个问题：
+
+1. **高方差训练噪声**：$\rho_{i,t}$ 是基于单个 next-token 分布的单点采样，无法执行有效的分布校正，反而引入了高方差噪声
+2. **噪声累积放大**：随着序列长度增加，token 级噪声逐步累积。更糟的是，GRPO 的 Clip 机制在 Token 级别操作，不仅没有抑制噪声，反而可能**放大**噪声
+3. **单位不对齐**：奖励是整个序列级别的（$R(x, y)$），但校正发生在 token 级别——这是一种**度量单位的错配**
+
+> 对于 Dense 模型，这些问题在中等规模下可以忍受。但对于 **MoE（Mixture of Experts）模型**，token 级别的梯度波动会直接影响专家路由（Router）的梯度，导致专家激活分布剧烈波动，最终触发**灾难性的训练坍塌**——而且往往是不可逆的。
+
+### 6.2 GSPO 的核心创新：序列级重要性采样
+
+![GRPO vs GSPO 对比](../svg/chapter_agentic_rl_05_gspo_vs_grpo.svg)
+
+GSPO 的解决方案概念上非常简洁：**把 token 级别的重要性比率，替换为序列级别的重要性比率。**
+
+具体来说，GSPO 将序列的 importance weight 定义为所有 token 对数概率比率的**均值**（长度归一化），再取指数：
+
+$$\rho_{seq}(y_i) = \exp\left(\frac{1}{|y_i|}\sum_{t=1}^{|y_i|} \log \frac{\pi_\theta(y_{i,t} | x, y_{i,<t})}{\pi_{\theta_{old}}(y_{i,t} | x, y_{i,<t})}\right)$$
+
+等价于：
+
+$$\rho_{seq}(y_i) = \left(\frac{\pi_\theta(y_i | x)}{\pi_{\theta_{old}}(y_i | x)}\right)^{1/|y_i|}$$
+
+> **关键直觉**：GSPO 的 $\rho_{seq}$ 对一个序列中所有 token 的对数概率比率取**平均**，然后用这个**统一的系数**来缩放该序列中所有 token 的梯度。这就像给全班同学打了一个统一的"班级系数"，而不是每个人乘一个随机系数。
+
+**为什么取对数均值再取指数？** 因为直接对 $\rho_{i,t}$（概率比率）取均值不具有统计学意义——概率的乘法关系在对数空间下才变为加法关系。在对数空间取均值 → 几何平均数 → 再取指数还原为概率比率。这也是为什么 GSPO 对长度变化具有天然的鲁棒性。
+
+### 6.3 GSPO 的完整目标函数
+
+有了序列级 $\rho_{seq}$，GSPO 的目标函数变为：
+
+$$\mathcal{L}_{GSPO}(\theta) = -\frac{1}{G}\sum_{i=1}^{G} \frac{1}{|y_i|}\sum_{t=1}^{|y_i|} \min\left(\rho_{seq}(y_i) \cdot \hat{A}_i,\ \text{clip}\left(\rho_{seq}(y_i), 1-\epsilon, 1+\epsilon\right) \cdot \hat{A}_i\right)$$
+
+与 GRPO 目标函数（3.3 节）的关键区别：
+
+| 维度 | GRPO | GSPO |
+|------|------|------|
+| **重要性比率** | $\rho_{i,t}$（每个 token 不同） | $\rho_{seq}(y_i)$（同序列所有 token 相同） |
+| **Clip 作用对象** | 逐 token 裁剪 | 整序列裁剪 |
+| **Clip 超参数 $\epsilon$** | 0.1 ~ 0.2 | **3e-4 ~ 4e-4**（远更紧凑） |
+| **优势函数** | 组内标准化（不变） | 组内标准化（不变） |
+| **梯度一致性** | 同序列 token 更新幅度各异 | 同序列 token 更新幅度统一 |
+| **KL 约束** | 需要显式 KL 惩罚项 | Clip 本身足够约束（可省略 KL） |
+
+> ⚠️ **注意 Clip $\epsilon$ 的数量级差异**：GRPO 的 $\epsilon$ 通常在 0.1~0.2，而 GSPO 的 $\epsilon$ 只有 3e-4~4e-4——看起来小了两个数量级。这是因为 GSPO 对序列级 $\rho_{seq}$ 裁剪，$\rho_{seq}$ 是对数均值取指数的结果，其波动范围天然远小于单 token 的 $\rho_{i,t}$，所以需要更紧凑的 $\epsilon$ 来精细控制。
+
+### 6.4 为什么 GSPO 更稳定？——从梯度视角理解
+
+GSPO 稳定性提升的根本原因可以从梯度更新的角度直观理解：
+
+**GRPO 的梯度**：对序列 $y_i$ 中第 $t$ 个 token 的梯度为：
+
+$$g_{GRPO}^{(t)} \propto \rho_{i,t} \cdot \hat{A}_i \cdot \nabla_\theta \log \pi_\theta(y_{i,t} | x, y_{i,<t})$$
+
+不同 token 的 $\rho_{i,t}$ 差异可能很大（比如 0.4 vs 2.8），导致同一个序列内部的梯度**大小不一致、方向混乱**。
+
+**GSPO 的梯度**：对序列 $y_i$ 中第 $t$ 个 token 的梯度为：
+
+$$g_{GSPO}^{(t)} \propto \rho_{seq}(y_i) \cdot \hat{A}_i \cdot \nabla_\theta \log \pi_\theta(y_{i,t} | x, y_{i,<t})$$
+
+所有 token 乘以**同一个** $\rho_{seq}(y_i)$，梯度更新的方向完全由 $\nabla_\theta \log \pi_\theta$ 决定，幅度由统一的 $\rho_{seq}$ 和 $\hat{A}_i$ 决定——**干净、一致、低噪声**。
+
+```python
+import torch
+
+def compute_gspo_loss(
+    per_token_logps: torch.Tensor,       # [B, T] 当前策略的 token log 概率
+    old_per_token_logps: torch.Tensor,    # [B, T] 旧策略的 token log 概率
+    advantages: torch.Tensor,             # [B] 每个序列的组内标准化优势
+    completion_mask: torch.Tensor,        # [B, T] 有效 token 掩码（排除 padding）
+    clip_eps: float = 3e-4,              # GSPO 的 clip 超参数（远小于 GRPO 的 0.2）
+) -> torch.Tensor:
+    """
+    GSPO 损失函数的核心实现
+    
+    与 GRPO 的关键区别：
+    1. 重要性比率在序列级别计算（对数均值 → 指数）
+    2. Clip 作用于序列级比率（统一裁剪）
+    3. 所有 token 共享同一个裁剪后的比率
+    """
+    # ── Step 1：计算每个 token 的对数概率比率 ─────────────────────────────
+    per_token_log_ratio = per_token_logps - old_per_token_logps   # [B, T]
+    
+    # ── Step 2：序列级平均（长度归一化）──────────────────────────────────
+    # 对有效 token 的对数比率取均值 → 几何平均数的对数
+    seq_log_ratio = (per_token_log_ratio * completion_mask).sum(dim=-1) / \
+                     completion_mask.sum(dim=-1).clamp(min=1.0)   # [B]
+    
+    # ── Step 3：转换为序列级重要性权重 ────────────────────────────────────
+    rho_seq = torch.exp(seq_log_ratio)   # [B]，每个序列一个统一的比率
+    
+    # ── Step 4：序列级 Clip ──────────────────────────────────────────────
+    rho_clipped = torch.clamp(rho_seq, 1.0 - clip_eps, 1.0 + clip_eps)   # [B]
+    
+    # ── Step 5：PPO 风格的 min(ρÂ, clip(ρ)Â) ────────────────────────────
+    # 扩展维度以便与 token 级别相乘
+    rho_seq_expanded = rho_seq.unsqueeze(-1)         # [B, 1]
+    rho_clipped_expanded = rho_clipped.unsqueeze(-1)  # [B, 1]
+    advantages_expanded = advantages.unsqueeze(-1)     # [B, 1]
+    
+    # 注意：所有 token 共享同一个 rho_seq（这是与 GRPO 的核心区别）
+    surr1 = rho_seq_expanded * advantages_expanded          # [B, 1]
+    surr2 = rho_clipped_expanded * advantages_expanded       # [B, 1]
+    token_loss = -torch.min(surr1, surr2)                    # [B, 1]
+    
+    # 广播到所有 token 并应用掩码
+    token_loss = token_loss.expand_as(per_token_logps)       # [B, T]
+    
+    # ── Step 6：长度归一化取均值 ─────────────────────────────────────────
+    loss = (token_loss * completion_mask).sum() / completion_mask.sum()
+    
+    return loss
+
+
+# ── 与 GRPO 的损失函数对比 ────────────────────────────────────────────────
+def compute_grpo_loss(
+    per_token_logps, old_per_token_logps, 
+    advantages, completion_mask, clip_eps=0.2,
+):
+    """GRPO 损失函数（对比参考）——注意 token 级别的差异"""
+    # Token 级比率（每个 token 不同！）
+    per_token_ratio = torch.exp(per_token_logps - old_per_token_logps)   # [B, T]
+    per_token_clipped = torch.clamp(per_token_ratio, 1.0 - clip_eps, 1.0 + clip_eps)
+    
+    advantages_expanded = advantages.unsqueeze(-1)   # [B, 1]
+    
+    surr1 = per_token_ratio * advantages_expanded     # [B, T] ← 每个 token 的比率不同！
+    surr2 = per_token_clipped * advantages_expanded    # [B, T]
+    token_loss = -torch.min(surr1, surr2)
+    
+    loss = (token_loss * completion_mask).sum() / completion_mask.sum()
+    return loss
+```
+
+### 6.5 GSPO 对 MoE 模型训练的特殊意义
+
+GSPO 论文中一个重要的实践贡献是**稳定了 MoE（Mixture of Experts）模型的 RL 训练**。这对于 Qwen3-30B-A3B（30B 总参数、每次激活 3B 的 MoE 架构）等模型至关重要。
+
+**为什么 MoE 模型对 token 级噪声特别敏感？**
+
+MoE 模型中有一个 **Router（路由器）** 网络，负责决定每个 token 由哪些专家处理。Router 的梯度直接受到每个 token 更新幅度的影响：
+
+```
+Token 输入 → Router（选择专家）→ 选中的专家处理 → 输出
+                ↑
+          梯度从这里回传
+```
+
+在 GRPO 中，不同 token 的 $\rho_{i,t}$ 差异很大 → Router 收到的梯度信号忽大忽小 → 专家激活分布剧烈波动 → 某些专家可能逐渐"死亡"（从不被路由到）或者某些专家被过度使用 → **不可逆的训练坍塌**。
+
+在 GSPO 中，所有 token 共享统一的 $\rho_{seq}$ → Router 收到的梯度信号稳定一致 → 专家激活分布平滑 → **即使不使用 Routing Replay 等复杂技巧，训练也能保持稳定**。
+
+### 6.6 GSPO 简化了 RL 基础设施
+
+GSPO 还带来了一个被低估的工程优势：**简化 RL 训练基础设施**。
+
+在 GRPO/PPO 的训练流程中，计算 token 级别的 $\rho_{i,t}$ 需要**精确**的旧策略对数概率 $\log \pi_{\theta_{old}}(y_{i,t} | x, y_{i,<t})$。为了保证精度，通常需要用**训练引擎**（PyTorch）而非推理引擎（vLLM、TensorRT-LLM）重新计算旧策略的概率——因为推理引擎的浮点精度和 KV Cache 实现可能与训练引擎存在微小差异，而这些差异在 token 级别会被放大。
+
+GSPO 由于在序列级别取平均后再操作，**对精度差异的容忍度更高**。这意味着可以直接使用推理引擎返回的序列对数概率，**无需用训练引擎重算**，从而简化了训练-推理分离的基础设施设计。
+
+| 维度 | GRPO | GSPO |
+|------|------|------|
+| 旧策略概率 | 需训练引擎精确重算 | 可直接用推理引擎返回值 |
+| 精度敏感度 | 高（token 级误差会累积） | 低（序列级平均消除误差） |
+| 基础设施复杂度 | 需要训练/推理双引擎协同 | 推理引擎即可 |
+
+### 6.7 GRPO vs GSPO 全面对比
+
+| 维度 | GRPO | GSPO |
+|------|------|------|
+| **提出时间** | 2024（DeepSeekMath） | 2025（Qwen3 训练） |
+| **重要性比率** | Token 级 $\rho_{i,t}$ | 序列级 $\rho_{seq}(y_i)$ |
+| **更新一致性** | 同序列 token 更新幅度各异 | 同序列 token 更新幅度统一 |
+| **方差水平** | 高（单点采样 + 累积） | 低（序列级平均） |
+| **Clip 粒度** | Token 级 ($\epsilon$ ≈ 0.1–0.2) | 序列级 ($\epsilon$ ≈ 3e-4–4e-4) |
+| **Dense 模型** | 效果好，中等规模下稳定 | 效果好，训练效率更高 |
+| **MoE 模型** | 容易触发不可逆坍塌 | **从根本上稳定** |
+| **优势函数** | 组内标准化（相同） | 组内标准化（相同） |
+| **基础设施需求** | 需训练引擎重算旧策略概率 | 可用推理引擎返回值 |
+| **代表应用** | DeepSeek-R1, DeepSWE | **Qwen3 系列** |
+
+> **📌 选型建议**
+>
+> - **Dense 模型 ≤ 14B**：GRPO 和 GSPO 均可，差异不大。GRPO 的 TRL 库支持更成熟。
+> - **Dense 模型 > 14B**：推荐 GSPO，训练效率更高。
+> - **MoE 模型**：**强烈推荐 GSPO**，这是 GSPO 相对于 GRPO 的最大优势。
+> - **资源有限、追求简单**：GRPO，生态更成熟、教程更多。
+> - **追求训练稳定性和基础设施简化**：GSPO。
+
+---
+
+*掌握了 GRPO/GSPO 算法原理与奖励函数设计后，下一节将把所有组件整合起来，完成一个从数据准备到模型部署的完整 Agentic-RL 训练 Pipeline。*
 
 ---
 
@@ -887,6 +1089,25 @@ retrieval_reward_config = RewardConfig(
 > 6. **同步旧策略**：$\pi_{\theta_{old}} \leftarrow \pi_\theta$
 > 7. 重复步骤 2-6
 
+### GSPO 理解类
+
+**13. GSPO 解决了 GRPO 的什么问题？为什么 token 级重要性权重会导致训练不稳定？**
+
+> **参考要点**：
+> - GRPO 的 $\rho_{i,t}$ 是在 token 级别定义的，同一序列中不同 token 的更新幅度可能差异很大（如 0.4 vs 2.8）
+> - 这种不一致引入了高方差训练噪声，且随序列长度累积放大
+> - **单位不对齐问题**：奖励是序列级别的，但校正发生在 token 级别
+> - 对 MoE 模型尤其致命：token 级梯度波动直接影响 Router 的专家分配，容易导致不可逆的训练坍塌
+> - GSPO 将重要性比率提升到序列级 $\rho_{seq} = \exp(\frac{1}{|y|}\sum_t \log \rho_t)$，所有 token 共享统一系数，消除了上述问题
+
+**14. GSPO 的 Clip $\epsilon$ 为什么是 3e-4~4e-4，而 GRPO 的 $\epsilon$ 是 0.1~0.2？这两个数量级的差异说明了什么？**
+
+> **参考要点**：
+> - GSPO 的 $\rho_{seq}$ 是对所有 token 的对数概率比率取**均值**后再取指数（几何平均），其波动范围天然远小于单 token 的 $\rho_{i,t}$
+> - 因此需要更紧凑的 $\epsilon$ 来实现有效控制——如果用 GRPO 的 0.2 作为 $\epsilon$，裁剪将几乎永远不触发
+> - 这也从侧面印证了一个事实：**GRPO 中大量 token 的 $\rho_{i,t}$ 波动是噪声而非有效信号**——GSPO 通过序列级平均将这些噪声消除，所以 $\rho_{seq}$ 的波动范围小得多
+> - 尽管 GSPO 的 $\epsilon$ 更小，实验表明它裁剪了约 15% 的 token（远多于 GRPO），说明 GSPO 的裁剪更加精准有效
+
 ---
 
 ## 参考文献
@@ -908,3 +1129,5 @@ retrieval_reward_config = RewardConfig(
 [8] ZHENG L, CHIANG W L, SHENG Y, et al. Judging LLM-as-a-judge with MT-bench and chatbot arena[C]//Advances in Neural Information Processing Systems (NeurIPS). 2023.
 
 [9] LEIKE J, MARTIC M, KRAKOVNA V, et al. AI safety gridworlds[R]. arXiv preprint arXiv:1711.09883, 2017.
+
+[10] ZHENG C, LIU S, LI M, et al. Group Sequence Policy Optimization[R]. arXiv preprint arXiv:2507.18071, 2025.

@@ -485,6 +485,332 @@ memory_optimizations = [
 
 ---
 
+## SFT 毕业标准：何时从 SFT 转入 RL？
+
+在 [10.1 节](./01_agentic_rl_overview.md) 中我们了解到 Agentic-RL 遵循 **SFT → RL** 的两阶段范式。但一个关键的实操问题是：**SFT 训练到什么程度，才可以"毕业"，进入 RL 阶段？**
+
+这不是一个可以靠直觉回答的问题——过早进入 RL，模型连基本格式都不稳定，RL 阶段的探索效率极低；**过晚进入 RL，模型过拟合 SFT 数据，多样性丧失，RL 同样无法有效探索**。两种情况都会导致最终性能不佳。
+
+![SFT 毕业标准决策流程](../svg/chapter_agentic_rl_02_sft_graduation.svg)
+
+### 核心原则：SFT 的目标不是"做到最好"，而是"做到足够好"
+
+这是最重要的直觉。SFT 在整个训练流程中的定位是**策略初始化**——它不需要（也不应该）追求最高准确率。原因很简单：
+
+> SFT 的能力上界 = 训练数据的质量上界。超越这个上界是 RL 的工作。
+
+如果 SFT 阶段训练过度（太多 epoch、学习率不够小），模型会紧紧"贴合"训练数据的分布，导致：
+1. **多样性坍缩**：模型对所有类似问题都生成几乎相同的回答
+2. **探索空间被压缩**：RL 阶段需要模型在 `temperature > 0` 时产生有差异的多个候选回答（这是 GRPO 组内比较的前提），但过拟合的模型输出方差极小
+3. **KL 惩罚的锚点过紧**：RL 训练中的 $\pi_{ref}$（即 SFT 模型）如果本身过于确信，策略稍有偏离就会产生巨大的 KL 惩罚，限制了 RL 的优化空间
+
+### 四大必检指标
+
+实践中，我们通过以下四个指标来判断 SFT 是否"毕业"：
+
+#### 指标一：训练/验证 Loss 收敛
+
+这是最基础的指标。观察 TensorBoard 中的 loss 曲线：
+
+```
+✅ 毕业信号：验证 Loss 连续 2–3 个 evaluation step 不再下降（或下降幅度 < 0.01）
+❌ 警告信号：训练 Loss 持续下降但验证 Loss 开始上升 → 过拟合，应立即停止
+```
+
+**典型数值参考**（因任务和数据而异，仅供参考）：
+
+| 任务类型 | SFT Loss 企稳区间 | 说明 |
+|---------|-------------------|------|
+| 数学推理（GSM8K） | 0.3 – 0.6 | 格式简单，收敛较快 |
+| 工具调用（多工具）| 0.4 – 0.8 | JSON 格式增加了序列复杂度 |
+| 代码生成 | 0.5 – 1.0 | 代码的 token 分布更分散 |
+| 多轮对话 Agent | 0.4 – 0.9 | 轨迹长度差异大 |
+
+> ⚠️ **绝对数值没有统一标准**。Loss 的具体值取决于 tokenizer、数据格式和序列长度。关键是观察**趋势**（是否企稳）和**训练/验证的差距**（是否过拟合），而非追求某个绝对数值。
+
+```python
+# 判断 Loss 是否收敛的简单方法
+def is_loss_converged(eval_losses: list[float], patience: int = 3, min_delta: float = 0.01) -> bool:
+    """
+    检查最近 patience 次评估的 loss 是否不再显著下降。
+    
+    Args:
+        eval_losses: 历次验证集 loss 列表（按时间顺序）
+        patience: 观察窗口大小
+        min_delta: 最小改善阈值
+    
+    Returns:
+        True 表示已收敛，可以考虑进入 RL
+    """
+    if len(eval_losses) < patience + 1:
+        return False
+    
+    recent = eval_losses[-patience:]
+    baseline = eval_losses[-(patience + 1)]
+    
+    # 最近几次评估都没有显著改善
+    return all(baseline - loss < min_delta for loss in recent)
+
+
+def is_overfitting(train_loss: float, val_loss: float, threshold: float = 0.15) -> bool:
+    """
+    检查是否出现过拟合（Train-Val Loss 差距过大）。
+    
+    Args:
+        train_loss: 当前训练 loss
+        val_loss: 当前验证 loss
+        threshold: 允许的最大差距
+    """
+    return (val_loss - train_loss) > threshold
+```
+
+#### 指标二：格式正确率 ≥ 90%
+
+SFT 最核心的作用是让模型学会 Agent 的**行为格式**。用一个简单的验证脚本检查：
+
+```python
+import re
+import json
+
+def check_format_accuracy(model, tokenizer, eval_prompts: list[str], num_samples: int = 100) -> dict:
+    """
+    评估 SFT 模型的格式正确率。
+    
+    Returns:
+        包含各维度格式正确率的字典
+    """
+    results = {"think_tag": 0, "tool_call_format": 0, "json_parseable": 0, "total": num_samples}
+    
+    for prompt in eval_prompts[:num_samples]:
+        output = generate(model, tokenizer, prompt, temperature=0.1)
+        
+        # 检查 <think> 标签配对
+        if "<think>" in output and "</think>" in output:
+            results["think_tag"] += 1
+        
+        # 检查 <tool_call> 格式
+        tool_match = re.search(r"<tool_call>\s*(\w+)\((.*?)\)\s*</tool_call>", output, re.DOTALL)
+        if tool_match:
+            results["tool_call_format"] += 1
+            # 检查参数是否可解析
+            try:
+                # 尝试解析为合法的函数调用参数
+                params_str = tool_match.group(2)
+                # 简单验证：参数格式合法性
+                if "=" in params_str:  # key=value 格式
+                    results["json_parseable"] += 1
+            except Exception:
+                pass
+    
+    # 计算综合格式正确率
+    results["format_accuracy"] = results["think_tag"] / num_samples
+    results["tool_call_accuracy"] = results["tool_call_format"] / num_samples
+    
+    return results
+
+# 使用示例
+# format_stats = check_format_accuracy(model, tokenizer, eval_prompts)
+# print(f"格式正确率: {format_stats['format_accuracy']:.1%}")
+# print(f"工具调用率: {format_stats['tool_call_accuracy']:.1%}")
+# 
+# 毕业标准：format_accuracy >= 0.9 且 tool_call_accuracy >= 0.85
+```
+
+**为什么 90% 而非 100%？** 因为 RL 阶段的奖励函数会进一步强化正确格式，少量格式错误在 RL 中会自然被"惩罚"掉。但如果格式正确率低于 90%，意味着模型尚未稳定掌握 Agent 行为格式，RL 阶段会浪费大量探索预算在格式修正上，而非策略优化。
+
+#### 指标三：任务准确率超过随机水平
+
+SFT 模型不需要很高的准确率，但需要**有意义地超过基座模型的 zero-shot 表现**：
+
+```python
+def evaluate_task_accuracy(
+    model, tokenizer, eval_dataset, 
+    answer_extractor,     # 从模型输出中提取答案的函数
+    answer_checker,       # 检查答案正确性的函数
+) -> float:
+    """
+    评估 SFT 模型在目标任务上的准确率。
+    """
+    correct = 0
+    total = len(eval_dataset)
+    
+    for sample in eval_dataset:
+        output = generate(model, tokenizer, sample["prompt"], temperature=0.1)
+        predicted = answer_extractor(output)
+        if answer_checker(predicted, sample["answer"]):
+            correct += 1
+    
+    return correct / total
+
+# 毕业标准参考（以 GSM8K 为例）
+# - 基座模型 zero-shot: ~15-20%（1.5B 模型）
+# - SFT 毕业线: >= 30%（显著超过基座模型）
+# - RL 目标: 50-70%（在 SFT 基础上进一步提升）
+#
+# 关键判断：SFT 准确率不需要很高，但必须 > 基座模型
+# 这表明模型已学会任务的基本解题模式
+```
+
+| 模型规模 | 基座 zero-shot | SFT 毕业线 | RL 目标 |
+|---------|---------------|-----------|---------|
+| 1.5B | 10–20% | ≥ 25–30% | 45–65% |
+| 7B | 25–40% | ≥ 40–50% | 60–80% |
+| 14B+ | 40–55% | ≥ 55–65% | 70–85% |
+
+> 这些数值以 GSM8K 数学推理为例，其他任务需根据实际情况调整。核心标准是：**SFT 后准确率应当显著高于基座模型 zero-shot**。
+
+#### 指标四：输出多样性仍然存在
+
+这是最容易被忽略但**对 RL 成功至关重要**的指标。GRPO 的核心机制是对同一输入采样 $G$ 个回答，通过组内比较学习哪些策略更好。如果 SFT 过拟合导致模型输出几乎完全相同（多样性坍缩），GRPO 的组内标准化将失效。
+
+```python
+def check_output_diversity(
+    model, tokenizer, 
+    test_prompts: list[str], 
+    num_samples_per_prompt: int = 8, 
+    temperature: float = 0.7,
+) -> dict:
+    """
+    检测模型输出的多样性。
+    
+    核心思路：对同一 prompt 多次采样，计算输出之间的差异程度。
+    """
+    diversity_scores = []
+    
+    for prompt in test_prompts[:20]:  # 抽样 20 个 prompt
+        outputs = []
+        for _ in range(num_samples_per_prompt):
+            output = generate(model, tokenizer, prompt, temperature=temperature)
+            outputs.append(output)
+        
+        # 方法 1：计算不同输出的数量占比
+        unique_outputs = len(set(outputs))
+        diversity_ratio = unique_outputs / num_samples_per_prompt
+        
+        # 方法 2：计算平均 token 级别差异（更细粒度）
+        # 这里简化为字符串不同比例
+        pairs_different = sum(
+            1 for i in range(len(outputs)) 
+            for j in range(i + 1, len(outputs)) 
+            if outputs[i] != outputs[j]
+        )
+        total_pairs = num_samples_per_prompt * (num_samples_per_prompt - 1) / 2
+        pair_diversity = pairs_different / total_pairs if total_pairs > 0 else 0
+        
+        diversity_scores.append({
+            "unique_ratio": diversity_ratio,
+            "pair_diversity": pair_diversity,
+        })
+    
+    avg_unique = sum(d["unique_ratio"] for d in diversity_scores) / len(diversity_scores)
+    avg_pair = sum(d["pair_diversity"] for d in diversity_scores) / len(diversity_scores)
+    
+    return {
+        "avg_unique_ratio": avg_unique,    # 期望 >= 0.5（8 次采样至少 4 种不同输出）
+        "avg_pair_diversity": avg_pair,    # 期望 >= 0.6
+        "is_healthy": avg_unique >= 0.5 and avg_pair >= 0.6,
+    }
+
+# 毕业标准：
+# - avg_unique_ratio >= 0.5（至少一半的采样结果是不同的）
+# - avg_pair_diversity >= 0.6（大多数输出对之间存在差异）
+# 
+# 如果多样性过低，说明 SFT 过拟合，需要：
+# 1. 减少训练 epoch（从 3 降到 2）
+# 2. 增大 lora_dropout
+# 3. 使用 early stopping
+```
+
+### 完整毕业检查清单
+
+将以上四个指标整合为一个实用的检查函数：
+
+```python
+def sft_graduation_check(
+    model, tokenizer, eval_dataset, eval_losses: list[float],
+    train_loss: float, val_loss: float,
+) -> dict:
+    """
+    SFT 毕业检查：综合评估模型是否准备好进入 RL 阶段。
+    
+    Returns:
+        包含各项检查结果和最终毕业建议的字典
+    """
+    report = {}
+    
+    # 检查 1：Loss 收敛
+    report["loss_converged"] = is_loss_converged(eval_losses, patience=3)
+    report["not_overfitting"] = not is_overfitting(train_loss, val_loss)
+    
+    # 检查 2：格式正确率
+    format_stats = check_format_accuracy(model, tokenizer, eval_dataset)
+    report["format_ok"] = format_stats["format_accuracy"] >= 0.9
+    
+    # 检查 3：任务准确率（需要自定义 extractor 和 checker）
+    # accuracy = evaluate_task_accuracy(model, tokenizer, eval_dataset, ...)
+    # report["accuracy_ok"] = accuracy > baseline_accuracy
+    
+    # 检查 4：多样性
+    diversity = check_output_diversity(model, tokenizer, eval_dataset[:20])
+    report["diversity_ok"] = diversity["is_healthy"]
+    
+    # 综合判断
+    all_checks = [report["loss_converged"], report["not_overfitting"], 
+                  report["format_ok"], report["diversity_ok"]]
+    report["ready_for_rl"] = all(all_checks)
+    
+    # 生成建议
+    if report["ready_for_rl"]:
+        report["recommendation"] = "✅ SFT 毕业！保存检查点作为 π_ref，可以开始 RL 训练。"
+    else:
+        issues = []
+        if not report["loss_converged"]:
+            issues.append("Loss 尚未收敛，继续训练或调整学习率")
+        if not report["not_overfitting"]:
+            issues.append("出现过拟合，减少 epoch 或增加正则化")
+        if not report["format_ok"]:
+            issues.append("格式正确率不足 90%，检查数据格式和 special tokens")
+        if not report["diversity_ok"]:
+            issues.append("输出多样性不足，减少训练步数或增大 dropout")
+        report["recommendation"] = "❌ 暂不建议进入 RL。需解决：\n" + "\n".join(f"  - {i}" for i in issues)
+    
+    return report
+```
+
+### SFT 过度训练的真实代价
+
+为了让读者对"SFT 过度"有更直觉的感受，我们来看一组对比实验数据（基于 Qwen2.5-1.5B + GSM8K 的典型表现）：
+
+| SFT 训练 Epoch | SFT 准确率 | 多样性指标 | GRPO 后准确率 | 说明 |
+|---------------|-----------|-----------|-------------|------|
+| **1 epoch** | 25% | 0.85 | 52% | SFT 不足，格式不稳定，RL 需额外探索格式 |
+| **2 epoch** ✅ | 38% | 0.72 | **63%** | **最佳平衡点**：格式稳定 + 足够多样性 |
+| **3 epoch** | 42% | 0.58 | 58% | 多样性下降，RL 探索受限 |
+| **5 epoch** | 44% | 0.31 | 49% | 严重过拟合，RL 几乎无法改善 |
+| **10 epoch** | 45% | 0.12 | 43% | 灾难性过拟合，RL 后**性能反降** |
+
+> ⚠️ 以上数据为说明性示例，具体数值因模型、数据和超参数而异。但趋势是一致的：**SFT 训练过度会严重损害 RL 阶段的效果**。
+
+关键发现：
+- **SFT 2 epoch 的模型虽然准确率低于 5 epoch（38% vs 44%），但 GRPO 后反而更高（63% vs 49%）**——因为 2 epoch 的模型保留了足够的探索空间
+- **SFT 10 epoch 后，GRPO 不仅没有提升，反而让准确率下降了（45% → 43%）**——过拟合的 $\pi_{ref}$ 成为了过紧的约束
+
+### 实践建议总结
+
+| 建议 | 详情 |
+|------|------|
+| **Epoch 数** | 2–3 个 epoch 是安全区间，超过 3 个需要格外警惕过拟合 |
+| **Early Stopping** | 以验证 Loss 为基准，patience=3 eval steps |
+| **保存多个检查点** | 保存 epoch 1/2/3 的检查点，RL 阶段可以回退到多样性更好的版本 |
+| **先做 RL 预实验** | 用 SFT 检查点做小规模 GRPO（100–200 步），观察 mean_reward 是否上升 |
+| **不要追求 SFT SOTA** | SFT 的最高准确率 ≠ RL 后的最高准确率 |
+
+> **📌 核心记忆点**
+>
+> SFT 就像驾校里的科目一和科目二——它教你基本的交通规则和操作规范。你不需要在驾校里成为赛车手，只需要掌握基本功，然后到真实道路上（RL 阶段）通过实际驾驶经验来提升驾驶水平。在驾校练太久反而会形成"应试驾驶"的僵化模式，上了路不知道如何灵活应变。
+
+---
+
 *SFT 阶段让模型习得了 Agent 行为的基本格式与工具调用模式。然而，SFT 的能力上界受限于训练数据的质量——模型无法超越示范数据的水平。下一节介绍的 GRPO 算法将通过强化学习信号，引导模型探索出超越示范数据的最优策略。*
 
 ---

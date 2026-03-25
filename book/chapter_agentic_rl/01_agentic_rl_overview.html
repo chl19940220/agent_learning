@@ -586,6 +586,7 @@ RL 阶段学到：   "分析问题结构 → 判断是否需要分步 →
 <li><strong>SFT 数据规模</strong>：500–2,000 条经过人工验证的 Agent 交互轨迹</li>
 <li><strong>RL 计算成本</strong>：约为 SFT 阶段的 3–10 倍（因需要在线采样）</li>
 <li><strong>验证策略</strong>：先在 7B 小模型上验证训练流程的正确性，再扩展到更大模型</li>
+<li><strong>SFT 何时"毕业"？</strong> SFT 的目标不是"做到最好"，而是"做到足够好"——Loss 收敛 + 格式正确率 ≥ 90% + 输出仍有多样性。<strong>过度 SFT 会严重损害 RL 效果</strong>，详见 <a href="./02_sft_lora.html#sft-%E6%AF%95%E4%B8%9A%E6%A0%87%E5%87%86%E4%BD%95%E6%97%B6%E4%BB%8E-sft-%E8%BD%AC%E5%85%A5-rl">10.2 节的 SFT 毕业标准</a></li>
 </ul>
 </blockquote>
 <hr />

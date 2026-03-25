@@ -42,6 +42,159 @@ AI Agent 正在重塑软件开发的边界。从 GitHub Copilot 到 Devin，从 
 
 ---
 
+## 📸 内容精选预览
+
+> 以下是本书 **120+ 手绘 SVG 插图**中的精选展示，所有图示均为本书原创。
+
+### 🧠 Agent 核心架构
+
+<table>
+<tr>
+<td width="50%" align="center">
+
+**感知-思考-行动循环（第 1 章）**
+
+<img src="src/svg/chapter_intro_03_loop.svg" width="420" alt="感知-思考-行动循环">
+
+<sub>Agent 的核心运行机制：感知环境 → LLM 推理决策 → 执行行动 → 循环直到目标达成</sub>
+
+</td>
+<td width="50%" align="center">
+
+**ReAct 推理框架（第 6 章）**
+
+<img src="src/svg/chapter_planning_02_react_loop.svg" width="420" alt="ReAct 推理框架">
+
+<sub>Thought → Action → Observation 交替循环，让 Agent 边思考边行动</sub>
+
+</td>
+</tr>
+</table>
+
+### 🛠️ 工具调用与 RAG
+
+<table>
+<tr>
+<td width="50%" align="center">
+
+**Function Calling 完整流程（第 4 章）**
+
+<img src="src/svg/chapter_tools_02_function_calling.svg" width="480" alt="Function Calling 流程">
+
+<sub>从用户输入到工具调用再到最终回复的 6 步完整流程，附消息结构示意</sub>
+
+</td>
+<td width="50%" align="center">
+
+**RAG 检索增强生成（第 7 章）**
+
+<img src="src/svg/chapter_rag_01_rag_flow.svg" width="480" alt="RAG 工作原理">
+
+<sub>离线建库 + 在线检索双阶段架构，让 LLM 回答有据可查</sub>
+
+</td>
+</tr>
+</table>
+
+### 💾 记忆系统与上下文工程
+
+<table>
+<tr>
+<td width="50%" align="center">
+
+**记忆系统三层架构（第 5 章）**
+
+<img src="src/svg/chapter_memory_01_memory_types.svg" width="480" alt="记忆系统三层架构">
+
+<sub>工作记忆 → 短期记忆 → 长期记忆，重要信息向下沉淀、语义检索向上提取</sub>
+
+</td>
+<td width="50%" align="center">
+
+**提示工程 vs 上下文工程（第 8 章）**
+
+<img src="src/svg/chapter_context_01_comparison.svg" width="480" alt="提示工程 vs 上下文工程">
+
+<sub>从"如何说"到"让 LLM 看到什么"——Agent 时代的范式升级</sub>
+
+</td>
+</tr>
+</table>
+
+### 🤝 多 Agent 与通信协议
+
+<table>
+<tr>
+<td width="50%" align="center">
+
+**多 Agent 三种通信模式（第 14 章）**
+
+<img src="src/svg/chapter_multi_agent_02_communication.svg" width="480" alt="多 Agent 通信模式">
+
+<sub>消息队列（异步解耦）/ 共享黑板（数据共享）/ 直接调用（实时协作）</sub>
+
+</td>
+<td width="50%" align="center">
+
+**MCP / A2A / ANP 三协议对比（第 15 章）**
+
+<img src="src/svg/chapter_protocol_03_three_protocols.svg" width="480" alt="三协议对比">
+
+<sub>三层协议栈各司其职：ANP 组网发现 → A2A 任务协作 → MCP 工具调用</sub>
+
+</td>
+</tr>
+</table>
+
+### 🧪 强化学习与框架
+
+<table>
+<tr>
+<td width="50%" align="center">
+
+**GRPO 训练架构（第 10 章）**
+
+<img src="src/svg/chapter_agentic_rl_03_grpo_architecture.svg" width="420" alt="GRPO 训练架构">
+
+<sub>无需 Critic 模型，通过组内标准化计算优势值，显存仅需 1.5× 模型大小</sub>
+
+</td>
+<td width="50%" align="center">
+
+**LangGraph 三大核心概念（第 12 章）**
+
+<img src="src/svg/chapter_langgraph_02_state_node_edge.svg" width="480" alt="LangGraph 核心概念">
+
+<sub>State（共享状态）· Node（处理单元）· Edge（执行流控制）</sub>
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+📖 **以上仅为精选预览** — 完整的 120+ 张架构图 + 5 个交互动画，请 [**在线阅读**](https://Haozhe-Xing.github.io/agent_learning) 体验
+
+</div>
+
+---
+
+## 🎬 交互式动画
+
+本书内置了 **5 个可交互的 HTML 动画**，帮助你直观理解核心概念的动态过程：
+
+| 动画 | 对应章节 | 说明 |
+|------|----------|------|
+| 🔄 **感知-思考-行动循环** | 第 1 章 | 动态演示 Agent 的核心运行循环 |
+| 💡 **ReAct 推理过程** | 第 6 章 | 展示 Thought → Action → Observation 的交替过程 |
+| 🔧 **Function Calling** | 第 4 章 | 工具调用的完整流程动画 |
+| 📚 **RAG 检索流程** | 第 7 章 | 从文档切分到向量检索再到生成回答 |
+| 🎯 **GRPO 采样过程** | 第 10 章 | 组内多输出采样与奖励标准化的可视化 |
+
+> 💡 交互动画仅在 [在线电子书](https://Haozhe-Xing.github.io/agent_learning) 中可体验，本地构建也可预览。
+
+---
+
 ## 📚 内容目录
 
 <details>
@@ -358,6 +511,12 @@ export OPENAI_API_KEY="your-key-here"
 - 技能系统构建
 - 工具描述最佳实践
 
+**🧪 强化学习训练**
+- SFT + LoRA 基础训练
+- PPO / DPO / GRPO 算法详解
+- 完整训练 Pipeline 实战
+- 2025—2026 最新研究进展
+
 </td>
 <td width="50%">
 
@@ -367,11 +526,17 @@ export OPENAI_API_KEY="your-key-here"
 - RAG 检索增强生成
 - 上下文工程与注意力预算
 
-**🤝 多 Agent 协作 & 训练**
-- MCP / A2A / ANP 协议
-- Supervisor 模式
-- CrewAI / AutoGen
-- Agentic-RL（SFT → PPO → DPO → GRPO）
+**🤝 多 Agent 协作 & 通信**
+- MCP / A2A / ANP 三协议栈
+- Supervisor vs 去中心化模式
+- CrewAI / AutoGen 框架
+- LangGraph 有状态 Agent
+
+**🛡️ 生产化全链路**
+- 评估基准（GAIA / SWE-bench）
+- 安全防御与沙箱隔离
+- 容器化部署与流式响应
+- 可观测性与成本优化
 
 </td>
 </tr>

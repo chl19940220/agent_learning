@@ -86,7 +86,7 @@
   - [10.2 SFT + LoRA 基础训练](./chapter_agentic_rl/02_sft_lora.md)
   - [10.3 PPO：近端策略优化](./chapter_agentic_rl/03_ppo.md)
   - [10.4 DPO：直接偏好优化](./chapter_agentic_rl/04_dpo.md)
-  - [10.5 GRPO：组内相对策略优化与奖励函数设计](./chapter_agentic_rl/05_grpo.md)
+  - [10.5 GRPO/GSPO：组内相对策略优化与奖励函数设计](./chapter_agentic_rl/05_grpo.md)
   - [10.6 实战：完整 SFT + GRPO 训练 Pipeline](./chapter_agentic_rl/06_practice_training.md)
   - [10.7 最新研究进展（2025—2026）](./chapter_agentic_rl/07_latest_research.md)
 
