@@ -809,6 +809,17 @@ function delay(ms) {
 /* 打字机效果 */
 function typeText(el, text, msPerChar = 18) {
   return new Promise(resolve => {
+    // If content contains HTML tags, render with innerHTML + fade-in instead of char-by-char
+    if (/<[a-z][\s\S]*>/i.test(text)) {
+      el.style.opacity = '0';
+      el.innerHTML = text;
+      el.style.transition = 'opacity 0.4s ease';
+      requestAnimationFrame(() => {
+        el.style.opacity = '1';
+      });
+      setTimeout(resolve, 400 * speedMul);
+      return;
+    }
     let i = 0;
     const cursor = document.createElement('span');
     cursor.className = 'cursor';
