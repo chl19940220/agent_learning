@@ -448,7 +448,7 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="function-calling-机制详解"><a class="header" href="#function-calling-机制详解">Function Calling 机制详解</a></h1>
-<p>Function Calling 是 OpenAI 于 2023 年推出的重要特性，让模型能够输出结构化的函数调用指令。理解其完整机制，是构建可靠 Agent 的基础。</p>
+<p>Function Calling 是 OpenAI 于 2023 年 6 月推出的重要特性，让模型能够输出结构化的函数调用指令。2024 年 8 月，OpenAI 进一步推出了 <strong>Structured Outputs</strong>（结构化输出），通过 <code>strict: true</code> 参数确保模型生成的参数 100% 符合 JSON Schema，大幅提升了生产环境的可靠性。理解其完整机制，是构建可靠 Agent 的基础。</p>
 <p>在传统的 LLM 使用中，模型只能输出纯文本。但现实世界的许多任务——查天气、发邮件、查数据库——都需要与外部系统交互。Function Calling 解决的正是这个问题：<strong>它让 LLM 不再只是"说"，还能"做"。</strong></p>
 <p>核心思想其实很朴素：我们告诉模型"你有哪些工具可以用"，模型分析用户的问题后，如果觉得需要使用工具，就输出一段结构化的 JSON，告诉我们"请帮我调用这个函数，参数是这些"。模型本身并不执行函数，执行由我们的代码完成，然后把结果再反馈给模型，让它组织最终的回答。</p>
 <h2 id="function-calling-的完整流程"><a class="header" href="#function-calling-的完整流程">Function Calling 的完整流程</a></h2>
@@ -467,6 +467,9 @@
 </ol>
 <p>这个过程可能会循环多次——比如用户问"北京天气怎么样？如果下雨就帮我发邮件提醒"，模型会先调用天气工具，根据结果再决定是否调用邮件工具。</p>
 <p><img src="../svg/chapter_tools_02_fc_flow.svg" alt="Function Calling 完整流程" /></p>
+<blockquote>
+<p>上图展示了多轮工具调用的完整消息流：每一轮循环中，工具结果以 <code>role: "tool"</code> 的消息追加到历史，LLM 基于完整上下文决定是继续调用工具还是给出最终回答。</p>
+</blockquote>
 <h2 id="完整代码实现"><a class="header" href="#完整代码实现">完整代码实现</a></h2>
 <p>下面是一个完整的 Function Calling 示例。我们定义两个工具（查天气和发邮件），然后实现一个执行循环，让 Agent 能够自动调用这些工具。</p>
 <pre><code class="language-python">import json
@@ -515,13 +518,17 @@ def send_email(to: str, subject: str, body: str) -&gt; dict:
     }
 
 # ========== 第二步：定义 OpenAI 工具格式 ==========
+# 注意：description 字段至关重要——模型正是通过它来判断"何时该用这个工具"。
+# 描述越精确（包括适用场景、参数含义、返回内容），模型的调用决策就越准确。
+# strict: True 启用结构化输出，确保模型生成的参数 100% 符合 JSON Schema（推荐生产环境开启）
 
 tools = [
     {
         "type": "function",
         "function": {
             "name": "get_weather",
-            "description": "获取指定城市的当前天气信息，包括温度、天气状况和湿度",
+            "description": "获取指定城市的当前实时天气信息，包括温度、天气状况和湿度。仅用于查询天气，不用于预报未来天气。",
+            "strict": True,
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -532,11 +539,11 @@ tools = [
                     "unit": {
                         "type": "string",
                         "enum": ["celsius", "fahrenheit"],
-                        "description": "温度单位，celsius=摄氏度，fahrenheit=华氏度",
-                        "default": "celsius"
+                        "description": "温度单位，celsius=摄氏度，fahrenheit=华氏度"
                     }
                 },
-                "required": ["city"]
+                "required": ["city", "unit"],
+                "additionalProperties": False
             }
         }
     },
@@ -544,7 +551,8 @@ tools = [
         "type": "function",
         "function": {
             "name": "send_email",
-            "description": "向指定邮箱发送邮件",
+            "description": "向指定邮箱发送邮件。仅在用户明确要求发送邮件时调用，不要在未经用户确认的情况下自动发送。",
+            "strict": True,
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -561,7 +569,8 @@ tools = [
                         "description": "邮件正文内容"
                     }
                 },
-                "required": ["to", "subject", "body"]
+                "required": ["to", "subject", "body"],
+                "additionalProperties": False
             }
         }
     }
@@ -611,13 +620,16 @@ def run_agent(user_message: str) -&gt; str:
                 
                 print(f"\n[工具调用] {func_name}({func_args})")
                 
-                # 执行工具
+                # 执行工具（加入错误处理：工具失败时将错误信息反馈给模型，让它自行决策）
                 func = tool_functions.get(func_name)
                 if func:
-                    result = func(**func_args)
-                    result_str = json.dumps(result, ensure_ascii=False)
+                    try:
+                        result = func(**func_args)
+                        result_str = json.dumps(result, ensure_ascii=False)
+                    except Exception as e:
+                        result_str = json.dumps({"error": str(e), "status": "failed"})
                 else:
-                    result_str = f"错误：未知工具 {func_name}"
+                    result_str = json.dumps({"error": f"未知工具 {func_name}", "status": "failed"})
                 
                 print(f"[工具结果] {result_str}")
                 
@@ -645,7 +657,10 @@ run_agent("北京和上海今天天气怎么样？")
 run_agent("查询北京天气，如果气温低于10度，发邮件给 boss@company.com 提醒带伞")
 </code></pre>
 <p>让我们逐步理解上面代码的关键设计：</p>
-<p><strong>工具定义的 JSON Schema</strong>：注意 <code>tools</code> 列表中每个工具的格式——<code>name</code> 是函数名，<code>description</code> 告诉模型"什么时候该用这个工具"，<code>parameters</code> 描述参数类型和含义。这个 Schema 会随请求一起发送给 LLM，模型正是通过它来理解工具的能力边界。描述越精确，模型的调用决策就越准确。</p>
+<p><strong>工具定义的 JSON Schema</strong>：注意 <code>tools</code> 列表中每个工具的格式——<code>name</code> 是函数名，<code>description</code> 告诉模型"什么时候该用这个工具"，<code>parameters</code> 描述参数类型和含义。这个 Schema 会随请求一起发送给 LLM，模型正是通过它来理解工具的能力边界。</p>
+<p><strong>工具描述的质量至关重要</strong>：<code>description</code> 字段是模型决策的核心依据。一个好的工具描述应该包含：工具的适用场景（什么时候用）、不适用场景（什么时候不用）、参数的具体含义和格式。描述模糊会导致模型误调用或漏调用——比如把 <code>send_email</code> 描述为"处理邮件相关任务"，模型可能在用户只是问"怎么写邮件"时也去调用它。</p>
+<p><strong><code>strict: true</code> 模式</strong>：在工具定义中加入 <code>"strict": True</code>，可以启用结构化输出，确保模型生成的参数严格符合 JSON Schema。开启后需要同时设置 <code>"additionalProperties": False</code>，并将所有参数都放入 <code>required</code> 列表。这在生产环境中强烈推荐，可以避免参数缺失或类型错误导致的运行时崩溃。</p>
+<p><strong>错误处理</strong>：工具执行应该包裹在 <code>try/except</code> 中。当工具调用失败时，不要直接抛出异常中断流程，而是将错误信息以 JSON 格式返回给模型——模型会根据错误信息自行决策，比如换个参数重试、或者告知用户操作失败。</p>
 <p><strong>执行循环（Agent Loop）</strong>：<code>run_agent</code> 函数的核心是一个 <code>while True</code> 循环。每次循环中，我们把完整的消息历史（包括之前的工具调用结果）发给 LLM。模型返回后，我们检查 <code>finish_reason</code>：如果是 <code>"stop"</code>，说明模型已经给出最终回答；如果是 <code>"tool_calls"</code>，说明模型需要使用工具。执行完工具后，我们把结果以 <code>role: "tool"</code> 的消息追加到历史中，然后继续下一轮循环。</p>
 <p><strong>工具函数映射表</strong>：<code>tool_functions</code> 字典将函数名字符串映射到实际的 Python 函数。这个设计让工具的调用和注册可以解耦——你只需要在字典中添加新的映射，就能让 Agent 获得新的能力。</p>
 <h2 id="tool_choice-参数控制"><a class="header" href="#tool_choice-参数控制">tool_choice 参数控制</a></h2>
@@ -693,6 +708,9 @@ response = client.chat.completions.create(
 <h2 id="并行工具调用"><a class="header" href="#并行工具调用">并行工具调用</a></h2>
 <p>当用户提出一个包含多个独立子任务的请求时——比如"同时查询北京、上海、广州的天气"——让模型逐个调用工具效率很低。GPT-4 支持<strong>并行工具调用</strong>（Parallel Tool Calls），即在一次请求中返回多个工具调用指令，我们可以同时执行它们。</p>
 <p>这个特性对性能至关重要。假设你有 3 个独立的 API 调用，串行执行需要 3 倍的等待时间，而并行执行只需要最慢那个的时间。下面的代码使用 <code>concurrent.futures</code> 实现了真正的并行执行：</p>
+<blockquote>
+<p>⚠️ <strong>注意</strong>：并行调用适用于工具之间<strong>相互独立</strong>的场景。如果工具之间有顺序依赖（比如先查天气、再根据天气结果决定是否发邮件），应设置 <code>parallel_tool_calls=False</code>，让模型串行调用，避免后一个工具依赖前一个工具的结果时出现逻辑错误。</p>
+</blockquote>
 <pre><code class="language-python">def run_parallel_tools(user_message: str) -&gt; str:
     """支持并行工具调用的 Agent"""
     
@@ -746,6 +764,14 @@ response = client.chat.completions.create(
 # 测试并行调用
 result = run_parallel_tools("同时查询北京、上海、广州三个城市的天气")
 print(result)
+
+# 禁用并行调用（工具之间有顺序依赖时使用）
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=messages,
+    tools=tools,
+    parallel_tool_calls=False  # 强制串行调用，适合有依赖关系的工具链
+)
 </code></pre>
 <h2 id="使用-pydantic-自动生成工具-schema"><a class="header" href="#使用-pydantic-自动生成工具-schema">使用 Pydantic 自动生成工具 Schema</a></h2>
 <p>你可能已经注意到，手写 JSON Schema 是一件繁琐且容易出错的事——参数名拼错、类型写错都可能导致模型调用失败。一个更优雅的做法是利用 Pydantic 模型来自动生成 Schema。</p>
@@ -792,13 +818,29 @@ weather_tool = create_tool_from_pydantic(
 print(json.dumps(weather_tool, ensure_ascii=False, indent=2))
 </code></pre>
 <hr />
+<h2 id="function-calling-与-mcp-的关系"><a class="header" href="#function-calling-与-mcp-的关系">Function Calling 与 MCP 的关系</a></h2>
+<p>学完 Function Calling，你可能会听到另一个概念：<strong>MCP（Model Context Protocol）</strong>，这是 Anthropic 于 2024 年底推出、并在 2025 年迅速成为行业标准的工具调用协议。它们的关系可以这样理解：</p>
+<div class="table-wrapper"><table><thead><tr><th>维度</th><th>Function Calling</th><th>MCP</th></tr></thead><tbody>
+<tr><td>定位</td><td>单一平台的工具调用机制</td><td>跨平台标准化协议</td></tr>
+<tr><td>平台依赖</td><td>绑定特定 LLM 平台（如 OpenAI API）</td><td>平台无关，支持任意模型</td></tr>
+<tr><td>工具复用</td><td>工具代码与模型强耦合</td><td>工具以独立服务形式存在，可复用</td></tr>
+<tr><td>适用场景</td><td>快速集成、单模型项目</td><td>多模型、工具需要跨项目复用的场景</td></tr>
+<tr><td>学习曲线</td><td>低，直接调用 API</td><td>稍高，需要理解 Client/Server 架构</td></tr>
+</tbody></table>
+</div>
+<p>Function Calling 是理解 Agent 工具调用的<strong>基础</strong>，MCP 是在此之上的<strong>标准化演进</strong>。掌握了 Function Calling 的原理，理解 MCP 会非常自然——本质上 MCP 就是把工具定义和执行从代码中抽离出来，变成一个独立的、可复用的服务。</p>
+<hr />
 <h2 id="小结"><a class="header" href="#小结">小结</a></h2>
 <p>Function Calling 的核心要点：</p>
 <div class="table-wrapper"><table><thead><tr><th>要点</th><th>说明</th></tr></thead><tbody>
 <tr><td>工具定义</td><td>JSON Schema 格式，描述函数名、参数、用途</td></tr>
+<tr><td>描述质量</td><td><code>description</code> 是模型决策的核心依据，需明确适用/不适用场景</td></tr>
+<tr><td>strict 模式</td><td><code>strict: true</code> + <code>additionalProperties: false</code>，确保参数 100% 符合 Schema</td></tr>
 <tr><td>执行循环</td><td>LLM → 工具调用请求 → 执行 → 结果反馈 → LLM</td></tr>
+<tr><td>错误处理</td><td>工具失败时将错误 JSON 返回给模型，让模型自行决策重试或报错</td></tr>
 <tr><td>tool_choice</td><td>控制工具使用策略（auto/none/required/指定）</td></tr>
-<tr><td>并行调用</td><td>一次请求可以调用多个工具，提升效率</td></tr>
+<tr><td>并行调用</td><td>独立工具可并行执行；有顺序依赖时用 <code>parallel_tool_calls=False</code></td></tr>
+<tr><td>MCP</td><td>Function Calling 的标准化演进，实现跨平台工具复用</td></tr>
 </tbody></table>
 </div>
 <hr />
@@ -833,6 +875,22 @@ print(json.dumps(weather_tool, ensure_ascii=False, indent=2))
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 
