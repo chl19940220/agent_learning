@@ -19,17 +19,7 @@
 
 Claude Code 采用严格的六层分层架构，每一层职责清晰、边界明确：
 
-```mermaid
-flowchart TD
-    L1["**第一层：入口层 Entry Layer**\nmain.tsx 启动 / setup.ts 初始化\n四个入口：CLI 模式 / 初始化流程 / MCP Server 模式 / SDK 模式"]
-    L2["**第二层：展示层 UI Layer**\nReact + Ink 构建终端 UI\nReact 组件总计 5005 行，最深嵌套 22 层\n实时流式渲染 / 进度指示 / 交互式确认"]
-    L3["**第三层：核心引擎 QueryEngine**\n约 46,000 行代码\nLLM 对话管理 / Prompt 缓存 / 流式处理 / 上下文压缩"]
-    L4["**第四层：执行层 Execution Layer**\nTool System（52 个内置工具）\nCommand System（/init /compact 等内置命令）"]
-    L5["**第五层：协作层 Collaboration Layer**\nMulti-Agent 系统（子 Agent / Teammate 协作）\nCCR 远程桥接（Cloud Container Runtime）"]
-    L6["**第六层：管理层 Management Layer**\n权限系统 / 配置管理（settings.json）/ 会话状态持久化\n遥测上报 / 费用统计 / 安全沙箱"]
-
-    L1 --> L2 --> L3 --> L4 --> L5 --> L6
-```
+![Claude Code 六层分层架构](../svg/chapter_claude_code_02_six_layer_arch.svg)
 
 **技术栈**：TypeScript + Bun 运行时（而非传统 Node.js），通过 esbuild 打包为单一 `cli.js` 文件分发。
 
@@ -39,19 +29,7 @@ flowchart TD
 
 理解 Claude Code 最直接的方式，是跟踪一次用户输入从进入到响应的完整路径：
 
-```mermaid
-flowchart TD
-    A(["用户在终端输入消息并按下 Enter"])
-    B["main.tsx 并行初始化\n拉取环境信息（Git 状态、目录、系统信息）\n加载 CLAUDE.md 文件\n初始化 MCP 服务器连接 / 准备工具列表"]
-    C["QueryEngine.submitMessage()\n会话级有状态对象，维护完整对话历史"]
-    D["fetchSystemPromptParts()\n拼装 System Prompt：静态区 + 动态区"]
-    E["processUserInput()\n整理消息格式，注入 CLAUDE.md 为 XML 标签"]
-    F["query.ts 主循环（TAOR Agent Loop）\nThink：发送给 Claude API，获取流式响应\nAct：解析工具调用请求，发送到 Tool System\nGate：权限系统裁决（Allow / Deny / Ask）\nExec：执行工具，返回结果\nObserve：将工具结果注入对话上下文\nRepeat：检查是否完成，否则继续下一轮"]
-    G["compact/memory 管理\n上下文利用率 > 40% 触发压缩"]
-    H(["展示层渲染最终响应"])
-
-    A --> B --> C --> D --> E --> F --> G --> H
-```
+![运行主链路：一次请求的完整旅程](../svg/chapter_claude_code_02_request_flow.svg)
 
 这个循环可以持续数十轮甚至更多，直到 Claude 判断任务完成或用户中断。
 
@@ -61,22 +39,7 @@ flowchart TD
 
 TAOR（Think → Act → Observe → Repeat）是 Claude Code 的执行核心，也是它区别于"一问一答"式 AI 的根本所在：
 
-```mermaid
-flowchart TD
-    Start(["用户输入任务"])
-    Think["**Think**\nClaude 分析当前状态\n决定下一步动作\n（可能使用 thinking 标签）"]
-    Act["**Act**\nTool System 执行工具\nRead / Bash / Write / ..."]
-    Observe["**Observe**\n将工具结果注入上下文\n更新对任务状态的认知"]
-    Check{"任务完成？"}
-    End(["输出最终响应"])
-
-    Start --> Think
-    Think -->|"输出工具调用请求"| Act
-    Act -->|"工具返回结果"| Observe
-    Observe --> Check
-    Check -->|"否，继续循环"| Think
-    Check -->|"是"| End
-```
+![TAOR Agent Loop 核心循环](../svg/chapter_claude_code_02_taor_loop.svg)
 
 **关键设计细节**：
 
@@ -147,24 +110,7 @@ class QueryEngine {
 
 ### 工具调用生命周期
 
-```mermaid
-flowchart TD
-    A(["Claude 输出工具调用请求（JSON 格式）"])
-    B["Tool Registry 查找对应工具"]
-    C{"权限系统裁决"}
-    D["执行工具（异步，支持超时）"]
-    E(["结果序列化，注入对话上下文"])
-    F(["返回拒绝信息给 Claude"])
-    G["弹出确认交互，等待用户决定"]
-
-    A --> B --> C
-    C -->|"Allow"| D
-    C -->|"Deny"| F
-    C -->|"Ask"| G
-    G -->|"用户确认"| D
-    G -->|"用户拒绝"| F
-    D --> E
-```
+![工具调用生命周期](../svg/chapter_claude_code_02_tool_lifecycle.svg)
 
 ### 内置工具分类
 
