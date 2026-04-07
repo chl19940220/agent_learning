@@ -9,6 +9,7 @@ build-dir = "book"
 
 [preprocessor.katex]
 after = ["links"]
+optional = true
 
 [output.html]
 mathjax-support = false
