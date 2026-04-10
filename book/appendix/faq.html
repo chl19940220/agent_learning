@@ -714,6 +714,58 @@ class TeamState(TypedDict):
 <li><strong>跳过评估</strong>：凭感觉判断效果 → 建立系统化的评估流程</li>
 <li><strong>忽视安全</strong>：没有沙箱就让 Agent 执行代码 → 从第一天起就考虑安全</li>
 </ol>
+<hr />
+<h2 id="-强化学习与模型训练"><a class="header" href="#-强化学习与模型训练">🧪 强化学习与模型训练</a></h2>
+<h3 id="q31如何缓解概率较小的复读机问题"><a class="header" href="#q31如何缓解概率较小的复读机问题">Q31：如何缓解概率较小的复读机问题？</a></h3>
+<p><strong>A</strong>：复读机问题（Repetition）在 LLM 中偶尔会出现，可以通过以下几种方式缓解：</p>
+<ul>
+<li><strong>调整采样参数</strong>：适当增加 <code>repetition_penalty</code>（重复惩罚）或 <code>presence_penalty</code>，降低已生成词汇的采样概率。同时可以微调 <code>temperature</code> 和 <code>top_p</code> 增加输出的多样性。</li>
+<li><strong>强化学习惩罚</strong>：在 RLHF 或 GRPO 阶段，设计专门的规则检测重复模式（如 N-gram 重复率），对出现严重重复的输出给予负奖励（Negative Reward）。</li>
+<li><strong>SFT 数据清洗</strong>：检查 SFT 训练数据，确保数据中没有包含大量重复模式的低质量样本。</li>
+<li><strong>Prompt 优化</strong>：在 System Prompt 中明确指示模型"请勿重复之前的话语"或"保持回答简洁多样"。</li>
+</ul>
+<h3 id="q32如何训练大模型的情商和流畅度这种-reward-要怎么设计"><a class="header" href="#q32如何训练大模型的情商和流畅度这种-reward-要怎么设计">Q32：如何训练大模型的情商和流畅度，这种 reward 要怎么设计？</a></h3>
+<p><strong>A</strong>：</p>
+<ul>
+<li><strong>情商 (EQ) 训练与 Reward 设计</strong>：
+<ul>
+<li><strong>SFT 阶段</strong>：构建包含共情、情绪支持、礼貌用语的高质量对话数据集。</li>
+<li><strong>Reward 设计</strong>：通常采用 <strong>LLM-as-a-Judge</strong> 的方式。使用一个能力更强的模型（如 GPT-4）作为裁判，根据预设的维度（如：同理心、得体性、情绪安抚能力）对模型的输出进行打分作为 Reward。也可以训练一个专门的 Reward Model (RM) 来拟合人类对情商的偏好。</li>
+</ul>
+</li>
+<li><strong>流畅度训练与 Reward 设计</strong>：
+<ul>
+<li><strong>SFT 阶段</strong>：确保训练语料的语法正确性和表达自然度。</li>
+<li><strong>Reward 设计</strong>：可以使用语言模型的<strong>困惑度 (Perplexity, PPL)</strong> 作为惩罚项，PPL 越高说明越不流畅，给予负奖励。也可以结合语法检查工具或 LLM 裁判来评估语言的连贯性和自然度。</li>
+</ul>
+</li>
+</ul>
+<h3 id="q33多轮对话的-sft-数据要怎么设计"><a class="header" href="#q33多轮对话的-sft-数据要怎么设计">Q33：多轮对话的 SFT 数据要怎么设计？</a></h3>
+<p><strong>A</strong>：设计高质量的多轮对话 SFT 数据需要注意以下几点：</p>
+<ul>
+<li><strong>角色与格式规范</strong>：采用标准的对话格式（如 ChatML），清晰区分 <code>System</code>、<code>User</code> 和 <code>Assistant</code> 角色。</li>
+<li><strong>上下文依赖性</strong>：确保对话的后几轮必须依赖前面的历史信息才能正确回答，训练模型处理指代消解（如"他"、"那个"）和话题延续的能力。</li>
+<li><strong>多样化的轮数与场景</strong>：数据应包含不同长度的对话（从 2 轮到 10+ 轮不等），涵盖任务导向型（如订票、写代码）和闲聊型场景。</li>
+<li><strong>状态追踪与纠错</strong>：包含用户在中途修改需求或纠正模型错误的对话，训练模型灵活调整和自我纠错的能力。</li>
+</ul>
+<h3 id="q34大模型-grpo-中-reward-的多目标要怎么设计有多个-loss-怎么防止跷跷板的现象"><a class="header" href="#q34大模型-grpo-中-reward-的多目标要怎么设计有多个-loss-怎么防止跷跷板的现象">Q34：大模型 GRPO 中 reward 的多目标要怎么设计，有多个 loss 怎么防止跷跷板的现象？</a></h3>
+<p><strong>A</strong>：在 GRPO 等强化学习算法中，通常需要同时优化多个目标（如准确性、格式、安全性、流畅度）。</p>
+<ul>
+<li><strong>多目标 Reward 设计</strong>：
+<ul>
+<li>将总 Reward 定义为多个子 Reward 的加权和：<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">cc</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">or</span><span class="mord mathnormal mtight">ma</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>。</li>
+<li>针对不同目标设计不同的评估方式：规则匹配（格式）、LLM 裁判（准确性/安全性）。</li>
+</ul>
+</li>
+<li><strong>防止跷跷板现象（Seesaw Effect）</strong>：
+<ul>
+<li><strong>奖励归一化 (Reward Normalization)</strong>：确保不同维度的 Reward 量级和方差一致，避免某个绝对值过大的 Reward 主导了梯度更新。在 GRPO 中，组内标准化（Group-relative normalization）本身就有助于稳定训练。</li>
+<li><strong>动态权重调整</strong>：在训练过程中，监控各项指标的收敛情况。如果某个目标下降严重，则动态提高其 Reward 权重。</li>
+<li><strong>KL 散度惩罚</strong>：引入与 Reference Model 的 KL 散度惩罚项，限制模型在追求某些特定 Reward 时过度偏离原始分布，从而保护模型的基础能力（如流畅度）。</li>
+<li><strong>课程学习 (Curriculum Learning)</strong>：分阶段引入目标。先优化容易冲突的基础目标（如格式和流畅度），稳定后再加入更复杂的认知目标（如逻辑推理）。</li>
+</ul>
+</li>
+</ul>
 
                     </main>
 
