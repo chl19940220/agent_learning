@@ -19,3 +19,5 @@ venv/
 
 # Claude Code
 CLAUDE.md
+memory_db/
+data/
