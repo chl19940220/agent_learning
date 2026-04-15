@@ -25,16 +25,29 @@ jobs:
 
       - name: Install mdBook
         run: |
-          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.52/mdbook-v0.4.52-x86_64-unknown-linux-gnu.tar.gz | tar -xz
           mv mdbook /usr/local/bin/
 
       - name: Install mdbook-katex
         run: |
-          curl -sSL https://github.com/lzanini/mdbook-katex/releases/download/0.9.3-binaries/mdbook-katex-v0.9.3-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          curl -sSL https://github.com/lzanini/mdbook-katex/releases/download/v0.9.4/mdbook-katex-v0.9.4-x86_64-unknown-linux-gnu.tar.gz | tar -xz
           mv mdbook-katex /usr/local/bin/
 
       - name: Build with mdBook
-        run: mdbook build
+        run: |
+          # Build Chinese version
+          mdbook build
+
+          # Build English version
+          # mdbook v0.4.52 removed --config flag, use temporary book.toml swap instead
+          cp book.toml book.toml.zh_bak
+          cp book-en.toml book.toml
+          mdbook build
+          cp book.toml.zh_bak book.toml
+          rm -f book.toml.zh_bak
+
+          # Copy root index.html for language detection & redirection
+          cp root-index.html ./book/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

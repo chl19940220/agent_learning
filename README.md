@@ -1,15 +1,17 @@
 <div align="center">
 
 # 🤖 从零开始学 Agent 
+### Learn Agent Development from Scratch
 
-**一本系统、全面、实战导向的 AI Agent 开发教程**
+**一本系统、全面、实战导向的 AI Agent 开发教程**  
+*A systematic, comprehensive, and practice-oriented AI Agent development guide*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stars](https://img.shields.io/github/stars/Haozhe-Xing/agent_learning?style=social)](https://github.com/Haozhe-Xing/agent_learning)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Haozhe-Xing/agent_learning/pulls)
 [![mdBook](https://img.shields.io/badge/built%20with-mdBook-blue)](https://rust-lang.github.io/mdBook/)
 
-[📖 在线阅读](https://Haozhe-Xing.github.io/agent_learning) · [🐛 提交问题](https://github.com/Haozhe-Xing/agent_learning/issues) · [💬 参与讨论](https://github.com/Haozhe-Xing/agent_learning/discussions)
+[📖 中文版](https://Haozhe-Xing.github.io/agent_learning/zh/) · [📖 English](https://Haozhe-Xing.github.io/agent_learning/en/) · [🐛 提交问题](https://github.com/Haozhe-Xing/agent_learning/issues) · [💬 参与讨论](https://github.com/Haozhe-Xing/agent_learning/discussions)
 
 </div>
 
@@ -17,7 +19,10 @@
 
 ## 📖 在线阅读（推荐）
 
-直接访问 👉 **[https://Haozhe-Xing.github.io/agent_learning](https://Haozhe-Xing.github.io/agent_learning)**
+| 语言 | 链接 |
+|------|------|
+| 🇨🇳 简体中文 | **[https://Haozhe-Xing.github.io/agent_learning/zh/](https://Haozhe-Xing.github.io/agent_learning/zh/)** |
+| 🇺🇸 English | **[https://Haozhe-Xing.github.io/agent_learning/en/](https://Haozhe-Xing.github.io/agent_learning/en/)** |
 
 ---
 
@@ -205,9 +210,12 @@ AI Agent 正在重塑软件开发的边界。从 GitHub Copilot 到 Devin，从 
 
 ### 本地构建
 
+**依赖安装：**
+
 ```bash
-# 安装 mdBook
+# 安装 mdBook（二选一）
 cargo install mdbook
+# 或 macOS：brew install mdbook
 
 # 安装 mdbook-katex 插件（用于数学公式渲染）
 cargo install mdbook-katex
@@ -215,10 +223,35 @@ cargo install mdbook-katex
 # 克隆仓库
 git clone https://github.com/Haozhe-Xing/agent_learning.git
 cd agent_learning
-
-# 本地预览（自动打开浏览器）
-mdbook serve --open
 ```
+
+**一键启动本地预览（推荐）：**
+
+```bash
+# 构建中英文版本并启动统一服务（默认端口 3000）
+./serve.sh
+
+# 指定自定义端口
+./serve.sh 8080
+
+# 启用文件监听，源文件变更时自动重建（需要 fswatch 或 inotifywait）
+./serve.sh --watch
+./serve.sh 8080 --watch
+```
+
+启动后访问：
+- 🌐 **语言选择首页**：`http://localhost:3000`（自动根据浏览器语言跳转）
+- 🇨🇳 **中文版**：`http://localhost:3000/zh/`
+- 🇺🇸 **English**：`http://localhost:3000/en/`
+
+> 💡 文件监听依赖安装：
+> ```bash
+> # macOS
+> brew install fswatch
+>
+> # Ubuntu / Debian
+> sudo apt-get install inotify-tools
+> ```
 
 ### 环境准备（跟随代码实践）
 
@@ -321,8 +354,8 @@ git clone https://github.com/YOUR_USERNAME/agent_learning.git  # 替换为你的
 # 创建特性分支
 git checkout -b feature/improve-chapter-4
 
-# 本地预览
-mdbook serve --open
+# 本地预览（中英文统一服务）
+./serve.sh
 
 # 提交修改
 git commit -m "feat: 改进第4章工具调用示例代码"
@@ -333,10 +366,33 @@ git push origin feature/improve-chapter-4
 
 ### 内容组织约定
 
-- 每章内容放在独立目录 `src/chapter_xxx/` 下
+- 每章内容放在独立目录 `src/zh/chapter_xxx/`（中文）或 `src/en/chapter_xxx/`（英文）下
 - 章节概述放在 `README.md`，各小节按 `01_xxx.md`、`02_xxx.md` 编号
-- SVG 插图统一放在 `src/svg/` 目录，命名格式 `chapter_xxx_描述.svg`
-- 交互动画放在 `src/animations/` 目录
+- 中文版 SVG 插图放在 `src/zh/svg/`，英文版放在 `src/en/svg/`，命名格式 `chapter_xxx_描述.svg`
+- 中文版交互动画放在 `src/zh/animations/`，英文版放在 `src/en/animations/`
+
+### 英文版翻译贡献
+
+英文版目前正在持续翻译中，欢迎贡献翻译！
+
+**翻译章节步骤：**
+
+1. 找到 `src/en/` 下对应的 `.md` 文件（内容为占位提示 `🚧 Translation in progress`）
+2. 将中文版 `src/zh/` 对应章节的内容翻译为英文，替换占位内容
+3. 如章节引用了 SVG 图片，在 `src/en/svg/` 下创建对应的英文版 SVG（将图中中文文字替换为英文）
+4. 如章节引用了交互动画，在 `src/en/animations/` 下创建对应的英文版 HTML
+5. 本地用 `./serve.sh` 预览中英文版效果，访问 `http://localhost:3000/en/` 查看英文版
+6. 提交 PR，标题格式：`translate: 翻译第X章 - [章节名]`
+
+**占位模板格式（翻译前的英文版文件内容）：**
+
+```markdown
+# [Chapter Title]
+
+> 🚧 **Translation in progress.**
+> This chapter is not yet available in English.
+> Please check back later, or switch to the [Chinese version](../../zh/...) for the full content.
+```
 
 ---
 
