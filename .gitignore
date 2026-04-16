@@ -1,3 +1,9 @@
+# Build output (mdBook)
+book/
+
+# Temporary build directories
+build-en/
+
 # IDE
 .idea/
 .vscode/

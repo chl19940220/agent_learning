@@ -1,0 +1,24 @@
+[book]
+authors = ["Agent Learning Team"]
+language = "en"
+src = "src/en"
+title = "Learn Agent Development from Scratch"
+
+[build]
+build-dir = "book/en"
+
+[preprocessor.katex]
+after = ["links"]
+optional = true
+
+[output.html]
+mathjax-support = false
+default-theme = "light"
+preferred-dark-theme = "navy"
+additional-css = ["theme/custom.css"]
+no-section-label = true
+git-repository-url = "https://github.com/Haozhe-Xing/agent_learning"
+git-repository-icon = "fa-github"
+
+[output.html.print]
+enable = false

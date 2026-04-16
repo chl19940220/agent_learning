@@ -1,11 +1,11 @@
 [book]
 authors = ["Agent Learning Team"]
 language = "zh-CN"
-src = "src"
+src = "src/zh"
 title = "从零开始学 Agent"
 
 [build]
-build-dir = "book"
+build-dir = "book/zh"
 
 [preprocessor.katex]
 after = ["links"]
@@ -22,5 +22,3 @@ git-repository-icon = "fa-github"
 
 [output.html.print]
 enable = false
-
-

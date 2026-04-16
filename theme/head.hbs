@@ -150,6 +150,20 @@
     color: #aaa;
     background: rgba(255,255,255,0.06);
   }
+
+  /* 语言切换按钮 */
+  .lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    color: var(--icons);
+    transition: color 0.3s ease;
+    text-decoration: none;
+  }
+  .lang-toggle:hover {
+    color: var(--icons-hover);
+  }
 </style>
 
 <script>
@@ -170,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var backBtn = document.createElement('button');
   backBtn.id = 'back-to-top';
   backBtn.innerHTML = '&#8679;';
-  backBtn.title = '回到顶部';
+  backBtn.title = document.documentElement.lang === 'zh' || document.documentElement.lang === 'zh-CN' ? '回到顶部' : 'Back to top';
   document.body.appendChild(backBtn);
 
   function toggleBackToTop() {
@@ -258,14 +272,94 @@ document.addEventListener('DOMContentLoaded', function() {
   if (content) {
     var text = content.textContent || '';
     var charCount = text.replace(/\s/g, '').length;
-    var readingMinutes = Math.max(1, Math.ceil(charCount / 500)); // 中文约500字/分钟
+    var isZh = document.documentElement.lang === 'zh' || document.documentElement.lang === 'zh-CN';
+    // 中文约 500 字/分钟，英文约 200 词/分钟（词数 ≈ 字符数 / 5）
+    var readingMinutes = isZh
+      ? Math.max(1, Math.ceil(charCount / 500))
+      : Math.max(1, Math.ceil(charCount / 1000));
     var h1 = content.querySelector('h1');
     if (h1 && readingMinutes > 2) {
       var timeTag = document.createElement('span');
       timeTag.className = 'reading-time';
-      timeTag.textContent = '预计阅读 ' + readingMinutes + ' 分钟';
+      timeTag.textContent = isZh
+        ? '预计阅读 ' + readingMinutes + ' 分钟'
+        : 'Est. ' + readingMinutes + ' min read';
       h1.insertAdjacentElement('afterend', timeTag);
     }
+  }
+
+  // === 6. 中英文切换按钮 ===
+  // 通过替换 URL 路径中的语言段（/zh/ ↔ /en/）实现切换，
+  // 本地开发（serve.sh）和部署环境（GitHub Pages）使用完全相同的逻辑。
+  var rightButtons = document.querySelector('.right-buttons');
+  if (rightButtons) {
+    var langToggle = document.createElement('a');
+    langToggle.className = 'lang-toggle';
+    langToggle.title = 'Switch Language / 切换语言';
+    langToggle.setAttribute('aria-label', 'Switch Language');
+    langToggle.style.cursor = 'pointer';
+
+    var currentLang = document.documentElement.lang;
+    var isZh = currentLang.startsWith('zh');
+
+    langToggle.innerHTML = '<i class="fa fa-language"></i> <span class="lang-text" style="font-size: 0.85em; font-weight: bold; margin-left: 2px;">' + (isZh ? 'EN' : '中') + '</span>';
+
+    /**
+     * 根据当前路径计算目标语言路径。
+     * 将路径中的语言段 /zh/ 或 /en/ 替换为目标语言段。
+     */
+    function calcTargetPath(pathname, toZh) {
+      var from = toZh ? 'en' : 'zh';
+      var to   = toZh ? 'zh' : 'en';
+      var re = new RegExp('((?:^|/)' + from + '(?=/|$))');
+      if (re.test(pathname)) {
+        return pathname.replace(re, function(m) {
+          return m.replace(from, to);
+        });
+      }
+      return null;
+    }
+
+    /**
+     * 获取目标语言的首页路径（用于目标页面不存在时的回退）。
+     */
+    function getFallbackRoot(pathname, toZh) {
+      var from = toZh ? 'en' : 'zh';
+      var to   = toZh ? 'zh' : 'en';
+      var re = new RegExp('((?:^|/)' + from + ')(?=/|$).*');
+      if (re.test(pathname)) {
+        return pathname.replace(re, function(m, p1) {
+          return p1.replace(from, to) + '/';
+        });
+      }
+      return toZh ? '../zh/' : '../en/';
+    }
+
+    langToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      var currentPath = window.location.pathname;
+      var toZh = !isZh;
+
+      var targetPath = calcTargetPath(currentPath, toZh);
+      var fallbackPath = getFallbackRoot(currentPath, toZh);
+
+      if (!targetPath || targetPath === currentPath) {
+        window.location.href = fallbackPath;
+        return;
+      }
+
+      // 用 fetch HEAD 请求预检目标页面是否存在，404 则回退到目标语言首页
+      fetch(targetPath, { method: 'HEAD' })
+        .then(function(res) {
+          window.location.href = res.ok ? targetPath : fallbackPath;
+        })
+        .catch(function() {
+          // 网络错误时直接跳转（如本地服务不支持 HEAD 请求）
+          window.location.href = targetPath;
+        });
+    });
+
+    rightButtons.insertBefore(langToggle, rightButtons.firstChild);
   }
 });
 </script>
